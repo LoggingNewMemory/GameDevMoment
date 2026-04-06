@@ -1,8 +1,7 @@
 fileFormatVersion: 2
-guid: 74950ad439f2d654e9e4e520c55164b9
-NativeFormatImporter:
+guid: 436d84b39ebbb99449cf0c0ed23b24a5
+PrefabImporter:
   externalObjects: {}
-  mainObjectFileID: 4890085278179872738
   userData: 
   assetBundleName: 
   assetBundleVariant: 
@@ -11,5 +10,5 @@ AssetOrigin:
   productId: 285693
   packageName: Low Poly Pistol Weapon Pack 1
   packageVersion: 1.1
-  assetPath: Assets/Low Poly AR Weapon Pack 1/Scenes/Demo Lighting Settings.lighting
+  assetPath: Assets/Low Poly Pistol Weapon Pack 1/Prefabs/Weapons/Pistol_C.prefab
   uploadId: 729399

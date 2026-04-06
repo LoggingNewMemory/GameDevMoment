@@ -8,9 +8,10 @@ public class SimpleShoot : MonoBehaviour
     public float range = 100f;
     public float damage = 20f;
     
-    [Header("Auto Fire Settings")]
-    public float fireRate = 10f; // How many bullets per second
-    private float nextTimeToFire = 0f; // Internal timer
+    [Header("Weapon Settings")]
+    public bool isAutomatic = false; // Check this for SMG/AR, uncheck for Pistol!
+    public float fireRate = 10f; 
+    private float nextTimeToFire = 0f; 
     
     [Header("Visuals")]
     public GameObject muzzleFlashObject; 
@@ -20,13 +21,24 @@ public class SimpleShoot : MonoBehaviour
     {
         if (Mouse.current == null) return;
 
-        // CHANGED: 'isPressed' checks if the button is held down.
-        // We also check if enough time has passed since the last shot.
-        if (Mouse.current.leftButton.isPressed && Time.time >= nextTimeToFire)
+        // AUTOMATIC FIRE (Hold left click)
+        if (isAutomatic)
         {
-            // Reset the timer for the next bullet
-            nextTimeToFire = Time.time + 1f / fireRate;
-            Shoot();
+            if (Mouse.current.leftButton.isPressed && Time.time >= nextTimeToFire)
+            {
+                nextTimeToFire = Time.time + 1f / fireRate;
+                Shoot();
+            }
+        }
+        // SINGLE FIRE (Tap left click)
+        else
+        {
+            // wasPressedThisFrame forces you to release and click again!
+            if (Mouse.current.leftButton.wasPressedThisFrame && Time.time >= nextTimeToFire)
+            {
+                nextTimeToFire = Time.time + 1f / fireRate;
+                Shoot();
+            }
         }
     }
 
@@ -56,7 +68,6 @@ public class SimpleShoot : MonoBehaviour
     IEnumerator FlashMuzzle()
     {
         muzzleFlashObject.SetActive(true);
-        // Made the flash slightly faster so it looks good on high fire rates
         yield return new WaitForSeconds(0.03f); 
         muzzleFlashObject.SetActive(false);
     }
