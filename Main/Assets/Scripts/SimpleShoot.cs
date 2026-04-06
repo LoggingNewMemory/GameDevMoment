@@ -32,14 +32,18 @@ public class SimpleShoot : MonoBehaviour
 
         // 2. The Raycast
         RaycastHit hit;
-        if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range))
+        if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
             Debug.Log("Hit: " + hit.transform.name);
             
-            // 3. Spawn impact sparks facing away from the surface
+            EnemyHealth target = hit.transform.GetComponent<EnemyHealth>();
+            if (target != null)
+            {
+                target.TakeDamage(damage);
+            }
+            
             if (impactEffectPrefab != null)
             {
-                // Instantiate the sparks, rotating them to align with the wall's normal
                 Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
             }
         }
