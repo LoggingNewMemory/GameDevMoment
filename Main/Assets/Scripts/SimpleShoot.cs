@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections; // Needed for the flash timer
+using System.Collections;
 
 public class SimpleShoot : MonoBehaviour
 {
@@ -8,35 +8,39 @@ public class SimpleShoot : MonoBehaviour
     public float range = 100f;
     public float damage = 20f;
     
+    [Header("Auto Fire Settings")]
+    public float fireRate = 10f; // How many bullets per second
+    private float nextTimeToFire = 0f; // Internal timer
+    
     [Header("Visuals")]
-    public GameObject muzzleFlashObject; // Changed to GameObject for the hack
-    public GameObject impactEffectPrefab; // The sparks prefab
+    public GameObject muzzleFlashObject; 
+    public GameObject impactEffectPrefab;
 
     void Update()
     {
         if (Mouse.current == null) return;
 
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        // CHANGED: 'isPressed' checks if the button is held down.
+        // We also check if enough time has passed since the last shot.
+        if (Mouse.current.leftButton.isPressed && Time.time >= nextTimeToFire)
         {
+            // Reset the timer for the next bullet
+            nextTimeToFire = Time.time + 1f / fireRate;
             Shoot();
         }
     }
 
     void Shoot()
     {
-        // 1. Play muzzle flash hack
         if (muzzleFlashObject != null)
         {
             StartCoroutine(FlashMuzzle());
         }
 
-        // 2. The Raycast
         RaycastHit hit;
         if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
-            Debug.Log("Hit: " + hit.transform.name);
-            
-            EnemyHealth target = hit.transform.GetComponent<EnemyHealth>();
+            EnemyHealth target = hit.collider.GetComponentInParent<EnemyHealth>();
             if (target != null)
             {
                 target.TakeDamage(damage);
@@ -49,11 +53,11 @@ public class SimpleShoot : MonoBehaviour
         }
     }
 
-    // A coroutine that turns the flash object on, waits 0.05 seconds, then turns it off
     IEnumerator FlashMuzzle()
     {
         muzzleFlashObject.SetActive(true);
-        yield return new WaitForSeconds(0.05f); 
+        // Made the flash slightly faster so it looks good on high fire rates
+        yield return new WaitForSeconds(0.03f); 
         muzzleFlashObject.SetActive(false);
     }
 }
