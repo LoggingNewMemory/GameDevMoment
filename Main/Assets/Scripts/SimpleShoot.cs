@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 public class SimpleShoot : MonoBehaviour
 {
@@ -9,12 +8,11 @@ public class SimpleShoot : MonoBehaviour
     public float damage = 20f;
     
     [Header("Weapon Settings")]
-    public bool isAutomatic = false; // Check this for SMG/AR, uncheck for Pistol!
+    public bool isAutomatic = false; 
     public float fireRate = 10f; 
     private float nextTimeToFire = 0f; 
     
     [Header("Visuals")]
-    public GameObject muzzleFlashObject; 
     public GameObject impactEffectPrefab;
 
     void Update()
@@ -44,11 +42,6 @@ public class SimpleShoot : MonoBehaviour
 
     void Shoot()
     {
-        if (muzzleFlashObject != null)
-        {
-            StartCoroutine(FlashMuzzle());
-        }
-
         RaycastHit hit;
         if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
@@ -63,12 +56,5 @@ public class SimpleShoot : MonoBehaviour
                 Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
             }
         }
-    }
-
-    IEnumerator FlashMuzzle()
-    {
-        muzzleFlashObject.SetActive(true);
-        yield return new WaitForSeconds(0.03f); 
-        muzzleFlashObject.SetActive(false);
     }
 }

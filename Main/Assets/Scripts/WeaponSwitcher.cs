@@ -4,14 +4,12 @@ using UnityEngine.InputSystem;
 public class WeaponSwitcher : MonoBehaviour
 {
     [Header("Weapon Arsenal")]
-    // This creates a neat list in the Inspector instead of individual slots!
     public GameObject[] weapons; 
     
     private int currentWeaponIndex = 0;
 
     void Start()
     {
-        // Start by equipping the first weapon in the list
         EquipWeapon(currentWeaponIndex); 
     }
 
@@ -27,21 +25,27 @@ public class WeaponSwitcher : MonoBehaviour
         if (scrollDelta > 0) // Scrolled Up
         {
             currentWeaponIndex--;
-            if (currentWeaponIndex < 0) currentWeaponIndex = weapons.Length - 1; // Wrap around to the end
+            if (currentWeaponIndex < 0) currentWeaponIndex = weapons.Length - 1;
         }
         else if (scrollDelta < 0) // Scrolled Down
         {
             currentWeaponIndex++;
-            if (currentWeaponIndex >= weapons.Length) currentWeaponIndex = 0; // Wrap around to the start
+            if (currentWeaponIndex >= weapons.Length) currentWeaponIndex = 0;
         }
 
         // --- NUMBER KEYS ---
-        // (1 is index 0, 2 is index 1, 3 is index 2, etc.)
-        if (Keyboard.current.digit1Key.wasPressedThisFrame && weapons.Length > 0) currentWeaponIndex = 0;
-        if (Keyboard.current.digit2Key.wasPressedThisFrame && weapons.Length > 1) currentWeaponIndex = 1;
-        if (Keyboard.current.digit3Key.wasPressedThisFrame && weapons.Length > 2) currentWeaponIndex = 2;
+        // Light Arsenal
+        if (Keyboard.current.digit1Key.wasPressedThisFrame && weapons.Length > 0) currentWeaponIndex = 0; // Pistol
+        if (Keyboard.current.digit2Key.wasPressedThisFrame && weapons.Length > 1) currentWeaponIndex = 1; // SMG_F
+        if (Keyboard.current.digit3Key.wasPressedThisFrame && weapons.Length > 2) currentWeaponIndex = 2; // AR_A_1
+        if (Keyboard.current.digit4Key.wasPressedThisFrame && weapons.Length > 3) currentWeaponIndex = 3; // NEW: SMG_J
+        
+        // Heavy Arsenal
+        if (Keyboard.current.digit5Key.wasPressedThisFrame && weapons.Length > 4) currentWeaponIndex = 4; // Shotgun
+        if (Keyboard.current.digit6Key.wasPressedThisFrame && weapons.Length > 5) currentWeaponIndex = 5; // LMG
+        if (Keyboard.current.digit7Key.wasPressedThisFrame && weapons.Length > 6) currentWeaponIndex = 6; // Recon
+        if (Keyboard.current.digit8Key.wasPressedThisFrame && weapons.Length > 7) currentWeaponIndex = 7; // Railgun
 
-        // If the index changed this frame, swap the weapons!
         if (previousWeapon != currentWeaponIndex)
         {
             EquipWeapon(currentWeaponIndex);
@@ -50,8 +54,6 @@ public class WeaponSwitcher : MonoBehaviour
 
     void EquipWeapon(int targetIndex)
     {
-        // Loop through all our weapons. 
-        // Turn ON the one that matches our target index, turn OFF the rest.
         for (int i = 0; i < weapons.Length; i++)
         {
             if (weapons[i] != null)
