@@ -2329,7 +2329,7 @@ MonoBehaviour:
   isAutomatic: 0
   fireRate: 5
   weaponAudio: {fileID: 837610982}
-  fireSound: {fileID: 0}
+  fireSound: {fileID: 8300000, guid: 63abcd8883c3487b9b92ff1c0be5f77d, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &837610982
 AudioSource:
@@ -2665,7 +2665,8 @@ MonoBehaviour:
   speed: 15
   mouseSensitivity: 0.1
   playerAudio: {fileID: 1636846694}
-  footstepSounds: []
+  footstepSounds:
+  - {fileID: 8300000, guid: 697f3d188a70441f29f8c40e58a8ea3b, type: 3}
   stepInterval: 0.4
 --- !u!82 &1636846694
 AudioSource:
