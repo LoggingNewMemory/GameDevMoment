@@ -11,6 +11,10 @@ public class SimpleShoot : MonoBehaviour
     public bool isAutomatic = false; 
     public float fireRate = 10f; 
     private float nextTimeToFire = 0f; 
+
+    [Header("Audio")]
+    public AudioSource weaponAudio;
+    public AudioClip fireSound;
     
     [Header("Visuals")]
     public GameObject impactEffectPrefab;
@@ -42,6 +46,12 @@ public class SimpleShoot : MonoBehaviour
 
     void Shoot()
     {
+        // Play the gun sound!
+        if (weaponAudio != null && fireSound != null)
+        {
+            weaponAudio.PlayOneShot(fireSound);
+        }
+
         RaycastHit hit;
         if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {

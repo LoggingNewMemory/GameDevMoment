@@ -14,6 +14,12 @@ public class DoomMovement : MonoBehaviour
 
     private float xRotation = 0f;
 
+    [Header("Footstep Audio")]
+    public AudioSource playerAudio;
+    public AudioClip[] footstepSounds; // Array for randomized step sounds
+    public float stepInterval = 0.4f;  // How fast the steps play based on your speed of 15
+    private float stepTimer;
+
     void Start()
     {
         // Lock the mouse cursor to the center of the screen
@@ -58,5 +64,33 @@ public class DoomMovement : MonoBehaviour
 
         // SimpleMove automatically applies basic gravity!
         controller.SimpleMove(move * speed);
+
+        // --- FOOTSTEP LOGIC ---
+        // Check if we are actually moving across the ground
+        if (controller.isGrounded && controller.velocity.magnitude > 0.1f)
+        {
+            stepTimer -= Time.deltaTime;
+
+            if (stepTimer <= 0f)
+            {
+                PlayFootstepSound();
+                stepTimer = stepInterval; // Reset the timer
+            }
+        }
+        else
+        {
+            // If we stop moving, reset the timer so the very next step is immediate
+            stepTimer = 0f; 
+        }
+    }
+
+    void PlayFootstepSound()
+    {
+        // Make sure we actually have sounds loaded in the array before trying to play them
+        if (footstepSounds != null && footstepSounds.Length > 0 && playerAudio != null)
+        {
+            int randomIndex = Random.Range(0, footstepSounds.Length);
+            playerAudio.PlayOneShot(footstepSounds[randomIndex]);
+        }
     }
 }
