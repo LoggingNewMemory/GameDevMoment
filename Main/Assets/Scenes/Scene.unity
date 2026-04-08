@@ -254,6 +254,8 @@ MonoBehaviour:
   isAutomatic: 1
   fireRate: 15
   magSize: 100
+  hideDistance: 1.5
+  slideDuration: 0.3
   weaponAudio: {fileID: 56225601}
   fireSound: {fileID: 8300000, guid: 3610c795f43db6bb8991d1b5ff5b8640, type: 3}
   reloadSound: {fileID: 8300000, guid: 9bb71ab0f24545041b3cf8e9945c0095, type: 3}
@@ -1629,6 +1631,8 @@ MonoBehaviour:
   isAutomatic: 1
   fireRate: 5
   magSize: 40
+  hideDistance: 1.2
+  slideDuration: 0.3
   weaponAudio: {fileID: 513542623}
   fireSound: {fileID: 8300000, guid: df5fd00fca24ec9fe81d81881c38a9e2, type: 3}
   reloadSound: {fileID: 8300000, guid: 1d43bd6733bf31690bbacf49b6f3fdf5, type: 3}
@@ -1845,6 +1849,8 @@ MonoBehaviour:
   isAutomatic: 0
   fireRate: 5
   magSize: 7
+  hideDistance: 1.2
+  slideDuration: 0.3
   weaponAudio: {fileID: 516085126}
   fireSound: {fileID: 8300000, guid: d86debc0cb61a385ea47360618020cb5, type: 3}
   reloadSound: {fileID: 8300000, guid: ba67f82a7b9ad99bd90e36723a8dd55d, type: 3}
@@ -2351,6 +2357,8 @@ MonoBehaviour:
   isAutomatic: 0
   fireRate: 5
   magSize: 2
+  hideDistance: 1.2
+  slideDuration: 0.3
   weaponAudio: {fileID: 837610982}
   fireSound: {fileID: 8300000, guid: da6d37670a38971ffb1c995e75114c9a, type: 3}
   reloadSound: {fileID: 8300000, guid: 0e4eee2b51e7d7c689862b786cdef73b, type: 3}
@@ -2599,6 +2607,8 @@ MonoBehaviour:
   isAutomatic: 1
   fireRate: 6
   magSize: 35
+  hideDistance: 1.2
+  slideDuration: 0.3
   weaponAudio: {fileID: 988825460}
   fireSound: {fileID: 8300000, guid: eec51bf4388f4c4e0bd4f7fc32b3ef40, type: 3}
   reloadSound: {fileID: 8300000, guid: 972473908e33142a299aadef99de62cf, type: 3}
@@ -2978,6 +2988,8 @@ MonoBehaviour:
   isAutomatic: 0
   fireRate: 5
   magSize: 7
+  hideDistance: 1.2
+  slideDuration: 0.3
   weaponAudio: {fileID: 1650544284}
   fireSound: {fileID: 8300000, guid: ac47e8c2fbdf1167aa044d2da8c64a7a, type: 3}
   reloadSound: {fileID: 8300000, guid: 5b54ed05da128cb158af1bb294b7fde8, type: 3}
@@ -3218,6 +3230,8 @@ MonoBehaviour:
   isAutomatic: 1
   fireRate: 7
   magSize: 45
+  hideDistance: 1.2
+  slideDuration: 0.3
   weaponAudio: {fileID: 2073259926}
   fireSound: {fileID: 8300000, guid: d2c9aed6780df8db3997744ac21c57ac, type: 3}
   reloadSound: {fileID: 8300000, guid: f8e11dd53ece2d74a8f3f2067c8ca18b, type: 3}
@@ -3434,6 +3448,8 @@ MonoBehaviour:
   isAutomatic: 0
   fireRate: 5
   magSize: 5
+  hideDistance: 1.2
+  slideDuration: 0.3
   weaponAudio: {fileID: 2099701047}
   fireSound: {fileID: 8300000, guid: e507dabd5b59cd628ac705c55215f0fa, type: 3}
   reloadSound: {fileID: 8300000, guid: a8e1a2f9ce21b152d93fc6d1d02ecb41, type: 3}

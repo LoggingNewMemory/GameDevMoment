@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections; // <-- Brought this back for the timer!
+using System.Collections; 
 
 public class SimpleShoot : MonoBehaviour
 {
@@ -14,14 +14,19 @@ public class SimpleShoot : MonoBehaviour
     private float nextTimeToFire = 0f; 
 
     [Header("Ammo & Reloading")]
-    public int magSize = 30;          // How many bullets per magazine
-    private int currentAmmo;          // How many bullets we currently have
+    public int magSize = 30;          
+    private int currentAmmo;          
     private bool isReloading = false; 
+    
+    // NEW: How far down the gun drops (make this bigger for the LMG!)
+    public float hideDistance = 1.2f; 
+    // NEW: How fast the gun slides down and up (in seconds)
+    public float slideDuration = 0.3f; 
 
     [Header("Audio")]
     public AudioSource weaponAudio;
     public AudioClip fireSound;
-    public AudioClip reloadSound;     // <-- New Reload Sound!
+    public AudioClip reloadSound;     
     
     [Header("Visuals")]
     public GameObject impactEffectPrefab;
@@ -31,16 +36,14 @@ public class SimpleShoot : MonoBehaviour
 
     void Start()
     {
-        // Save exactly where the gun is supposed to be held
         originalPosition = transform.localPosition;
-        currentAmmo = magSize; // Start with a full clip
+        currentAmmo = magSize; 
         hasStarted = true;
     }
 
-    // SAFETY NET: If we switch weapons while reloading, this resets the gun 
-    // so it isn't stuck off-screen the next time we pull it out!
     void OnEnable()
     {
+        // If we pull the gun out, make sure it is fully loaded and in the right spot!
         isReloading = false;
         if (hasStarted) transform.localPosition = originalPosition;
     }
@@ -49,17 +52,14 @@ public class SimpleShoot : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null) return;
 
-        // If we are currently reloading, stop the script here. No shooting allowed!
         if (isReloading) return;
 
         // --- RELOAD INPUT ---
-        // Reload if we press 'R' OR if we try to shoot with 0 bullets
         if (currentAmmo <= 0 || Keyboard.current.rKey.wasPressedThisFrame)
         {
-            // Only reload if we aren't already at max ammo
             if (currentAmmo < magSize) 
             {
-                StartCoroutine(ReloadRoutine());
+                StartCoroutine(SmoothReloadRoutine());
                 return;
             }
         }
@@ -83,35 +83,54 @@ public class SimpleShoot : MonoBehaviour
         }
     }
 
-    IEnumerator ReloadRoutine()
+    IEnumerator SmoothReloadRoutine()
     {
         isReloading = true;
         
-        // 1. Play the reload sound
         if (weaponAudio != null && reloadSound != null)
         {
             weaponAudio.PlayOneShot(reloadSound);
         }
 
-        // 2. Hide the gun by dropping it straight down by 0.5 meters
-        transform.localPosition = originalPosition - new Vector3(0f, 0.5f, 0f);
-
-        // 3. Wait for the exact length of the audio file! 
-        // (If there is no audio file, wait 1.5 seconds by default)
-        float reloadTime = reloadSound != null ? reloadSound.length : 1.5f;
-        yield return new WaitForSeconds(reloadTime);
-
-        // 4. Snap the gun back up to its normal position
-        transform.localPosition = originalPosition;
+        Vector3 targetHiddenPosition = originalPosition - new Vector3(0f, hideDistance, 0f);
         
-        // 5. Refill ammo and allow shooting again
+        // Calculate how long we need to wait at the bottom 
+        // (Audio length minus the time it takes to slide down AND slide back up)
+        float audioLength = reloadSound != null ? reloadSound.length : 1.5f;
+        float waitTimeAtBottom = audioLength - (slideDuration * 2f);
+        if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.1f; // Failsafe in case the audio is super short
+
+        float elapsedTime = 0f;
+
+        // 1. SLIDE DOWN SMOOTHLY
+        while (elapsedTime < slideDuration)
+        {
+            transform.localPosition = Vector3.Lerp(originalPosition, targetHiddenPosition, elapsedTime / slideDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null; // Wait until next frame
+        }
+        transform.localPosition = targetHiddenPosition; // Ensure it reaches the exact bottom
+
+        // 2. WAIT FOR AUDIO
+        yield return new WaitForSeconds(waitTimeAtBottom);
+
+        // 3. SLIDE BACK UP SMOOTHLY
+        elapsedTime = 0f;
+        while (elapsedTime < slideDuration)
+        {
+            transform.localPosition = Vector3.Lerp(targetHiddenPosition, originalPosition, elapsedTime / slideDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        transform.localPosition = originalPosition; // Ensure it snaps exactly to the proper aim point
+        
         currentAmmo = magSize;
         isReloading = false;
     }
 
     void Shoot()
     {
-        currentAmmo--; // Subtract a bullet!
+        currentAmmo--; 
 
         if (weaponAudio != null && fireSound != null)
         {
