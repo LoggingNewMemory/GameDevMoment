@@ -2381,6 +2381,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   health: 60
+  hitSound: {fileID: 8300000, guid: 3ce6b637587c0c6abb64eaddb6846128, type: 3}
+  deathSound: {fileID: 8300000, guid: 012fad142f9413f56a0b29ee71a47b5e, type: 3}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
