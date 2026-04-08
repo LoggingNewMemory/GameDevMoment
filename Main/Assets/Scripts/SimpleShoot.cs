@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections; 
+using TMPro; // <-- NEW: Required to talk to the UI!
 
 public class SimpleShoot : MonoBehaviour
 {
@@ -15,8 +16,8 @@ public class SimpleShoot : MonoBehaviour
     private float nextTimeToFire = 0f; 
     
     [Header("Chambering Settings (Bolt/Pump)")]
-    public float chamberHideDistance = 0.3f; // Just a slight dip down
-    public float chamberDuration = 1.5f;     // Total time the chambering takes
+    public float chamberHideDistance = 0.3f; 
+    public float chamberDuration = 1.5f;     
 
     [Header("Reload Settings")]
     public int magSize = 30;          
@@ -38,8 +39,9 @@ public class SimpleShoot : MonoBehaviour
     public AudioSource weaponAudio;
     public AudioClip fireSound; 
 
-    [Header("Visuals")]
+    [Header("Visuals & UI")]
     public GameObject impactEffectPrefab;
+    public TextMeshProUGUI ammoTextDisplay; // <-- NEW: The slot for your UI Text!
 
     private Vector3 originalPosition; 
     private bool hasStarted = false;
@@ -49,13 +51,18 @@ public class SimpleShoot : MonoBehaviour
         originalPosition = transform.localPosition;
         currentAmmo = magSize; 
         hasStarted = true;
+        UpdateAmmoUI(); // Update the UI as soon as the game starts
     }
 
     void OnEnable()
     {
         isReloading = false;
         isChambering = false; 
-        if (hasStarted) transform.localPosition = originalPosition;
+        if (hasStarted) 
+        {
+            transform.localPosition = originalPosition;
+            UpdateAmmoUI(); // Update the UI when we switch to this weapon!
+        }
     }
 
     void Update()
@@ -94,6 +101,15 @@ public class SimpleShoot : MonoBehaviour
         }
     }
 
+    // NEW: A clean little function to update the text on the screen
+    void UpdateAmmoUI()
+    {
+        if (ammoTextDisplay != null)
+        {
+            ammoTextDisplay.text = currentAmmo + " / " + magSize;
+        }
+    }
+
     // ==========================================
     // RELOAD ROUTINES
     // ==========================================
@@ -128,6 +144,7 @@ public class SimpleShoot : MonoBehaviour
         transform.localPosition = originalPosition; 
         
         currentAmmo = magSize;
+        UpdateAmmoUI(); // Update UI when reload finishes
         isReloading = false;
     }
 
@@ -156,6 +173,7 @@ public class SimpleShoot : MonoBehaviour
             else yield return new WaitForSeconds(0.4f); 
             
             currentAmmo++; 
+            UpdateAmmoUI(); // Update UI shell-by-shell!
         }
 
         if (weaponAudio != null && pumpSound != null)
@@ -182,6 +200,7 @@ public class SimpleShoot : MonoBehaviour
     void Shoot()
     {
         currentAmmo--; 
+        UpdateAmmoUI(); // Update UI instantly when firing
 
         if (weaponAudio != null && fireSound != null)
         {
@@ -208,14 +227,11 @@ public class SimpleShoot : MonoBehaviour
         isChambering = true; 
 
         Vector3 targetDipPosition = originalPosition - new Vector3(0f, chamberHideDistance, 0f);
-        
-        // Calculate the timing based on your manual Inspector variable!
         float waitTimeAtBottom = chamberDuration - (slideDuration * 2f);
         if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.05f;
 
         float elapsedTime = 0f;
 
-        // 1. Dip down
         while (elapsedTime < slideDuration)
         {
             transform.localPosition = Vector3.Lerp(originalPosition, targetDipPosition, elapsedTime / slideDuration);
@@ -224,10 +240,8 @@ public class SimpleShoot : MonoBehaviour
         }
         transform.localPosition = targetDipPosition;
 
-        // 2. Wait at the bottom for the specified duration
         yield return new WaitForSeconds(waitTimeAtBottom);
 
-        // 3. Snap back up to ready position
         elapsedTime = 0f;
         while (elapsedTime < slideDuration)
         {
