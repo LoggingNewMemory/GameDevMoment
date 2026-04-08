@@ -254,6 +254,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 15
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 100
@@ -265,6 +267,7 @@ MonoBehaviour:
   pumpSound: {fileID: 0}
   weaponAudio: {fileID: 56225601}
   fireSound: {fileID: 8300000, guid: 3610c795f43db6bb8991d1b5ff5b8640, type: 3}
+  equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   ammoTextDisplay: {fileID: 122824187}
 --- !u!82 &56225601
@@ -740,6 +743,7 @@ MonoBehaviour:
   - {fileID: 56225599}
   - {fileID: 2099701045}
   - {fileID: 837610980}
+  switchDelay: 0.5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1847,6 +1851,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 5
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 40
@@ -1858,6 +1864,7 @@ MonoBehaviour:
   pumpSound: {fileID: 0}
   weaponAudio: {fileID: 513542623}
   fireSound: {fileID: 8300000, guid: df5fd00fca24ec9fe81d81881c38a9e2, type: 3}
+  equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   ammoTextDisplay: {fileID: 122824187}
 --- !u!82 &513542623
@@ -2072,6 +2079,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 7
@@ -2083,6 +2092,7 @@ MonoBehaviour:
   pumpSound: {fileID: 0}
   weaponAudio: {fileID: 516085126}
   fireSound: {fileID: 8300000, guid: d86debc0cb61a385ea47360618020cb5, type: 3}
+  equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   ammoTextDisplay: {fileID: 122824187}
 --- !u!82 &516085126
@@ -2587,6 +2597,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 2
@@ -2598,6 +2610,7 @@ MonoBehaviour:
   pumpSound: {fileID: 0}
   weaponAudio: {fileID: 837610982}
   fireSound: {fileID: 8300000, guid: da6d37670a38971ffb1c995e75114c9a, type: 3}
+  equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   ammoTextDisplay: {fileID: 122824187}
 --- !u!82 &837610982
@@ -2905,6 +2918,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 6
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 35
@@ -2916,6 +2931,7 @@ MonoBehaviour:
   pumpSound: {fileID: 0}
   weaponAudio: {fileID: 988825460}
   fireSound: {fileID: 8300000, guid: eec51bf4388f4c4e0bd4f7fc32b3ef40, type: 3}
+  equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   ammoTextDisplay: {fileID: 122824187}
 --- !u!82 &988825460
@@ -3301,6 +3317,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 5
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 0.1
   chamberDuration: 1
   magSize: 7
@@ -3312,6 +3330,7 @@ MonoBehaviour:
   pumpSound: {fileID: 8300000, guid: a2c168cb617ed68509f8807d7f530709, type: 3}
   weaponAudio: {fileID: 1650544284}
   fireSound: {fileID: 8300000, guid: ac47e8c2fbdf1167aa044d2da8c64a7a, type: 3}
+  equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   ammoTextDisplay: {fileID: 122824187}
 --- !u!82 &1650544284
@@ -3550,6 +3569,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 7
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 45
@@ -3561,6 +3582,7 @@ MonoBehaviour:
   pumpSound: {fileID: 0}
   weaponAudio: {fileID: 2073259926}
   fireSound: {fileID: 8300000, guid: d2c9aed6780df8db3997744ac21c57ac, type: 3}
+  equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   ammoTextDisplay: {fileID: 122824187}
 --- !u!82 &2073259926
@@ -3878,6 +3900,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 5
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 0.1
   chamberDuration: 1.5
   magSize: 5
@@ -3889,6 +3913,7 @@ MonoBehaviour:
   pumpSound: {fileID: 0}
   weaponAudio: {fileID: 2099701047}
   fireSound: {fileID: 8300000, guid: e507dabd5b59cd628ac705c55215f0fa, type: 3}
+  equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   ammoTextDisplay: {fileID: 122824187}
 --- !u!82 &2099701047
