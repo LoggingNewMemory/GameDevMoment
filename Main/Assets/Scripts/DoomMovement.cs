@@ -35,8 +35,8 @@ public class DoomMovement : MonoBehaviour
     private float stepTimer;
 
     [Header("Action Audio")]
-    public AudioClip jumpSound;  // <-- NEW: Slot for the jump grunt/whoosh
-    public AudioClip slideSound; // <-- NEW: Slot for the sliding dirt/concrete sound
+    public AudioClip jumpSound;  
+    public AudioClip slideSound; 
 
     void Start()
     {
@@ -59,13 +59,11 @@ public class DoomMovement : MonoBehaviour
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
 
-
         // --- 2. GRAVITY & GROUND CHECK ---
         if (controller.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f; 
         }
-
 
         // --- 3. MOVEMENT INPUT ---
         float x = 0f;
@@ -87,7 +85,6 @@ public class DoomMovement : MonoBehaviour
         // SLIDING
         if (Keyboard.current.cKey.wasPressedThisFrame && isRunning && !isSliding && controller.isGrounded)
         {
-            // NEW: Play the slide sound!
             if (playerAudio != null && slideSound != null)
             {
                 playerAudio.PlayOneShot(slideSound);
@@ -106,13 +103,11 @@ public class DoomMovement : MonoBehaviour
             move = inputDirection * currentSpeed;
         }
 
-
         // --- 4. JUMPING ---
         if (Keyboard.current.spaceKey.wasPressedThisFrame && controller.isGrounded && !isSliding)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             
-            // NEW: Play the jump sound!
             if (playerAudio != null && jumpSound != null)
             {
                 playerAudio.PlayOneShot(jumpSound);
@@ -121,7 +116,6 @@ public class DoomMovement : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move((move + velocity) * Time.deltaTime); 
-
 
         // --- 5. FOOTSTEP AUDIO ---
         if (controller.isGrounded && controller.velocity.magnitude > 0.1f && !isSliding)

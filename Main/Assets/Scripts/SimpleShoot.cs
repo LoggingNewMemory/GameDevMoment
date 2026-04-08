@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections; 
-using TMPro; // <-- NEW: Required to talk to the UI!
+using TMPro; 
 
 public class SimpleShoot : MonoBehaviour
 {
@@ -14,6 +14,11 @@ public class SimpleShoot : MonoBehaviour
     public bool isBoltAction = false; 
     public float fireRate = 10f; 
     private float nextTimeToFire = 0f; 
+
+    [Header("Equip Settings (Switching Guns)")]
+    public float drawDuration = 0.5f; 
+    public Vector3 drawOffset = new Vector3(0.5f, -0.8f, 0f); 
+    private bool isDrawing = false; 
     
     [Header("Chambering Settings (Bolt/Pump)")]
     public float chamberHideDistance = 0.3f; 
@@ -38,30 +43,41 @@ public class SimpleShoot : MonoBehaviour
     [Header("Audio: Shooting")]
     public AudioSource weaponAudio;
     public AudioClip fireSound; 
+    public AudioClip equipSound; 
 
     [Header("Visuals & UI")]
     public GameObject impactEffectPrefab;
-    public TextMeshProUGUI ammoTextDisplay; // <-- NEW: The slot for your UI Text!
+    public TextMeshProUGUI ammoTextDisplay; 
 
     private Vector3 originalPosition; 
     private bool hasStarted = false;
 
-    void Start()
+    void Awake()
     {
         originalPosition = transform.localPosition;
         currentAmmo = magSize; 
         hasStarted = true;
-        UpdateAmmoUI(); // Update the UI as soon as the game starts
     }
 
+    void Start()
+    {
+        UpdateAmmoUI(); 
+    }
+
+    // This runs the exact millisecond the weapon is activated
     void OnEnable()
     {
         isReloading = false;
         isChambering = false; 
+        isDrawing = false;
+        
         if (hasStarted) 
         {
-            transform.localPosition = originalPosition;
-            UpdateAmmoUI(); // Update the UI when we switch to this weapon!
+            // THE MAGIC: Instantly snap the gun to the bottom offset BEFORE it renders!
+            transform.localPosition = originalPosition + drawOffset;
+            
+            UpdateAmmoUI(); 
+            StartCoroutine(DrawWeaponRoutine());
         }
     }
 
@@ -69,7 +85,7 @@ public class SimpleShoot : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null) return;
 
-        if (isReloading || isChambering) return;
+        if (isReloading || isChambering || isDrawing) return;
 
         // --- RELOAD INPUT ---
         if (currentAmmo <= 0 || Keyboard.current.rKey.wasPressedThisFrame)
@@ -101,13 +117,38 @@ public class SimpleShoot : MonoBehaviour
         }
     }
 
-    // NEW: A clean little function to update the text on the screen
     void UpdateAmmoUI()
     {
         if (ammoTextDisplay != null)
         {
             ammoTextDisplay.text = currentAmmo + " / " + magSize;
         }
+    }
+
+    // ==========================================
+    // EQUIP / DRAW ROUTINE
+    // ==========================================
+    IEnumerator DrawWeaponRoutine()
+    {
+        isDrawing = true;
+
+        if (weaponAudio != null && equipSound != null)
+        {
+            weaponAudio.PlayOneShot(equipSound);
+        }
+
+        Vector3 startPos = originalPosition + drawOffset;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < drawDuration)
+        {
+            transform.localPosition = Vector3.Lerp(startPos, originalPosition, elapsedTime / drawDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        
+        transform.localPosition = originalPosition;
+        isDrawing = false;
     }
 
     // ==========================================
@@ -144,7 +185,7 @@ public class SimpleShoot : MonoBehaviour
         transform.localPosition = originalPosition; 
         
         currentAmmo = magSize;
-        UpdateAmmoUI(); // Update UI when reload finishes
+        UpdateAmmoUI(); 
         isReloading = false;
     }
 
@@ -173,7 +214,7 @@ public class SimpleShoot : MonoBehaviour
             else yield return new WaitForSeconds(0.4f); 
             
             currentAmmo++; 
-            UpdateAmmoUI(); // Update UI shell-by-shell!
+            UpdateAmmoUI(); 
         }
 
         if (weaponAudio != null && pumpSound != null)
@@ -200,7 +241,7 @@ public class SimpleShoot : MonoBehaviour
     void Shoot()
     {
         currentAmmo--; 
-        UpdateAmmoUI(); // Update UI instantly when firing
+        UpdateAmmoUI(); 
 
         if (weaponAudio != null && fireSound != null)
         {
@@ -252,5 +293,29 @@ public class SimpleShoot : MonoBehaviour
         transform.localPosition = originalPosition;
 
         isChambering = false; 
+    }
+
+    // ==========================================
+    // CALLED BY WEAPON SWITCHER
+    // ==========================================
+    public IEnumerator HolsterWeaponRoutine()
+    {
+        isDrawing = true; 
+        isReloading = false; 
+        isChambering = false;
+
+        // NEW: Grab the exact position the gun is currently at (in case we interrupt a reload!)
+        Vector3 currentPos = transform.localPosition; 
+        Vector3 targetPos = originalPosition + drawOffset;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < drawDuration)
+        {
+            transform.localPosition = Vector3.Lerp(currentPos, targetPos, elapsedTime / drawDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        
+        transform.localPosition = targetPos;
     }
 }
