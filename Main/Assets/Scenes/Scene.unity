@@ -171,6 +171,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WWII_LMG_A
       objectReference: {fileID: 0}
+    - target: {fileID: 1938391026219010222, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2816553242562567465, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -195,7 +199,15 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7100266209664012810, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8073960943119079540, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8286106879390236647, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
@@ -241,8 +253,10 @@ MonoBehaviour:
   damage: 20
   isAutomatic: 1
   fireRate: 15
+  magSize: 100
   weaponAudio: {fileID: 56225601}
   fireSound: {fileID: 8300000, guid: 3610c795f43db6bb8991d1b5ff5b8640, type: 3}
+  reloadSound: {fileID: 8300000, guid: 9bb71ab0f24545041b3cf8e9945c0095, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &56225601
 AudioSource:
@@ -1560,6 +1574,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6192542432017793962, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8008821597837332461, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -1610,8 +1628,10 @@ MonoBehaviour:
   damage: 15
   isAutomatic: 1
   fireRate: 5
+  magSize: 40
   weaponAudio: {fileID: 513542623}
   fireSound: {fileID: 8300000, guid: df5fd00fca24ec9fe81d81881c38a9e2, type: 3}
+  reloadSound: {fileID: 8300000, guid: 1d43bd6733bf31690bbacf49b6f3fdf5, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &513542623
 AudioSource:
@@ -1824,8 +1844,10 @@ MonoBehaviour:
   damage: 20
   isAutomatic: 0
   fireRate: 5
+  magSize: 7
   weaponAudio: {fileID: 516085126}
   fireSound: {fileID: 8300000, guid: d86debc0cb61a385ea47360618020cb5, type: 3}
+  reloadSound: {fileID: 8300000, guid: ba67f82a7b9ad99bd90e36723a8dd55d, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &516085126
 AudioSource:
@@ -2328,8 +2350,10 @@ MonoBehaviour:
   damage: 100
   isAutomatic: 0
   fireRate: 5
+  magSize: 2
   weaponAudio: {fileID: 837610982}
   fireSound: {fileID: 8300000, guid: da6d37670a38971ffb1c995e75114c9a, type: 3}
+  reloadSound: {fileID: 8300000, guid: 0e4eee2b51e7d7c689862b786cdef73b, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &837610982
 AudioSource:
@@ -2436,6 +2460,54 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 330585546}
     m_Modifications:
+    - target: {fileID: 21697080778058163, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 361270602789702984, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023844766018807294, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1152053390555982886, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2288712773556726161, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2317243751031875724, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4198977477219334072, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4227222373300432048, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4827767046168981221, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4829366015982670839, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5249744722671955237, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6838338320129899625, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6997417127840186166, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2480,6 +2552,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMG_J
       objectReference: {fileID: 0}
+    - target: {fileID: 8479953994796570472, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8584977955460507239, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2518,8 +2598,10 @@ MonoBehaviour:
   damage: 15
   isAutomatic: 1
   fireRate: 6
+  magSize: 35
   weaponAudio: {fileID: 988825460}
   fireSound: {fileID: 8300000, guid: eec51bf4388f4c4e0bd4f7fc32b3ef40, type: 3}
+  reloadSound: {fileID: 8300000, guid: 972473908e33142a299aadef99de62cf, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &988825460
 AudioSource:
@@ -2849,6 +2931,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8597468695585333815, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9057806785890049816, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -2891,8 +2977,10 @@ MonoBehaviour:
   damage: 30
   isAutomatic: 0
   fireRate: 5
+  magSize: 7
   weaponAudio: {fileID: 1650544284}
   fireSound: {fileID: 8300000, guid: ac47e8c2fbdf1167aa044d2da8c64a7a, type: 3}
+  reloadSound: {fileID: 8300000, guid: 5b54ed05da128cb158af1bb294b7fde8, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &1650544284
 AudioSource:
@@ -3129,8 +3217,10 @@ MonoBehaviour:
   damage: 10
   isAutomatic: 1
   fireRate: 7
+  magSize: 45
   weaponAudio: {fileID: 2073259926}
   fireSound: {fileID: 8300000, guid: d2c9aed6780df8db3997744ac21c57ac, type: 3}
+  reloadSound: {fileID: 8300000, guid: f8e11dd53ece2d74a8f3f2067c8ca18b, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &2073259926
 AudioSource:
@@ -3343,8 +3433,10 @@ MonoBehaviour:
   damage: 40
   isAutomatic: 0
   fireRate: 5
+  magSize: 5
   weaponAudio: {fileID: 2099701047}
   fireSound: {fileID: 8300000, guid: e507dabd5b59cd628ac705c55215f0fa, type: 3}
+  reloadSound: {fileID: 8300000, guid: a8e1a2f9ce21b152d93fc6d1d02ecb41, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
 --- !u!82 &2099701047
 AudioSource:
