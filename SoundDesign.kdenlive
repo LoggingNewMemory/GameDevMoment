@@ -146,11 +146,15 @@
     <property name="kdenlive:collapsed">0</property>
    </filter>
   </entry>
-  <blank length="00:00:00.333"/>
-  <entry in="00:02:17.883" out="00:02:24.317" producer="chain0">
+  <blank length="00:00:01.250"/>
+  <entry in="00:02:18.800" out="00:02:19.267" producer="chain0">
    <property name="kdenlive:id">4</property>
   </entry>
-  <blank length="00:00:00.200"/>
+  <blank length="00:00:00.167"/>
+  <entry in="00:02:23.417" out="00:02:24.317" producer="chain0">
+   <property name="kdenlive:id">4</property>
+  </entry>
+  <blank length="00:00:04.167"/>
   <entry in="00:05:09.500" out="00:05:09.867" producer="chain0">
    <property name="kdenlive:id">4</property>
    <filter id="filter5" in="00:05:09.733" out="00:05:09.867">
@@ -355,7 +359,7 @@
   <property name="kdenlive:clipname">Sequence 1</property>
   <property name="kdenlive:sequenceproperties.hasAudio">1</property>
   <property name="kdenlive:sequenceproperties.hasVideo">1</property>
-  <property name="kdenlive:sequenceproperties.activeTrack">2</property>
+  <property name="kdenlive:sequenceproperties.activeTrack">1</property>
   <property name="kdenlive:sequenceproperties.tracksCount">4</property>
   <property name="kdenlive:sequenceproperties.documentuuid">{71e21544-3565-450a-865c-28fc35ae6d4f}</property>
   <property name="kdenlive:control_uuid">{71e21544-3565-450a-865c-28fc35ae6d4f}</property>
@@ -368,14 +372,14 @@
   <property name="kdenlive:folderid">2</property>
   <property name="kdenlive:sequenceproperties.audioTarget">1</property>
   <property name="kdenlive:sequenceproperties.disablepreview">0</property>
-  <property name="kdenlive:sequenceproperties.position">1955</property>
-  <property name="kdenlive:sequenceproperties.scrollPos">2988</property>
+  <property name="kdenlive:sequenceproperties.position">430</property>
+  <property name="kdenlive:sequenceproperties.scrollPos">913</property>
   <property name="kdenlive:sequenceproperties.tracks">4</property>
   <property name="kdenlive:sequenceproperties.verticalzoom">1</property>
   <property name="kdenlive:sequenceproperties.videoTarget">2</property>
-  <property name="kdenlive:sequenceproperties.zonein">1550</property>
-  <property name="kdenlive:sequenceproperties.zoneout">2020</property>
-  <property name="kdenlive:sequenceproperties.zoom">5</property>
+  <property name="kdenlive:sequenceproperties.zonein">375</property>
+  <property name="kdenlive:sequenceproperties.zoneout">431</property>
+  <property name="kdenlive:sequenceproperties.zoom">4</property>
   <property name="kdenlive:sequenceproperties.groups">[
     {
         "children": [
@@ -1513,7 +1517,7 @@
   <property name="kdenlive:docproperties.rendertcoverlay">0</property>
   <property name="kdenlive:docproperties.rendertctype">-1</property>
   <property name="kdenlive:docproperties.rendertwopass">0</property>
-  <property name="kdenlive:docproperties.renderurl">Main/Assets/SoundEffects/GunSounds/LMG/LMGReload.wav</property>
+  <property name="kdenlive:docproperties.renderurl">Main/Assets/SoundEffects/GunSounds/Shotgun/ShotgunReloadEnd.wav</property>
   <property name="xml_retain">1</property>
   <entry in="00:00:00.000" out="00:00:00.000" producer="{71e21544-3565-450a-865c-28fc35ae6d4f}"/>
   <entry in="00:00:00.000" out="00:19:52.833" producer="chain2"/>

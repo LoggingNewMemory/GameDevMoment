@@ -10,24 +10,30 @@ public class SimpleShoot : MonoBehaviour
     
     [Header("Weapon Settings")]
     public bool isAutomatic = false; 
+    public bool isBoltAction = false; // <-- Check this for Snipers & Shotguns!
     public float fireRate = 10f; 
     private float nextTimeToFire = 0f; 
 
-    [Header("Ammo & Reloading")]
+    [Header("Reload Settings")]
     public int magSize = 30;          
     private int currentAmmo;          
     private bool isReloading = false; 
-    
-    // NEW: How far down the gun drops (make this bigger for the LMG!)
+    private bool isChambering = false; // Locks the gun during the pump audio
     public float hideDistance = 1.2f; 
-    // NEW: How fast the gun slides down and up (in seconds)
     public float slideDuration = 0.3f; 
 
-    [Header("Audio")]
-    public AudioSource weaponAudio;
-    public AudioClip fireSound;
+    [Header("Audio: Mag Reloads (AR/SMG)")]
     public AudioClip reloadSound;     
     
+    [Header("Audio: Shotgun Reloads")]
+    public bool isShotgunReload = false; 
+    public AudioClip insertShellSound;   
+    public AudioClip pumpSound;          
+
+    [Header("Audio: Shooting")]
+    public AudioSource weaponAudio;
+    public AudioClip fireSound; // This file includes the shot AND the pump!
+
     [Header("Visuals")]
     public GameObject impactEffectPrefab;
 
@@ -43,8 +49,8 @@ public class SimpleShoot : MonoBehaviour
 
     void OnEnable()
     {
-        // If we pull the gun out, make sure it is fully loaded and in the right spot!
         isReloading = false;
+        isChambering = false; 
         if (hasStarted) transform.localPosition = originalPosition;
     }
 
@@ -52,14 +58,16 @@ public class SimpleShoot : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null) return;
 
-        if (isReloading) return;
+        // Block shooting if we are reloading or waiting for the pump animation/audio to finish
+        if (isReloading || isChambering) return;
 
         // --- RELOAD INPUT ---
         if (currentAmmo <= 0 || Keyboard.current.rKey.wasPressedThisFrame)
         {
             if (currentAmmo < magSize) 
             {
-                StartCoroutine(SmoothReloadRoutine());
+                if (isShotgunReload) StartCoroutine(ShotgunReloadRoutine());
+                else StartCoroutine(SmoothReloadRoutine());
                 return;
             }
         }
@@ -83,38 +91,30 @@ public class SimpleShoot : MonoBehaviour
         }
     }
 
+    // ==========================================
+    // RELOAD ROUTINES
+    // ==========================================
     IEnumerator SmoothReloadRoutine()
     {
         isReloading = true;
-        
-        if (weaponAudio != null && reloadSound != null)
-        {
-            weaponAudio.PlayOneShot(reloadSound);
-        }
+        if (weaponAudio != null && reloadSound != null) weaponAudio.PlayOneShot(reloadSound);
 
         Vector3 targetHiddenPosition = originalPosition - new Vector3(0f, hideDistance, 0f);
-        
-        // Calculate how long we need to wait at the bottom 
-        // (Audio length minus the time it takes to slide down AND slide back up)
         float audioLength = reloadSound != null ? reloadSound.length : 1.5f;
         float waitTimeAtBottom = audioLength - (slideDuration * 2f);
-        if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.1f; // Failsafe in case the audio is super short
+        if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.1f; 
 
         float elapsedTime = 0f;
-
-        // 1. SLIDE DOWN SMOOTHLY
         while (elapsedTime < slideDuration)
         {
             transform.localPosition = Vector3.Lerp(originalPosition, targetHiddenPosition, elapsedTime / slideDuration);
             elapsedTime += Time.deltaTime;
-            yield return null; // Wait until next frame
+            yield return null; 
         }
-        transform.localPosition = targetHiddenPosition; // Ensure it reaches the exact bottom
+        transform.localPosition = targetHiddenPosition; 
 
-        // 2. WAIT FOR AUDIO
         yield return new WaitForSeconds(waitTimeAtBottom);
 
-        // 3. SLIDE BACK UP SMOOTHLY
         elapsedTime = 0f;
         while (elapsedTime < slideDuration)
         {
@@ -122,12 +122,60 @@ public class SimpleShoot : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null; 
         }
-        transform.localPosition = originalPosition; // Ensure it snaps exactly to the proper aim point
+        transform.localPosition = originalPosition; 
         
         currentAmmo = magSize;
         isReloading = false;
     }
 
+    IEnumerator ShotgunReloadRoutine()
+    {
+        isReloading = true;
+        Vector3 targetHiddenPosition = originalPosition - new Vector3(0f, hideDistance, 0f);
+        float elapsedTime = 0f;
+
+        while (elapsedTime < slideDuration)
+        {
+            transform.localPosition = Vector3.Lerp(originalPosition, targetHiddenPosition, elapsedTime / slideDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        transform.localPosition = targetHiddenPosition;
+
+        int shellsNeeded = magSize - currentAmmo;
+        for (int i = 0; i < shellsNeeded; i++)
+        {
+            if (weaponAudio != null && insertShellSound != null)
+            {
+                weaponAudio.PlayOneShot(insertShellSound);
+                yield return new WaitForSeconds(insertShellSound.length); 
+            }
+            else yield return new WaitForSeconds(0.4f); 
+            
+            currentAmmo++; 
+        }
+
+        if (weaponAudio != null && pumpSound != null)
+        {
+            weaponAudio.PlayOneShot(pumpSound);
+            yield return new WaitForSeconds(pumpSound.length);
+        }
+
+        elapsedTime = 0f;
+        while (elapsedTime < slideDuration)
+        {
+            transform.localPosition = Vector3.Lerp(targetHiddenPosition, originalPosition, elapsedTime / slideDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        transform.localPosition = originalPosition;
+        
+        isReloading = false;
+    }
+
+    // ==========================================
+    // SHOOTING & CHAMBERING
+    // ==========================================
     void Shoot()
     {
         currentAmmo--; 
@@ -141,15 +189,26 @@ public class SimpleShoot : MonoBehaviour
         if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
             EnemyHealth target = hit.collider.GetComponentInParent<EnemyHealth>();
-            if (target != null)
-            {
-                target.TakeDamage(damage);
-            }
+            if (target != null) target.TakeDamage(damage);
             
-            if (impactEffectPrefab != null)
-            {
-                Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-            }
+            if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
         }
+
+        // Lock the gun if it requires chambering
+        if (isBoltAction)
+        {
+            StartCoroutine(ChamberRoundRoutine());
+        }
+    }
+
+    IEnumerator ChamberRoundRoutine()
+    {
+        isChambering = true; 
+
+        // Wait for the entire audio clip (shot + pump) to finish
+        float shotDuration = fireSound != null ? fireSound.length : 1.0f;
+        yield return new WaitForSeconds(shotDuration);
+
+        isChambering = false; 
     }
 }
