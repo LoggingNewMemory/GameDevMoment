@@ -15,7 +15,7 @@ public class DoomMovement : MonoBehaviour
     [Header("Jumping & Gravity")]
     public float jumpHeight = 2f;
     public float gravity = -20f; 
-    private Vector3 velocity; // Tracks our vertical falling/jumping speed
+    private Vector3 velocity; 
 
     [Header("Looking")]
     public float mouseSensitivity = 0.1f; 
@@ -33,6 +33,10 @@ public class DoomMovement : MonoBehaviour
     public AudioClip[] footstepSounds; 
     public float stepInterval = 0.4f;  
     private float stepTimer;
+
+    [Header("Action Audio")]
+    public AudioClip jumpSound;  // <-- NEW: Slot for the jump grunt/whoosh
+    public AudioClip slideSound; // <-- NEW: Slot for the sliding dirt/concrete sound
 
     void Start()
     {
@@ -77,13 +81,17 @@ public class DoomMovement : MonoBehaviour
 
         float currentSpeed = walkSpeed;
 
-        // RUNNING (Hold Shift + Moving Forward)
         bool isRunning = Keyboard.current.leftShiftKey.isPressed && z > 0;
         if (isRunning && !isSliding) currentSpeed = runSpeed;
 
-        // SLIDING (Press C while Running)
+        // SLIDING
         if (Keyboard.current.cKey.wasPressedThisFrame && isRunning && !isSliding && controller.isGrounded)
         {
+            // NEW: Play the slide sound!
+            if (playerAudio != null && slideSound != null)
+            {
+                playerAudio.PlayOneShot(slideSound);
+            }
             StartCoroutine(SlideRoutine(inputDirection));
         }
 
@@ -103,14 +111,15 @@ public class DoomMovement : MonoBehaviour
         if (Keyboard.current.spaceKey.wasPressedThisFrame && controller.isGrounded && !isSliding)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            
+            // NEW: Play the jump sound!
+            if (playerAudio != null && jumpSound != null)
+            {
+                playerAudio.PlayOneShot(jumpSound);
+            }
         }
 
-        // Apply the gravity drop to the vertical velocity
         velocity.y += gravity * Time.deltaTime;
-
-
-        // --- THE FIX: ONE SINGLE MOVE CALL ---
-        // Combine the horizontal (move) and vertical (velocity) into one push!
         controller.Move((move + velocity) * Time.deltaTime); 
 
 

@@ -639,7 +639,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -2755,6 +2755,8 @@ MonoBehaviour:
   bobAmountY: 0.05
   swayMultiplier: 3
   maxSway: 4
+  steadyMultiplier: 0.2
+  steadyTransitionSpeed: 15
   smoothStep: 10
 --- !u!1001 &988825456
 PrefabInstance:
@@ -3069,6 +3071,8 @@ MonoBehaviour:
   footstepSounds:
   - {fileID: 8300000, guid: 697f3d188a70441f29f8c40e58a8ea3b, type: 3}
   stepInterval: 0.4
+  jumpSound: {fileID: 8300000, guid: 92fe22692de7e3d9ab92e3da5c0538e7, type: 3}
+  slideSound: {fileID: 8300000, guid: b93a95ffc4a9ff190b604ddc7b265b9a, type: 3}
 --- !u!82 &1636846694
 AudioSource:
   m_ObjectHideFlags: 0
