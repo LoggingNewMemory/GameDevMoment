@@ -10,15 +10,19 @@ public class SimpleShoot : MonoBehaviour
     
     [Header("Weapon Settings")]
     public bool isAutomatic = false; 
-    public bool isBoltAction = false; // <-- Check this for Snipers & Shotguns!
+    public bool isBoltAction = false; 
     public float fireRate = 10f; 
     private float nextTimeToFire = 0f; 
+    
+    [Header("Chambering Settings (Bolt/Pump)")]
+    public float chamberHideDistance = 0.3f; // Just a slight dip down
+    public float chamberDuration = 1.5f;     // Total time the chambering takes
 
     [Header("Reload Settings")]
     public int magSize = 30;          
     private int currentAmmo;          
     private bool isReloading = false; 
-    private bool isChambering = false; // Locks the gun during the pump audio
+    private bool isChambering = false; 
     public float hideDistance = 1.2f; 
     public float slideDuration = 0.3f; 
 
@@ -32,7 +36,7 @@ public class SimpleShoot : MonoBehaviour
 
     [Header("Audio: Shooting")]
     public AudioSource weaponAudio;
-    public AudioClip fireSound; // This file includes the shot AND the pump!
+    public AudioClip fireSound; 
 
     [Header("Visuals")]
     public GameObject impactEffectPrefab;
@@ -58,7 +62,6 @@ public class SimpleShoot : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null) return;
 
-        // Block shooting if we are reloading or waiting for the pump animation/audio to finish
         if (isReloading || isChambering) return;
 
         // --- RELOAD INPUT ---
@@ -194,7 +197,6 @@ public class SimpleShoot : MonoBehaviour
             if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
         }
 
-        // Lock the gun if it requires chambering
         if (isBoltAction)
         {
             StartCoroutine(ChamberRoundRoutine());
@@ -205,9 +207,35 @@ public class SimpleShoot : MonoBehaviour
     {
         isChambering = true; 
 
-        // Wait for the entire audio clip (shot + pump) to finish
-        float shotDuration = fireSound != null ? fireSound.length : 1.0f;
-        yield return new WaitForSeconds(shotDuration);
+        Vector3 targetDipPosition = originalPosition - new Vector3(0f, chamberHideDistance, 0f);
+        
+        // Calculate the timing based on your manual Inspector variable!
+        float waitTimeAtBottom = chamberDuration - (slideDuration * 2f);
+        if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.05f;
+
+        float elapsedTime = 0f;
+
+        // 1. Dip down
+        while (elapsedTime < slideDuration)
+        {
+            transform.localPosition = Vector3.Lerp(originalPosition, targetDipPosition, elapsedTime / slideDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        transform.localPosition = targetDipPosition;
+
+        // 2. Wait at the bottom for the specified duration
+        yield return new WaitForSeconds(waitTimeAtBottom);
+
+        // 3. Snap back up to ready position
+        elapsedTime = 0f;
+        while (elapsedTime < slideDuration)
+        {
+            transform.localPosition = Vector3.Lerp(targetDipPosition, originalPosition, elapsedTime / slideDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        transform.localPosition = originalPosition;
 
         isChambering = false; 
     }

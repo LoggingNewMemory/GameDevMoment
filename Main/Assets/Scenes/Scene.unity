@@ -254,6 +254,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 15
+  chamberHideDistance: 1.5
+  chamberDuration: 1.5
   magSize: 100
   hideDistance: 1.5
   slideDuration: 0.3
@@ -1635,6 +1637,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 5
+  chamberHideDistance: 1.5
+  chamberDuration: 1.5
   magSize: 40
   hideDistance: 1.2
   slideDuration: 0.3
@@ -1857,6 +1861,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
+  chamberHideDistance: 1.5
+  chamberDuration: 1.5
   magSize: 7
   hideDistance: 1.2
   slideDuration: 0.3
@@ -2369,6 +2375,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
+  chamberHideDistance: 1.5
+  chamberDuration: 1.5
   magSize: 2
   hideDistance: 1.2
   slideDuration: 0.3
@@ -2623,6 +2631,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 6
+  chamberHideDistance: 1.5
+  chamberDuration: 1.5
   magSize: 35
   hideDistance: 1.2
   slideDuration: 0.3
@@ -3008,6 +3018,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 5
+  chamberHideDistance: 0.1
+  chamberDuration: 1
   magSize: 7
   hideDistance: 1.2
   slideDuration: 0.3
@@ -3254,6 +3266,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 7
+  chamberHideDistance: 1.5
+  chamberDuration: 1.5
   magSize: 45
   hideDistance: 1.2
   slideDuration: 0.3
@@ -3476,6 +3490,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 5
+  chamberHideDistance: 0.1
+  chamberDuration: 1.5
   magSize: 5
   hideDistance: 1.2
   slideDuration: 0.3
