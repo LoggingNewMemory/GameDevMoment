@@ -46,6 +46,20 @@ public class PlayerStats : MonoBehaviour
         UpdateHealthUI();
     }
 
+    public void TakeDamage(float damageAmount)
+    {
+        currentHealth -= damageAmount;
+        
+        UpdateHealthUI();
+
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            Debug.Log("PLAYER IS DEAD! (Game Over logic goes here)");
+            // We can add death screens or level restarts here later!
+        }
+    }
+
     public void UpdateHealthUI()
     {
         if (healthTextDisplay != null)

@@ -1,27 +1,74 @@
 using UnityEngine;
-using System.Collections;
 
 public class EnemyHealth : MonoBehaviour
 {
     public float health = 60f; 
-    private bool isDead = false; // Prevents him from dying twice or dropping double loot!
+    private bool isDead = false; 
 
-    [Header("Animation")]
-    public Animator anim;        // <-- NEW: Drag Jambret's Animator component here!
+    [Header("AI & Combat")]
+    public float moveSpeed = 5f;
+    public float attackRange = 2f;
+    public float attackDamage = 15f;
+    public float attackCooldown = 1.5f;
+    
+    private Transform playerTarget;
+    private bool isProvoked = false; // Waits until you shoot him!
+    private float lastAttackTime = 0f;
 
-    [Header("Audio")]
+    [Header("Animation & Audio")]
+    public Animator anim;        
     public AudioClip hitSound;   
     public AudioClip deathSound; 
+    public AudioClip attackSound; // (Optional) A whoosh or grunt sound
 
     [Header("Loot Drops")]
     public GameObject indomiePrefab;    
     public GameObject macNCheesePrefab; 
     public GameObject ammoBoxPrefab;    
 
+    void Start()
+    {
+        // Automatically find the player when the game starts
+        GameObject p = GameObject.FindGameObjectWithTag("Player");
+        if (p != null) playerTarget = p.transform;
+    }
+
+    void Update()
+    {
+        // Don't do anything if he's dead, hasn't been shot yet, or can't find the player
+        if (isDead || !isProvoked || playerTarget == null) return;
+
+        // Face the player (Ignoring Y axis so he doesn't tilt upward if you jump)
+        Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
+        transform.LookAt(lookPos);
+
+        // Check how far away the player is
+        float distance = Vector3.Distance(transform.position, playerTarget.position);
+
+        if (distance > attackRange)
+        {
+            // CHASE THE PLAYER!
+            if (anim != null) anim.SetBool("isChasing", true);
+            transform.position = Vector3.MoveTowards(transform.position, lookPos, moveSpeed * Time.deltaTime);
+        }
+        else
+        {
+            // IN RANGE: STOP AND ATTACK!
+            if (anim != null) anim.SetBool("isChasing", false);
+
+            if (Time.time >= lastAttackTime + attackCooldown)
+            {
+                AttackPlayer();
+            }
+        }
+    }
+
     public void TakeDamage(float amount)
     {
-        // If he's already dead, ignore the bullets!
         if (isDead) return;
+
+        // THE WAKE UP CALL: He gets mad and starts chasing you the moment he gets shot!
+        isProvoked = true;
 
         health -= amount;
 
@@ -31,9 +78,24 @@ public class EnemyHealth : MonoBehaviour
         }
         else 
         {
-            // Play the flinch animation and sound!
             if (anim != null) anim.SetTrigger("Hit");
             if (hitSound != null) AudioSource.PlayClipAtPoint(hitSound, transform.position);
+        }
+    }
+
+    void AttackPlayer()
+    {
+        lastAttackTime = Time.time;
+        
+        // Trigger the punch animation
+        if (anim != null) anim.SetTrigger("Attack");
+        if (attackSound != null) AudioSource.PlayClipAtPoint(attackSound, transform.position);
+
+        // Deal damage to the player
+        PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
+        if (stats != null)
+        {
+            stats.TakeDamage(attackDamage);
         }
     }
 
@@ -41,27 +103,25 @@ public class EnemyHealth : MonoBehaviour
     {
         isDead = true;
 
-        // --- THE FIX ---
         if (anim != null) 
         {
-            anim.ResetTrigger("Hit"); // Cancel any flinching!
-            anim.SetTrigger("Die");   // Drop dead!
+            anim.ResetTrigger("Hit"); 
+            anim.ResetTrigger("Attack"); // Cancel any punches he was throwing
+            anim.SetBool("isChasing", false);
+            anim.SetTrigger("Die");   
         }
 
         if (deathSound != null) AudioSource.PlayClipAtPoint(deathSound, transform.position);
 
-        // Turn off his collider so the player can walk over his body
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
-        // --- LOOT DROP LOGIC ---
+        // --- LOOT DROP ---
         int roll = Random.Range(1, 101);
-
         if (roll <= 30 && indomiePrefab != null) Instantiate(indomiePrefab, transform.position + Vector3.up, Quaternion.identity);
         else if (roll > 30 && roll <= 50 && macNCheesePrefab != null) Instantiate(macNCheesePrefab, transform.position + Vector3.up, Quaternion.identity);
         else if (roll > 50 && roll <= 100 && ammoBoxPrefab != null) Instantiate(ammoBoxPrefab, transform.position + Vector3.up, Quaternion.identity);
 
-        // DELAYED DESTROY: Wait 3 seconds so the animation finishes, then delete the body!
         Destroy(gameObject, 3f);
     }
 }
