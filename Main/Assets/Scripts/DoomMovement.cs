@@ -12,6 +12,14 @@ public class DoomMovement : MonoBehaviour
     public float runSpeed = 18f; 
     public float slideSpeed = 25f; 
 
+    [Header("Dashing")]
+    public float dashSpeed = 40f;      // How fast the dash burst is
+    public float dashDuration = 0.2f;  // How long the dash lasts (keep it short!)
+    public float dashCooldown = 1f;    // Wait 1 second before dashing again
+    private bool isDashing = false;
+    private float lastDashTime = -100f; 
+    private Vector3 dashDirection;
+
     [Header("Jumping & Gravity")]
     public float jumpHeight = 2f;
     public float gravity = -20f; 
@@ -37,6 +45,7 @@ public class DoomMovement : MonoBehaviour
     [Header("Action Audio")]
     public AudioClip jumpSound;  
     public AudioClip slideSound; 
+    public AudioClip dashSound; // <-- NEW: Slot for a "whoosh" dash sound!
 
     void Start()
     {
@@ -59,11 +68,13 @@ public class DoomMovement : MonoBehaviour
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
 
+
         // --- 2. GRAVITY & GROUND CHECK ---
         if (controller.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f; 
         }
+
 
         // --- 3. MOVEMENT INPUT ---
         float x = 0f;
@@ -80,20 +91,33 @@ public class DoomMovement : MonoBehaviour
         float currentSpeed = walkSpeed;
 
         bool isRunning = Keyboard.current.leftShiftKey.isPressed && z > 0;
-        if (isRunning && !isSliding) currentSpeed = runSpeed;
+        if (isRunning && !isSliding && !isDashing) currentSpeed = runSpeed;
 
-        // SLIDING
-        if (Keyboard.current.cKey.wasPressedThisFrame && isRunning && !isSliding && controller.isGrounded)
+        // --- SLIDING ---
+        if (Keyboard.current.cKey.wasPressedThisFrame && isRunning && !isSliding && !isDashing && controller.isGrounded)
         {
-            if (playerAudio != null && slideSound != null)
-            {
-                playerAudio.PlayOneShot(slideSound);
-            }
+            if (playerAudio != null && slideSound != null) playerAudio.PlayOneShot(slideSound);
             StartCoroutine(SlideRoutine(inputDirection));
         }
 
+        // --- DASHING (Right Click) ---
+        if (Mouse.current.rightButton.wasPressedThisFrame && !isDashing && !isSliding)
+        {
+            // Only dash if the cooldown is finished
+            if (Time.time >= lastDashTime + dashCooldown)
+            {
+                StartCoroutine(DashRoutine(inputDirection));
+            }
+        }
+
+        // --- APPLY MOVEMENT ---
         Vector3 move;
-        if (isSliding)
+        if (isDashing)
+        {
+            // Override everything with the massive dash burst!
+            move = dashDirection * dashSpeed;
+        }
+        else if (isSliding)
         {
             currentSpeed = slideSpeed;
             move = slideDirection * currentSpeed; 
@@ -103,22 +127,21 @@ public class DoomMovement : MonoBehaviour
             move = inputDirection * currentSpeed;
         }
 
+
         // --- 4. JUMPING ---
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && controller.isGrounded && !isSliding)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && controller.isGrounded && !isSliding && !isDashing)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            
-            if (playerAudio != null && jumpSound != null)
-            {
-                playerAudio.PlayOneShot(jumpSound);
-            }
+            if (playerAudio != null && jumpSound != null) playerAudio.PlayOneShot(jumpSound);
         }
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move((move + velocity) * Time.deltaTime); 
 
+
         // --- 5. FOOTSTEP AUDIO ---
-        if (controller.isGrounded && controller.velocity.magnitude > 0.1f && !isSliding)
+        // Don't play normal footsteps while sliding or dashing
+        if (controller.isGrounded && controller.velocity.magnitude > 0.1f && !isSliding && !isDashing)
         {
             stepTimer -= Time.deltaTime;
 
@@ -149,6 +172,30 @@ public class DoomMovement : MonoBehaviour
         controller.height = originalHeight;
         playerCamera.localPosition = originalCamPos;
         isSliding = false;
+    }
+
+    IEnumerator DashRoutine(Vector3 currentInputDirection)
+    {
+        isDashing = true;
+        lastDashTime = Time.time; // Reset the cooldown timer!
+
+        // Play the dash sound
+        if (playerAudio != null && dashSound != null) playerAudio.PlayOneShot(dashSound);
+
+        // If the player isn't pressing WASD, default to dashing straight forward
+        if (currentInputDirection.magnitude == 0)
+        {
+            dashDirection = transform.forward;
+        }
+        else
+        {
+            dashDirection = currentInputDirection;
+        }
+
+        // Wait for the tiny fraction of a second the dash lasts
+        yield return new WaitForSeconds(dashDuration);
+
+        isDashing = false;
     }
 
     void PlayFootstepSound()
