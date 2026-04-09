@@ -259,8 +259,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 100
-  reserveAmmo: 90
-  maxReserveAmmo: 180
+  reserveAmmo: 50
+  maxReserveAmmo: 200
   hideDistance: 1.5
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 9bb71ab0f24545041b3cf8e9945c0095, type: 3}
@@ -1939,8 +1939,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 40
-  reserveAmmo: 90
-  maxReserveAmmo: 180
+  reserveAmmo: 80
+  maxReserveAmmo: 120
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 1d43bd6733bf31690bbacf49b6f3fdf5, type: 3}
@@ -2171,8 +2171,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 7
-  reserveAmmo: 90
-  maxReserveAmmo: 180
+  reserveAmmo: 14
+  maxReserveAmmo: 49
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: ba67f82a7b9ad99bd90e36723a8dd55d, type: 3}
@@ -2695,8 +2695,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 2
-  reserveAmmo: 90
-  maxReserveAmmo: 180
+  reserveAmmo: 1
+  maxReserveAmmo: 4
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 0e4eee2b51e7d7c689862b786cdef73b, type: 3}
@@ -3020,8 +3020,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 35
-  reserveAmmo: 90
-  maxReserveAmmo: 180
+  reserveAmmo: 60
+  maxReserveAmmo: 105
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 972473908e33142a299aadef99de62cf, type: 3}
@@ -3149,7 +3149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d638fe6e6e56cc2b87094b2fc205662, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AmmoPickup
-  ammoAmount: 20
+  minAmmoAmount: 1
+  maxAmmoAmount: 20
   pickupSound: {fileID: 8300000, guid: 83e09c56afc21ff26a1fbd8355cc4aca, type: 3}
 --- !u!65 &1299374268
 BoxCollider:
@@ -3542,8 +3543,8 @@ MonoBehaviour:
   chamberHideDistance: 0.1
   chamberDuration: 1
   magSize: 7
-  reserveAmmo: 90
-  maxReserveAmmo: 180
+  reserveAmmo: 24
+  maxReserveAmmo: 56
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 0}
@@ -4134,8 +4135,8 @@ MonoBehaviour:
   chamberHideDistance: 0.1
   chamberDuration: 1.5
   magSize: 5
-  reserveAmmo: 90
-  maxReserveAmmo: 180
+  reserveAmmo: 5
+  maxReserveAmmo: 25
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: a8e1a2f9ce21b152d93fc6d1d02ecb41, type: 3}
