@@ -271,14 +271,26 @@ public class SimpleShoot : MonoBehaviour
         if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
             EnemyHealth target = hit.collider.GetComponentInParent<EnemyHealth>();
-            if (target != null) target.TakeDamage(damage);
+            
+            // --- THE VODKA DAMAGE BUFF ---
+            if (target != null) 
+            {
+                float finalDamage = damage;
+                PlayerStats stats = GetComponentInParent<PlayerStats>();
+                if (stats != null && stats.isDrunk)
+                {
+                    finalDamage *= 1.2f; // +20% Damage!
+                }
+                
+                target.TakeDamage(finalDamage);
+            } // <- This is the bracket that went missing!
             
             if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
         }
 
         if (isBoltAction) StartCoroutine(ChamberRoundRoutine());
     }
-
+    
     IEnumerator ChamberRoundRoutine()
     {
         isChambering = true; 

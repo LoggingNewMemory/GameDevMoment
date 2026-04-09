@@ -103,8 +103,11 @@ public class DoomMovement : MonoBehaviour
         // --- DASHING (Right Click) ---
         if (Mouse.current.rightButton.wasPressedThisFrame && !isDashing && !isSliding)
         {
-            // Only dash if the cooldown is finished
-            if (Time.time >= lastDashTime + dashCooldown)
+            PlayerStats stats = GetComponent<PlayerStats>();
+            bool hasEnergy = (stats != null && stats.hasUnlimitedEnergy);
+
+            // Dash if cooldown is done OR if we drank Extrajoss/Vodka!
+            if (Time.time >= lastDashTime + dashCooldown || hasEnergy)
             {
                 StartCoroutine(DashRoutine(inputDirection));
             }
