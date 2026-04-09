@@ -8,8 +8,8 @@ public class SimpleMelee : MonoBehaviour
     [Header("Melee Stats")]
     public float damage = 40f;          
     public float range = 2.5f;          
-    public float swingSpeed = 0.15f;    
-    public float swingCooldown = 0.6f;  
+    public float swingSpeed = 0.08f;    
+    public float swingCooldown = 0.35f;  
 
     [Header("Procedural Animation (Angles)")]
     public Vector3 restingRotation = new Vector3(0, 0, 0);       

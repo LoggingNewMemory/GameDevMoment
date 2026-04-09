@@ -3905,6 +3905,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 958535379}
     m_Modifications:
+    - target: {fileID: 1196826913144665598, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2049977056430061286, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
       propertyPath: m_Name
       value: Sword
@@ -3927,7 +3931,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8670512161190804812, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.224
+      value: -0.3
       objectReference: {fileID: 0}
     - target: {fileID: 8670512161190804812, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3997,8 +4001,8 @@ MonoBehaviour:
   range: 2.5
   swingSpeed: 0.15
   swingCooldown: 0.6
-  restingRotation: {x: 0, y: 0, z: 0}
-  swingTargetRotation: {x: 45, y: -60, z: -20}
+  restingRotation: {x: 10, y: -10, z: 10}
+  swingTargetRotation: {x: 65, y: -85, z: -40}
   drawOffset: {x: 0, y: -1, z: 0}
   drawTime: 0.5
   isDrawing: 0

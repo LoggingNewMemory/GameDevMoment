@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 1117
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -1155,9 +1155,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 0.7217701, y: 1.0926324, z: -0.62217355}
+    m_Target: {x: 1.9376858, y: 0.50601685, z: -10.670583}
     speed: 2
-    m_Value: {x: 0.7217701, y: 1.0926324, z: -0.62217355}
+    m_Value: {x: 1.9376858, y: 0.50601685, z: -10.670583}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1204,13 +1204,13 @@ MonoBehaviour:
     m_gridOpacity: 0.5
     m_NearestPlaneToHandleMode: 0
   m_Rotation:
-    m_Target: {x: -0.34831974, y: -0.16692148, z: 0.06313837, w: -0.9203122}
+    m_Target: {x: -0.11585888, y: -0.7067123, z: 0.118953794, w: -0.68785274}
     speed: 2
-    m_Value: {x: -0.34831974, y: -0.16692147, z: 0.06313837, w: -0.92031217}
+    m_Value: {x: 0.11585889, y: 0.7067123, z: -0.1189538, w: 0.6878528}
   m_Size:
-    m_Target: 0.83572364
+    m_Target: 1.7012199
     speed: 2
-    m_Value: 0.83572364
+    m_Value: 1.7012199
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1284,21 +1284,17 @@ MonoBehaviour:
     m_DynamicPanelBehavior: 0
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
+      scrollPos: {x: 0, y: 1}
       m_SelectedIDs: []
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -2014
-      - m_Data: -2008
-      - m_Data: -2002
-      - m_Data: -1998
-      - m_Data: -1614
-      - m_Data: -1610
-      - m_Data: -1604
-      - m_Data: -1600
-      - m_Data: -1596
+      - m_Data: -11300
+      - m_Data: -3164
       - m_Data: -1322
+      - m_Data: 50068
+      - m_Data: 50156
+      - m_Data: 50214
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1568,7 +1564,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/SoundEffects/Enemy/Attack Sound
+    - Assets/SoundEffects/GunSounds/Katana
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1578,45 +1574,47 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/SoundEffects/Enemy/Attack Sound
+  - Assets/SoundEffects/GunSounds/Katana
   m_LastFoldersGridSize: 16
   m_LastProjectPath: /home/yamada/CODE/GameDevMoment/Main
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
+    scrollPos: {x: 0, y: 120}
     m_SelectedIDs:
-    - m_Data: 77580
+    - m_Data: 81404
     m_LastClickedID:
-      m_Data: 77580
+      m_Data: 81404
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 53712
-    - m_Data: 53714
-    - m_Data: 53716
-    - m_Data: 53718
-    - m_Data: 53720
-    - m_Data: 53722
-    - m_Data: 53724
-    - m_Data: 53726
-    - m_Data: 53728
-    - m_Data: 53730
-    - m_Data: 53732
-    - m_Data: 53734
-    - m_Data: 53736
-    - m_Data: 53738
-    - m_Data: 53740
-    - m_Data: 53742
-    - m_Data: 53744
-    - m_Data: 53746
-    - m_Data: 53748
-    - m_Data: 53750
     - m_Data: 53752
     - m_Data: 53754
     - m_Data: 53756
     - m_Data: 53758
     - m_Data: 53760
+    - m_Data: 53762
+    - m_Data: 53764
+    - m_Data: 53766
+    - m_Data: 53768
+    - m_Data: 53770
+    - m_Data: 53772
+    - m_Data: 53774
+    - m_Data: 53776
+    - m_Data: 53778
+    - m_Data: 53780
+    - m_Data: 53782
+    - m_Data: 53784
+    - m_Data: 53786
+    - m_Data: 53788
+    - m_Data: 53790
+    - m_Data: 53792
+    - m_Data: 53794
+    - m_Data: 53796
+    - m_Data: 53798
+    - m_Data: 53800
+    - m_Data: 53802
+    - m_Data: 53804
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1650,31 +1648,33 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 53712
-    - m_Data: 53714
-    - m_Data: 53716
-    - m_Data: 53718
-    - m_Data: 53720
-    - m_Data: 53722
-    - m_Data: 53724
-    - m_Data: 53726
-    - m_Data: 53728
-    - m_Data: 53730
-    - m_Data: 53732
-    - m_Data: 53734
-    - m_Data: 53736
-    - m_Data: 53738
-    - m_Data: 53740
-    - m_Data: 53742
-    - m_Data: 53744
-    - m_Data: 53746
-    - m_Data: 53748
-    - m_Data: 53750
     - m_Data: 53752
     - m_Data: 53754
     - m_Data: 53756
     - m_Data: 53758
     - m_Data: 53760
+    - m_Data: 53762
+    - m_Data: 53764
+    - m_Data: 53766
+    - m_Data: 53768
+    - m_Data: 53770
+    - m_Data: 53772
+    - m_Data: 53774
+    - m_Data: 53776
+    - m_Data: 53778
+    - m_Data: 53780
+    - m_Data: 53782
+    - m_Data: 53784
+    - m_Data: 53786
+    - m_Data: 53788
+    - m_Data: 53790
+    - m_Data: 53792
+    - m_Data: 53794
+    - m_Data: 53796
+    - m_Data: 53798
+    - m_Data: 53800
+    - m_Data: 53802
+    - m_Data: 53804
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1703,9 +1703,9 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: 50108
+    - m_Data: -11300
     m_LastClickedEntityId:
-      m_Data: 50108
+      m_Data: -11300
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 48764
