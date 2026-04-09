@@ -95,7 +95,7 @@ public class EnemyHealth : MonoBehaviour
         PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
         if (stats != null)
         {
-            stats.TakeDamage(attackDamage);
+            stats.TakeDamage(attackDamage, transform);
         }
     }
 

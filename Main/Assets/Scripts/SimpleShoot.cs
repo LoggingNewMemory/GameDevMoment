@@ -92,7 +92,7 @@ public class SimpleShoot : MonoBehaviour
 
     void Update()
     {
-        if (Mouse.current == null || Keyboard.current == null) return;
+        if (Mouse.current == null || Keyboard.current == null || (playerMovement != null && playerMovement.isKnockedDown)) return;
         
         // --- WEAPON VISUAL RECOVERY ---
         if (!isReloading && !isChambering && !isDrawing)
