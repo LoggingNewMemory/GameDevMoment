@@ -209,10 +209,8 @@ public class SimpleShoot : MonoBehaviour
         currentAmmo--; UpdateAmmoUI(); 
         if (weaponAudio != null && fireSound != null) weaponAudio.PlayOneShot(fireSound);
 
-        // --- APPLY RECOIL & KNOCKBACK! ---
         if (playerMovement != null) playerMovement.AddRecoil(playerKnockbackForce, cameraKickForce);
         transform.localPosition = originalPosition - new Vector3(0f, 0f, weaponVisualKick);
-
 
         RaycastHit hit;
         Vector3 rayOrigin = fpsCamera.transform.position;
@@ -221,18 +219,27 @@ public class SimpleShoot : MonoBehaviour
 
         if (Physics.Raycast(rayOrigin, rayDirection, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
-            EnemyHealth target = hit.collider.GetComponentInParent<EnemyHealth>();
+            float finalDamage = damage;
+            PlayerStats stats = GetComponentInParent<PlayerStats>();
+            if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
+
+            // --- THE INTERFACE MAGIC ---
+            // The gun simply looks for the "IDamageable" tag. It doesn't care what the object actually is!
+            IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
+            
             if (target != null)
             {
-                float finalDamage = damage;
-                PlayerStats stats = GetComponentInParent<PlayerStats>();
-                if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
                 target.TakeDamage(finalDamage);
             }
+            // ---------------------------
+
             if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
             visualEndPoint = hit.point;
         }
-        else visualEndPoint = rayOrigin + (rayDirection * range);
+        else 
+        {
+            visualEndPoint = rayOrigin + (rayDirection * range);
+        }
 
         if (muzzlePoint != null && beamEffectPrefab != null) HandleBeamVisuals(visualEndPoint);
         if (isBoltAction) StartCoroutine(ChamberRoundRoutine());
