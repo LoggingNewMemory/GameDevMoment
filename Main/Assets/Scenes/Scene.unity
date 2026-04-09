@@ -2458,6 +2458,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9170976204198151676, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
       insertIndex: -1
       addedObject: {fileID: 538607355}
+    - targetCorrespondingSourceObject: {fileID: 9170976204198151676, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 538607368}
   m_SourcePrefab: {fileID: 100100000, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
 --- !u!1 &538607345 stripped
 GameObject:
@@ -2505,17 +2508,30 @@ MonoBehaviour:
   attackDamage: 15
   attackCooldown: 1.5
   anim: {fileID: 538607360}
-  hitSound: {fileID: 8300000, guid: 3ce6b637587c0c6abb64eaddb6846128, type: 3}
-  deathSound: {fileID: 8300000, guid: 012fad142f9413f56a0b29ee71a47b5e, type: 3}
-  attackSound: {fileID: 0}
   indomiePrefab: {fileID: 1120337022}
   macNCheesePrefab: {fileID: 977229133}
-  ammoBoxPrefab: {fileID: 0}
+  ammoBoxPrefab: {fileID: 1299374266}
 --- !u!95 &538607360 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1813829617959390610, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
   m_PrefabInstance: {fileID: 538607344}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &538607368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538607345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b7dc39ad66d3f070a18e4cbfabfa271, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniversalMeleeAttack
+  attackSound: {fileID: 8300000, guid: c63e9bfd3c3a8cebeb37a2be7998d1bc, type: 3}
+  animatorLayer: 1
+  timeBeforeEnd: 0.1
+  hitTrackingRange: 3
 --- !u!1 &828217648
 GameObject:
   m_ObjectHideFlags: 0
@@ -3551,6 +3567,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4991325769921379425, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1878638907}
+    - targetCorrespondingSourceObject: {fileID: 4991325769921379425, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1878638908}
   m_SourcePrefab: {fileID: 100100000, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
 --- !u!1001 &1120337021
 PrefabInstance:
@@ -4460,6 +4479,22 @@ CapsuleCollider:
   m_Height: 1.85
   m_Direction: 1
   m_Center: {x: 0, y: 0.85, z: 0}
+--- !u!114 &1878638908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878638897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b7dc39ad66d3f070a18e4cbfabfa271, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniversalMeleeAttack
+  attackSound: {fileID: 8300000, guid: 3392f168313d8872490d33bccf01090a, type: 3}
+  animatorLayer: 1
+  timeBeforeEnd: 0.1
+  hitTrackingRange: 3
 --- !u!1 &2044579616
 GameObject:
   m_ObjectHideFlags: 0

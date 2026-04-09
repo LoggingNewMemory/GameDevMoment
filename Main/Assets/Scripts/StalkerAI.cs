@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-// The class name HERE must perfectly match the file name (StalkerAI)
 public class StalkerAI : MonoBehaviour, IDamageable 
 {
     public float health = 70f; 
@@ -17,11 +16,17 @@ public class StalkerAI : MonoBehaviour, IDamageable
     private bool isDead = false;
     private float lastAttackTime;
     private float lastTeleportTime;
+    
     private Animator anim;
+    private UniversalMeleeAttack meleeScript; 
+    private UniversalCharacterAudio audioScript;
 
     void Start()
     {
         anim = GetComponent<Animator>();
+        meleeScript = GetComponent<UniversalMeleeAttack>(); 
+        audioScript = GetComponent<UniversalCharacterAudio>();
+
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
         
@@ -66,10 +71,7 @@ public class StalkerAI : MonoBehaviour, IDamageable
 
         // Teleport slightly behind the player
         Vector3 teleportPos = playerTarget.position - (playerTarget.forward * 1.5f);
-        
-        // Keep him from floating in the air if you jump!
-        teleportPos.y = transform.position.y; 
-        
+        teleportPos.y = transform.position.y; // Keep him grounded
         transform.position = teleportPos;
 
         // Instant Attack after teleporting
@@ -81,13 +83,9 @@ public class StalkerAI : MonoBehaviour, IDamageable
     void AttackPlayer(float damage)
     {
         lastAttackTime = Time.time;
-        anim.SetTrigger("Attack");
-        
-        PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
-        if (stats != null) stats.TakeDamage(damage, transform);
+        if (meleeScript != null) meleeScript.TriggerAttack(damage);
     }
 
-    // --- FULFILLING THE IDAMAGEABLE CONTRACT ---
     public void TakeDamage(float amount)
     {
         if (isDead) return;
@@ -95,13 +93,23 @@ public class StalkerAI : MonoBehaviour, IDamageable
         isProvoked = true;
         health -= amount;
 
-        if (health <= 0) Die();
-        else anim.SetTrigger("Hit");
+        if (health <= 0) 
+        {
+            Die();
+        }
+        else 
+        {
+            anim.SetTrigger("Hit");
+            if (audioScript != null) audioScript.PlayHitSound();
+        }
     }
 
     void Die()
     {
         isDead = true;
+        
+        if (meleeScript != null) meleeScript.CancelAttack(); 
+        if (audioScript != null) audioScript.PlayDeathSound();
         
         anim.ResetTrigger("Hit");
         anim.ResetTrigger("Attack");
