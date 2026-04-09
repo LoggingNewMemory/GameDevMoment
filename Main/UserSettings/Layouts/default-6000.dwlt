@@ -1208,9 +1208,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.16978516, y: -0.20096903, z: 0.035395708, w: -0.96416354}
   m_Size:
-    m_Target: 1.301003
+    m_Target: 1.318658
     speed: 2
-    m_Value: 1.301003
+    m_Value: 1.318658
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1289,18 +1289,11 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -80824
-      - m_Data: -50646
-      - m_Data: -3002
-      - m_Data: -2330
-      - m_Data: -2290
-      - m_Data: -1556
-      - m_Data: -1540
-      - m_Data: -1524
-      - m_Data: -1380
+      - m_Data: -2556
       - m_Data: -1322
-      - m_Data: 49832
-      - m_Data: 49910
+      - m_Data: 49916
+      - m_Data: 49984
+      - m_Data: 50000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1534,7 +1527,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/SoundEffects/Player
+    - Assets/SoundEffects/Enemy
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1544,7 +1537,7 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/SoundEffects/Player
+  - Assets/SoundEffects/Enemy
   m_LastFoldersGridSize: 16
   m_LastProjectPath: /home/yamada/CODE/GameDevMoment/Main
   m_LockTracker:
@@ -1553,14 +1546,11 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs:
-    - m_Data: 52652
+    - m_Data: 52804
     m_LastClickedID:
-      m_Data: 52652
+      m_Data: 52804
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 52604
-    - m_Data: 52606
-    - m_Data: 52608
     - m_Data: 52610
     - m_Data: 52612
     - m_Data: 52614
@@ -1575,6 +1565,9 @@ MonoBehaviour:
     - m_Data: 52632
     - m_Data: 52634
     - m_Data: 52636
+    - m_Data: 52638
+    - m_Data: 52640
+    - m_Data: 52642
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1608,9 +1601,6 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 52604
-    - m_Data: 52606
-    - m_Data: 52608
     - m_Data: 52610
     - m_Data: 52612
     - m_Data: 52614
@@ -1625,6 +1615,9 @@ MonoBehaviour:
     - m_Data: 52632
     - m_Data: 52634
     - m_Data: 52636
+    - m_Data: 52638
+    - m_Data: 52640
+    - m_Data: 52642
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1653,9 +1646,9 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: 49868
+    - m_Data: 50048
     m_LastClickedEntityId:
-      m_Data: 49868
+      m_Data: 50048
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 48764
@@ -1819,7 +1812,7 @@ MonoBehaviour:
   m_ObjectsLockedBeforeSerialization: []
   m_EntityIdsLockedBeforeSerialization: []
   m_PreviewResizer:
-    m_CachedPref: 196
+    m_CachedPref: -196
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectEntityId:

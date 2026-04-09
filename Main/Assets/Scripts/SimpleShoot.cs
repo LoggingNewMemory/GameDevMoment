@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections; 
 using TMPro; 
+using UnityEngine.UI; // <-- NEW: Required to change UI Images!
 
 public class SimpleShoot : MonoBehaviour
 {
@@ -48,6 +49,8 @@ public class SimpleShoot : MonoBehaviour
     [Header("Visuals & UI")]
     public GameObject impactEffectPrefab;
     public TextMeshProUGUI ammoTextDisplay; 
+    public Image crosshairDisplay;   // <-- NEW: The UI Image in the center of the screen
+    public Sprite weaponCrosshair;   // <-- NEW: The specific crosshair for THIS weapon
 
     private Vector3 originalPosition; 
     private bool hasStarted = false;
@@ -62,9 +65,9 @@ public class SimpleShoot : MonoBehaviour
     void Start()
     {
         UpdateAmmoUI(); 
+        UpdateCrosshairUI(); // Set the crosshair right when the game starts
     }
 
-    // This runs the exact millisecond the weapon is activated
     void OnEnable()
     {
         isReloading = false;
@@ -73,10 +76,10 @@ public class SimpleShoot : MonoBehaviour
         
         if (hasStarted) 
         {
-            // THE MAGIC: Instantly snap the gun to the bottom offset BEFORE it renders!
             transform.localPosition = originalPosition + drawOffset;
             
             UpdateAmmoUI(); 
+            UpdateCrosshairUI(); // Instantly change the crosshair when equipping!
             StartCoroutine(DrawWeaponRoutine());
         }
     }
@@ -122,6 +125,15 @@ public class SimpleShoot : MonoBehaviour
         if (ammoTextDisplay != null)
         {
             ammoTextDisplay.text = currentAmmo + " / " + magSize;
+        }
+    }
+
+    // NEW: Function to swap the crosshair image
+    void UpdateCrosshairUI()
+    {
+        if (crosshairDisplay != null && weaponCrosshair != null)
+        {
+            crosshairDisplay.sprite = weaponCrosshair;
         }
     }
 
@@ -304,7 +316,6 @@ public class SimpleShoot : MonoBehaviour
         isReloading = false; 
         isChambering = false;
 
-        // NEW: Grab the exact position the gun is currently at (in case we interrupt a reload!)
         Vector3 currentPos = transform.localPosition; 
         Vector3 targetPos = originalPosition + drawOffset;
         float elapsedTime = 0f;
