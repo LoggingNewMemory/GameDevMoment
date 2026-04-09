@@ -20,17 +20,18 @@ public class StalkerAI : MonoBehaviour, IDamageable
     private Animator anim;
     private UniversalMeleeAttack meleeScript; 
     private UniversalCharacterAudio audioScript;
+    private UniversalLootDrop lootScript; // <-- UNIVERSAL
 
     void Start()
     {
         anim = GetComponent<Animator>();
         meleeScript = GetComponent<UniversalMeleeAttack>(); 
         audioScript = GetComponent<UniversalCharacterAudio>();
+        lootScript = GetComponent<UniversalLootDrop>(); // <-- UNIVERSAL
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
         
-        // Start teleport off cooldown so he can't spam it immediately
         lastTeleportTime = Time.time; 
     }
 
@@ -40,13 +41,11 @@ public class StalkerAI : MonoBehaviour, IDamageable
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
 
-        // --- TELEPORT LOGIC ---
         if (Time.time >= lastTeleportTime + teleportCooldown && distance > 5f)
         {
             StartCoroutine(TeleportRoutine());
         }
 
-        // --- MOVEMENT & ATTACK ---
         Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
         transform.LookAt(lookPos);
 
@@ -68,15 +67,11 @@ public class StalkerAI : MonoBehaviour, IDamageable
     IEnumerator TeleportRoutine()
     {
         lastTeleportTime = Time.time;
-
-        // Teleport slightly behind the player
         Vector3 teleportPos = playerTarget.position - (playerTarget.forward * 1.5f);
-        teleportPos.y = transform.position.y; // Keep him grounded
+        teleportPos.y = transform.position.y; 
         transform.position = teleportPos;
 
-        // Instant Attack after teleporting
         AttackPlayer(teleportDamage);
-        
         yield return null;
     }
 
@@ -89,14 +84,10 @@ public class StalkerAI : MonoBehaviour, IDamageable
     public void TakeDamage(float amount)
     {
         if (isDead) return;
-        
         isProvoked = true;
         health -= amount;
 
-        if (health <= 0) 
-        {
-            Die();
-        }
+        if (health <= 0) Die();
         else 
         {
             anim.SetTrigger("Hit");
@@ -107,18 +98,13 @@ public class StalkerAI : MonoBehaviour, IDamageable
     void Die()
     {
         isDead = true;
-        
         if (meleeScript != null) meleeScript.CancelAttack(); 
         if (audioScript != null) audioScript.PlayDeathSound();
-        
-        anim.ResetTrigger("Hit");
-        anim.ResetTrigger("Attack");
+        if (lootScript != null) lootScript.DropLoot(); // <-- UNIVERSAL DROP
+
         anim.SetBool("isChasing", false);
         anim.SetTrigger("Die");
-        
-        Collider col = GetComponent<Collider>();
-        if (col != null) col.enabled = false;
-        
+        GetComponent<Collider>().enabled = false;
         Destroy(gameObject, 3f);
     }
 }
