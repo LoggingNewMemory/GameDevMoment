@@ -13,7 +13,6 @@ public class WeaponSwitcher : MonoBehaviour
     private int currentWeaponIndex = 0;
     private bool isSwitching = false;
 
-    // Changed to Awake so it hides the unequipped guns before the camera even renders!
     void Awake()
     {
         for (int i = 0; i < weapons.Length; i++)
@@ -47,6 +46,7 @@ public class WeaponSwitcher : MonoBehaviour
         }
 
         // --- NUMBER KEY SWITCHING (1-8) ---
+        // digit1Key corresponds to index 0, digit2Key to index 1, etc.
         if (Keyboard.current.digit1Key.wasPressedThisFrame) currentWeaponIndex = 0;
         if (Keyboard.current.digit2Key.wasPressedThisFrame && weapons.Length > 1) currentWeaponIndex = 1;
         if (Keyboard.current.digit3Key.wasPressedThisFrame && weapons.Length > 2) currentWeaponIndex = 2;
@@ -66,13 +66,25 @@ public class WeaponSwitcher : MonoBehaviour
     {
         isSwitching = true;
 
+        // 1. Check if the old weapon was a GUN
         SimpleShoot oldGun = weapons[oldIndex].GetComponent<SimpleShoot>();
         if (oldGun != null)
         {
-            oldGun.StartCoroutine(oldGun.HolsterWeaponRoutine());
+            yield return StartCoroutine(oldGun.HolsterWeaponRoutine());
         }
 
-        yield return new WaitForSeconds(switchDelay);
+        // 2. --- NEW: Check if the old weapon was the SWORD! ---
+        SimpleMelee oldMelee = weapons[oldIndex].GetComponent<SimpleMelee>();
+        if (oldMelee != null)
+        {
+            yield return StartCoroutine(oldMelee.HolsterWeaponRoutine());
+        }
+
+        // 3. Fallback wait if it has neither script
+        if (oldGun == null && oldMelee == null)
+        {
+            yield return new WaitForSeconds(switchDelay);
+        }
 
         weapons[oldIndex].SetActive(false);
         weapons[newIndex].SetActive(true);
