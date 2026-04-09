@@ -131,7 +131,7 @@ public class SimpleShoot : MonoBehaviour
     void UpdateAmmoUI() { if (ammoTextDisplay != null) ammoTextDisplay.text = currentAmmo + " / " + reserveAmmo; }
     void UpdateCrosshairUI() { if (crosshairDisplay != null && weaponCrosshair != null) crosshairDisplay.sprite = weaponCrosshair; }
 
-    IEnumerator DrawWeaponRoutine()
+    public IEnumerator DrawWeaponRoutine()
     {
         isDrawing = true;
         if (weaponAudio != null && equipSound != null) weaponAudio.PlayOneShot(equipSound);
@@ -283,6 +283,17 @@ public class SimpleShoot : MonoBehaviour
             elapsedTime += Time.deltaTime; yield return null; 
         }
         transform.localPosition = targetPos;
+    }
+
+    public void InstantHide()
+    {
+        StopAllCoroutines(); // Immediately cancel any reloading or shooting!
+        isDrawing = false; 
+        isReloading = false; 
+        isChambering = false;
+        
+        // Snap the gun to its hidden position instantly
+        transform.localPosition = originalPosition + drawOffset; 
     }
 
     public void AddAmmo(int amount)
