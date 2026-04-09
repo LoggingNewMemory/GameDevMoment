@@ -2482,6 +2482,7 @@ MonoBehaviour:
   deathSound: {fileID: 8300000, guid: 012fad142f9413f56a0b29ee71a47b5e, type: 3}
   indomiePrefab: {fileID: 1120337022}
   macNCheesePrefab: {fileID: 977229133}
+  ammoBoxPrefab: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -3738,7 +3739,7 @@ MonoBehaviour:
   healthTextDisplay: {fileID: 0}
   hasUnlimitedEnergy: 0
   isDrunk: 0
-  bgmSource: {fileID: 33559275944514897}
+  bgmSource: {fileID: 1636846694}
 --- !u!135 &1636846704
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4850,7 +4851,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402206395893586}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
