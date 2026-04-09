@@ -12,13 +12,9 @@ public class ConsumableItem : MonoBehaviour
 
     void Start()
     {
-        // THE MAGIC FIX: Automatically create a massive invisible Trigger bubble via code!
         SphereCollider triggerBubble = gameObject.AddComponent<SphereCollider>();
         triggerBubble.isTrigger = true;
         
-        // Because your Vodka is scaled to 0.07, but your Udon is 1.0, 
-        // this math guarantees the bubble is always the exact same human-sized 
-        // area in the world, preventing the player from just stepping over it!
         float scaleFix = Mathf.Abs(transform.localScale.x);
         if (scaleFix < 0.01f) scaleFix = 0.01f;
         triggerBubble.radius = 1.5f / scaleFix;
@@ -29,7 +25,6 @@ public class ConsumableItem : MonoBehaviour
         CheckPickup(other.gameObject);
     }
 
-    // Adding Stay just in case the item spawns directly inside the player!
     void OnTriggerStay(Collider other)
     {
         CheckPickup(other.gameObject);
@@ -48,22 +43,31 @@ public class ConsumableItem : MonoBehaviour
 
             if (stats != null)
             {
+                // SMART PICKUP: If health is full, don't let them accidentally eat food and waste it!
+                if ((typeOfItem == ItemType.IndomieUdon || typeOfItem == ItemType.MacNCheese) && stats.currentHealth >= stats.maxHealth)
+                {
+                    return; // Abort pickup. Leave it on the floor!
+                }
+
                 switch (typeOfItem)
                 {
+                    // Food: FALSE (Caps at 100)
                     case ItemType.IndomieUdon:
-                        stats.HealPercentage(10f);
+                        stats.HealPercentage(10f, false); 
                         break;
+                    case ItemType.MacNCheese:
+                        stats.HealPercentage(20f, false);
+                        break;
+                    
+                    // Drinks: TRUE (Allows Overheal up to 125!)
                     case ItemType.Extrajoss:
-                        stats.HealPercentage(5f);
+                        stats.HealPercentage(5f, true);
                         stats.TriggerUnlimitedEnergy(10f);
                         break;
                     case ItemType.VodkaRey:
-                        stats.HealPercentage(2f);
+                        stats.HealPercentage(2f, true);
                         stats.TriggerUnlimitedEnergy(7f);
                         stats.DrinkVodka(cheekiBreeki, 7f);
-                        break;
-                    case ItemType.MacNCheese:
-                        stats.HealPercentage(20f);
                         break;
                 }
 
