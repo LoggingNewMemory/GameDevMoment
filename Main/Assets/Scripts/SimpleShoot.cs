@@ -27,8 +27,8 @@ public class SimpleShoot : MonoBehaviour
 
     [Header("Reload & Reserve Settings")]
     public int magSize = 30;          
-    public int reserveAmmo = 90;       // NEW: Bullets in your pocket!
-    public int maxReserveAmmo = 180;   // NEW: Max bullets you can carry
+    public int reserveAmmo = 90;       
+    public int maxReserveAmmo = 180;   
     
     private int currentAmmo;          
     private bool isReloading = false; 
@@ -53,7 +53,12 @@ public class SimpleShoot : MonoBehaviour
     public GameObject impactEffectPrefab;
     public TextMeshProUGUI ammoTextDisplay; 
     public Image crosshairDisplay;   
-    public Sprite weaponCrosshair;   
+    public Sprite weaponCrosshair;
+
+    [Header("Railgun Visuals")]
+    public Transform muzzlePoint;     // <-- NEW: Drag the tip of your gun here!
+    public GameObject beamEffectPrefab; // <-- NEW: Drag RailgunBeamEffect Prefab here!
+    private BeamFader spawnedBeamFader; // Reference to the script in the spawned beam
 
     private Vector3 originalPosition; 
     private bool hasStarted = false;
@@ -80,7 +85,6 @@ public class SimpleShoot : MonoBehaviour
         if (hasStarted) 
         {
             transform.localPosition = originalPosition + drawOffset;
-            
             UpdateAmmoUI(); 
             UpdateCrosshairUI();
             StartCoroutine(DrawWeaponRoutine());
@@ -90,11 +94,9 @@ public class SimpleShoot : MonoBehaviour
     void Update()
     {
         if (Mouse.current == null || Keyboard.current == null) return;
-
         if (isReloading || isChambering || isDrawing) return;
 
         // --- RELOAD INPUT ---
-        // NEW: Only allow reload if we have reserve ammo!
         if (currentAmmo <= 0 || Keyboard.current.rKey.wasPressedThisFrame)
         {
             if (currentAmmo < magSize && reserveAmmo > 0) 
@@ -126,53 +128,38 @@ public class SimpleShoot : MonoBehaviour
 
     void UpdateAmmoUI()
     {
-        if (ammoTextDisplay != null)
-        {
-            // NEW: Show Current Ammo / Reserve Ammo (e.g., 30 / 90)
-            ammoTextDisplay.text = currentAmmo + " / " + reserveAmmo;
-        }
+        if (ammoTextDisplay != null) ammoTextDisplay.text = currentAmmo + " / " + reserveAmmo;
     }
 
     void UpdateCrosshairUI()
     {
-        if (crosshairDisplay != null && weaponCrosshair != null)
-        {
-            crosshairDisplay.sprite = weaponCrosshair;
-        }
+        if (crosshairDisplay != null && weaponCrosshair != null) crosshairDisplay.sprite = weaponCrosshair;
     }
 
     IEnumerator DrawWeaponRoutine()
     {
         isDrawing = true;
         if (weaponAudio != null && equipSound != null) weaponAudio.PlayOneShot(equipSound);
-
         Vector3 startPos = originalPosition + drawOffset;
         float elapsedTime = 0f;
-
         while (elapsedTime < drawDuration)
         {
             transform.localPosition = Vector3.Lerp(startPos, originalPosition, elapsedTime / drawDuration);
             elapsedTime += Time.deltaTime;
             yield return null; 
         }
-        
         transform.localPosition = originalPosition;
         isDrawing = false;
     }
 
-    // ==========================================
-    // RELOAD ROUTINES (NOW USES RESERVE AMMO)
-    // ==========================================
     IEnumerator SmoothReloadRoutine()
     {
         isReloading = true;
         if (weaponAudio != null && reloadSound != null) weaponAudio.PlayOneShot(reloadSound);
-
         Vector3 targetHiddenPosition = originalPosition - new Vector3(0f, hideDistance, 0f);
         float audioLength = reloadSound != null ? reloadSound.length : 1.5f;
         float waitTimeAtBottom = audioLength - (slideDuration * 2f);
         if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.1f; 
-
         float elapsedTime = 0f;
         while (elapsedTime < slideDuration)
         {
@@ -181,9 +168,7 @@ public class SimpleShoot : MonoBehaviour
             yield return null; 
         }
         transform.localPosition = targetHiddenPosition; 
-
         yield return new WaitForSeconds(waitTimeAtBottom);
-
         elapsedTime = 0f;
         while (elapsedTime < slideDuration)
         {
@@ -193,19 +178,9 @@ public class SimpleShoot : MonoBehaviour
         }
         transform.localPosition = originalPosition; 
         
-        // NEW MATH: Take bullets from the reserve and put them in the gun
         int ammoNeeded = magSize - currentAmmo;
-        if (reserveAmmo >= ammoNeeded)
-        {
-            currentAmmo += ammoNeeded;
-            reserveAmmo -= ammoNeeded;
-        }
-        else // If we don't have enough to fill the mag, just put whatever is left in!
-        {
-            currentAmmo += reserveAmmo;
-            reserveAmmo = 0;
-        }
-
+        if (reserveAmmo >= ammoNeeded) { currentAmmo += ammoNeeded; reserveAmmo -= ammoNeeded; }
+        else { currentAmmo += reserveAmmo; reserveAmmo = 0; }
         UpdateAmmoUI(); 
         isReloading = false;
     }
@@ -215,7 +190,6 @@ public class SimpleShoot : MonoBehaviour
         isReloading = true;
         Vector3 targetHiddenPosition = originalPosition - new Vector3(0f, hideDistance, 0f);
         float elapsedTime = 0f;
-
         while (elapsedTime < slideDuration)
         {
             transform.localPosition = Vector3.Lerp(originalPosition, targetHiddenPosition, elapsedTime / slideDuration);
@@ -223,31 +197,15 @@ public class SimpleShoot : MonoBehaviour
             yield return null; 
         }
         transform.localPosition = targetHiddenPosition;
-
         int shellsNeeded = magSize - currentAmmo;
         for (int i = 0; i < shellsNeeded; i++)
         {
-            // NEW: Stop reloading if we run out of reserve ammo mid-reload!
             if (reserveAmmo <= 0) break;
-
-            if (weaponAudio != null && insertShellSound != null)
-            {
-                weaponAudio.PlayOneShot(insertShellSound);
-                yield return new WaitForSeconds(insertShellSound.length); 
-            }
+            if (weaponAudio != null && insertShellSound != null) { weaponAudio.PlayOneShot(insertShellSound); yield return new WaitForSeconds(insertShellSound.length); }
             else yield return new WaitForSeconds(0.4f); 
-            
-            currentAmmo++; 
-            reserveAmmo--; // Take one from reserve
-            UpdateAmmoUI(); 
+            currentAmmo++; reserveAmmo--; UpdateAmmoUI(); 
         }
-
-        if (weaponAudio != null && pumpSound != null)
-        {
-            weaponAudio.PlayOneShot(pumpSound);
-            yield return new WaitForSeconds(pumpSound.length);
-        }
-
+        if (weaponAudio != null && pumpSound != null) { weaponAudio.PlayOneShot(pumpSound); yield return new WaitForSeconds(pumpSound.length); }
         elapsedTime = 0f;
         while (elapsedTime < slideDuration)
         {
@@ -256,7 +214,6 @@ public class SimpleShoot : MonoBehaviour
             yield return null; 
         }
         transform.localPosition = originalPosition;
-        
         isReloading = false;
     }
 
@@ -264,40 +221,68 @@ public class SimpleShoot : MonoBehaviour
     {
         currentAmmo--; 
         UpdateAmmoUI(); 
-
         if (weaponAudio != null && fireSound != null) weaponAudio.PlayOneShot(fireSound);
 
         RaycastHit hit;
-        if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        // Start the ray from the camera as usual for aiming
+        Vector3 rayOrigin = fpsCamera.transform.position;
+        Vector3 rayDirection = fpsCamera.transform.forward;
+
+        // Where the beam visually ENDS
+        Vector3 visualEndPoint; 
+
+        if (Physics.Raycast(rayOrigin, rayDirection, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
             EnemyHealth target = hit.collider.GetComponentInParent<EnemyHealth>();
-            
-            // --- THE VODKA DAMAGE BUFF ---
-            if (target != null) 
+            if (target != null)
             {
                 float finalDamage = damage;
                 PlayerStats stats = GetComponentInParent<PlayerStats>();
-                if (stats != null && stats.isDrunk)
-                {
-                    finalDamage *= 1.2f; // +20% Damage!
-                }
-                
+                if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
                 target.TakeDamage(finalDamage);
-            } // <- This is the bracket that went missing!
-            
+            }
             if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+
+            // Set the visual end point to the hit point
+            visualEndPoint = hit.point;
+        }
+        else
+        {
+            // If we hit nothing, the beam goes to the maximum range
+            visualEndPoint = rayOrigin + (rayDirection * range);
+        }
+
+        // --- NEW: TRIGGER RAILGUN VISUALS ---
+        if (muzzlePoint != null && beamEffectPrefab != null)
+        {
+            HandleBeamVisuals(visualEndPoint);
         }
 
         if (isBoltAction) StartCoroutine(ChamberRoundRoutine());
     }
-    
+
+    // Function to manage visual beam objects efficiently
+    void HandleBeamVisuals(Vector3 endPoint)
+    {
+        // For performance, we create ONE beam effect object and reuse it!
+        if (spawnedBeamFader == null)
+        {
+            // Spawn the prefab
+            GameObject newBeam = Instantiate(beamEffectPrefab, Vector3.zero, Quaternion.identity);
+            // Grab its fader script
+            spawnedBeamFader = newBeam.GetComponent<BeamFader>();
+        }
+
+        // Tell the fader to draw and fade the line from the gun tip to the hit point
+        spawnedBeamFader.ActivateBeam(muzzlePoint.position, endPoint);
+    }
+
     IEnumerator ChamberRoundRoutine()
     {
         isChambering = true; 
         Vector3 targetDipPosition = originalPosition - new Vector3(0f, chamberHideDistance, 0f);
         float waitTimeAtBottom = chamberDuration - (slideDuration * 2f);
         if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.05f;
-
         float elapsedTime = 0f;
         while (elapsedTime < slideDuration)
         {
@@ -306,9 +291,7 @@ public class SimpleShoot : MonoBehaviour
             yield return null; 
         }
         transform.localPosition = targetDipPosition;
-
         yield return new WaitForSeconds(waitTimeAtBottom);
-
         elapsedTime = 0f;
         while (elapsedTime < slideDuration)
         {
@@ -322,27 +305,19 @@ public class SimpleShoot : MonoBehaviour
 
     public IEnumerator HolsterWeaponRoutine()
     {
-        isDrawing = true; 
-        isReloading = false; 
-        isChambering = false;
-
+        isDrawing = true; isReloading = false; isChambering = false;
         Vector3 currentPos = transform.localPosition; 
         Vector3 targetPos = originalPosition + drawOffset;
         float elapsedTime = 0f;
-
         while (elapsedTime < drawDuration)
         {
             transform.localPosition = Vector3.Lerp(currentPos, targetPos, elapsedTime / drawDuration);
             elapsedTime += Time.deltaTime;
             yield return null; 
         }
-        
         transform.localPosition = targetPos;
     }
 
-    // ==========================================
-    // NEW: FUNCTION FOR THE AMMO BOX TO CALL
-    // ==========================================
     public void AddAmmo(int amount)
     {
         reserveAmmo += amount;
