@@ -1,21 +1,31 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
-using UnityEngine.UI; // <-- NEW: Required for the Crosshair!
+using UnityEngine.UI;
 
 public class SimpleMelee : MonoBehaviour
 {
     [Header("Melee Stats")]
     public float damage = 40f;          
     public float range = 2.5f;          
-    public float swingSpeed = 0.08f;    
-    public float swingCooldown = 0.35f;  
+    public float swingSpeed = 0.1f;     // Ultra fast snap!
+    public float swingCooldown = 0.4f;  
 
-    [Header("Procedural Animation (Angles)")]
-    public Vector3 restingRotation = new Vector3(0, 0, 0);       
-    public Vector3 swingTargetRotation = new Vector3(45, -60, -20); 
+    [Header("Procedural Animation (Angles & Position)")]
+    public Vector3 restingRotation = new Vector3(15, -20, 10);       
+    public Vector3 swingTargetRotation = new Vector3(65, -85, -40); 
+    
+    [Tooltip("How far the sword lunges forward and down during the swing")]
+    public Vector3 swingPositionalOffset = new Vector3(-0.3f, -0.5f, 0.6f);
 
-    [Header("Weapon Sway/Drawing (Matches Guns)")]
+    [Header("Camera & Juice (The AAA Feel)")]
+    [Tooltip("Violently yanks the camera down/left to match the swing momentum")]
+    public float cameraSwingKickDown = -3f; 
+    public float cameraSwingKickLeft = -1f;
+    [Tooltip("Freezes the game for a microsecond on flesh impacts!")]
+    public bool useHitStop = true;
+
+    [Header("Weapon Sway/Drawing")]
     public Vector3 drawOffset = new Vector3(0, -1f, 0); 
     public float drawTime = 0.5f;
     private Vector3 originalPosition;
@@ -28,11 +38,9 @@ public class SimpleMelee : MonoBehaviour
     public AudioClip hitSound;   
     public GameObject hitEffectPrefab; 
 
-    // --- NEW: CROSSHAIR VISUALS ---
     [Header("Visuals")]
     public Image crosshairDisplay;   
     public Sprite weaponCrosshair;
-    // ------------------------------
 
     private Camera fpsCamera;
     private DoomMovement playerMovement;
@@ -46,7 +54,7 @@ public class SimpleMelee : MonoBehaviour
 
     void OnEnable()
     {
-        UpdateCrosshairUI(); // <-- NEW: Update the crosshair when drawing the sword!
+        UpdateCrosshairUI();
         StartCoroutine(DrawWeaponRoutine());
     }
 
@@ -61,13 +69,10 @@ public class SimpleMelee : MonoBehaviour
         }
     }
 
-    // --- NEW: CROSSHAIR FUNCTION ---
     void UpdateCrosshairUI() 
     { 
         if (crosshairDisplay != null && weaponCrosshair != null) 
-        {
             crosshairDisplay.sprite = weaponCrosshair; 
-        }
     }
 
     IEnumerator SwingRoutine()
@@ -76,19 +81,31 @@ public class SimpleMelee : MonoBehaviour
 
         if (weaponAudio != null && swingSound != null) weaponAudio.PlayOneShot(swingSound);
 
+        // --- THE CAMERA MOMENTUM ---
+        // Violently pull the camera down to simulate the weight of the swing
+        if (playerMovement != null) 
+            playerMovement.AddRecoil(0f, cameraSwingKickDown);
+
         float elapsed = 0f;
         Quaternion startRot = Quaternion.Euler(restingRotation);
         Quaternion targetRot = Quaternion.Euler(swingTargetRotation);
+        Vector3 targetPos = originalPosition + swingPositionalOffset;
 
-        DetectHit();
+        bool hitConnected = DetectHit();
 
+        // 1. THE SLASH (Using Cubic Ease-Out for a violent, snappy strike)
         while (elapsed < swingSpeed)
         {
             elapsed += Time.deltaTime;
-            transform.localRotation = Quaternion.Slerp(startRot, targetRot, elapsed / swingSpeed);
+            float t = elapsed / swingSpeed;
+            float easeT = 1f - Mathf.Pow(1f - t, 3f); // Snaps fast, slows down at the very end
+
+            transform.localRotation = Quaternion.Slerp(startRot, targetRot, easeT);
+            transform.localPosition = Vector3.Lerp(originalPosition, targetPos, easeT);
             yield return null;
         }
 
+        // 2. THE RECOVERY (Using Cubic Ease-In-Out for a smooth pull-back)
         elapsed = 0f;
         float recoveryTime = swingCooldown - swingSpeed; 
         if (recoveryTime <= 0) recoveryTime = 0.1f;
@@ -96,18 +113,24 @@ public class SimpleMelee : MonoBehaviour
         while (elapsed < recoveryTime)
         {
             elapsed += Time.deltaTime;
-            transform.localRotation = Quaternion.Slerp(targetRot, startRot, elapsed / recoveryTime);
+            float t = elapsed / recoveryTime;
+            float easeT = t * t * (3f - 2f * t); // Smoothly pulls the weapon back to ready
+
+            transform.localRotation = Quaternion.Slerp(targetRot, startRot, easeT);
+            transform.localPosition = Vector3.Lerp(targetPos, originalPosition, easeT);
             yield return null;
         }
 
         transform.localRotation = startRot;
+        transform.localPosition = originalPosition;
         isSwinging = false;
     }
 
-    void DetectHit()
+    bool DetectHit()
     {
         RaycastHit hit;
         float hitRadius = 0.5f; 
+        bool hitFlesh = false;
 
         if (Physics.SphereCast(fpsCamera.transform.position, hitRadius, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
         {
@@ -116,11 +139,24 @@ public class SimpleMelee : MonoBehaviour
             if (target != null)
             {
                 target.TakeDamage(damage);
+                hitFlesh = true;
                 
                 if (weaponAudio != null && hitSound != null) weaponAudio.PlayOneShot(hitSound);
                 if (hitEffectPrefab != null) Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                
+                // --- THE HIT-STOP SECRET ---
+                if (useHitStop) StartCoroutine(HitStopRoutine());
             }
         }
+        return hitFlesh;
+    }
+
+    IEnumerator HitStopRoutine()
+    {
+        // Freezes the game scale to 10% speed for a microsecond to make the hit feel brutal
+        Time.timeScale = 0.1f;
+        yield return new WaitForSecondsRealtime(0.04f); 
+        Time.timeScale = 1f;
     }
 
     public IEnumerator DrawWeaponRoutine()
@@ -133,7 +169,8 @@ public class SimpleMelee : MonoBehaviour
         while (elapsed < drawTime)
         {
             elapsed += Time.deltaTime;
-            transform.localPosition = Vector3.Lerp(originalPosition + drawOffset, originalPosition, elapsed / drawTime);
+            float easeT = elapsed / drawTime;
+            transform.localPosition = Vector3.Lerp(originalPosition + drawOffset, originalPosition, easeT);
             yield return null;
         }
         transform.localPosition = originalPosition;
