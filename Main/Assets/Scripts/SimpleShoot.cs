@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections; 
 using TMPro; 
-using UnityEngine.UI; // <-- NEW: Required to change UI Images!
+using UnityEngine.UI;
 
 public class SimpleShoot : MonoBehaviour
 {
@@ -25,8 +25,11 @@ public class SimpleShoot : MonoBehaviour
     public float chamberHideDistance = 0.3f; 
     public float chamberDuration = 1.5f;     
 
-    [Header("Reload Settings")]
+    [Header("Reload & Reserve Settings")]
     public int magSize = 30;          
+    public int reserveAmmo = 90;       // NEW: Bullets in your pocket!
+    public int maxReserveAmmo = 180;   // NEW: Max bullets you can carry
+    
     private int currentAmmo;          
     private bool isReloading = false; 
     private bool isChambering = false; 
@@ -49,8 +52,8 @@ public class SimpleShoot : MonoBehaviour
     [Header("Visuals & UI")]
     public GameObject impactEffectPrefab;
     public TextMeshProUGUI ammoTextDisplay; 
-    public Image crosshairDisplay;   // <-- NEW: The UI Image in the center of the screen
-    public Sprite weaponCrosshair;   // <-- NEW: The specific crosshair for THIS weapon
+    public Image crosshairDisplay;   
+    public Sprite weaponCrosshair;   
 
     private Vector3 originalPosition; 
     private bool hasStarted = false;
@@ -65,7 +68,7 @@ public class SimpleShoot : MonoBehaviour
     void Start()
     {
         UpdateAmmoUI(); 
-        UpdateCrosshairUI(); // Set the crosshair right when the game starts
+        UpdateCrosshairUI();
     }
 
     void OnEnable()
@@ -79,7 +82,7 @@ public class SimpleShoot : MonoBehaviour
             transform.localPosition = originalPosition + drawOffset;
             
             UpdateAmmoUI(); 
-            UpdateCrosshairUI(); // Instantly change the crosshair when equipping!
+            UpdateCrosshairUI();
             StartCoroutine(DrawWeaponRoutine());
         }
     }
@@ -91,9 +94,10 @@ public class SimpleShoot : MonoBehaviour
         if (isReloading || isChambering || isDrawing) return;
 
         // --- RELOAD INPUT ---
+        // NEW: Only allow reload if we have reserve ammo!
         if (currentAmmo <= 0 || Keyboard.current.rKey.wasPressedThisFrame)
         {
-            if (currentAmmo < magSize) 
+            if (currentAmmo < magSize && reserveAmmo > 0) 
             {
                 if (isShotgunReload) StartCoroutine(ShotgunReloadRoutine());
                 else StartCoroutine(SmoothReloadRoutine());
@@ -124,11 +128,11 @@ public class SimpleShoot : MonoBehaviour
     {
         if (ammoTextDisplay != null)
         {
-            ammoTextDisplay.text = currentAmmo + " / " + magSize;
+            // NEW: Show Current Ammo / Reserve Ammo (e.g., 30 / 90)
+            ammoTextDisplay.text = currentAmmo + " / " + reserveAmmo;
         }
     }
 
-    // NEW: Function to swap the crosshair image
     void UpdateCrosshairUI()
     {
         if (crosshairDisplay != null && weaponCrosshair != null)
@@ -137,17 +141,10 @@ public class SimpleShoot : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // EQUIP / DRAW ROUTINE
-    // ==========================================
     IEnumerator DrawWeaponRoutine()
     {
         isDrawing = true;
-
-        if (weaponAudio != null && equipSound != null)
-        {
-            weaponAudio.PlayOneShot(equipSound);
-        }
+        if (weaponAudio != null && equipSound != null) weaponAudio.PlayOneShot(equipSound);
 
         Vector3 startPos = originalPosition + drawOffset;
         float elapsedTime = 0f;
@@ -164,7 +161,7 @@ public class SimpleShoot : MonoBehaviour
     }
 
     // ==========================================
-    // RELOAD ROUTINES
+    // RELOAD ROUTINES (NOW USES RESERVE AMMO)
     // ==========================================
     IEnumerator SmoothReloadRoutine()
     {
@@ -196,7 +193,19 @@ public class SimpleShoot : MonoBehaviour
         }
         transform.localPosition = originalPosition; 
         
-        currentAmmo = magSize;
+        // NEW MATH: Take bullets from the reserve and put them in the gun
+        int ammoNeeded = magSize - currentAmmo;
+        if (reserveAmmo >= ammoNeeded)
+        {
+            currentAmmo += ammoNeeded;
+            reserveAmmo -= ammoNeeded;
+        }
+        else // If we don't have enough to fill the mag, just put whatever is left in!
+        {
+            currentAmmo += reserveAmmo;
+            reserveAmmo = 0;
+        }
+
         UpdateAmmoUI(); 
         isReloading = false;
     }
@@ -218,6 +227,9 @@ public class SimpleShoot : MonoBehaviour
         int shellsNeeded = magSize - currentAmmo;
         for (int i = 0; i < shellsNeeded; i++)
         {
+            // NEW: Stop reloading if we run out of reserve ammo mid-reload!
+            if (reserveAmmo <= 0) break;
+
             if (weaponAudio != null && insertShellSound != null)
             {
                 weaponAudio.PlayOneShot(insertShellSound);
@@ -226,6 +238,7 @@ public class SimpleShoot : MonoBehaviour
             else yield return new WaitForSeconds(0.4f); 
             
             currentAmmo++; 
+            reserveAmmo--; // Take one from reserve
             UpdateAmmoUI(); 
         }
 
@@ -247,18 +260,12 @@ public class SimpleShoot : MonoBehaviour
         isReloading = false;
     }
 
-    // ==========================================
-    // SHOOTING & CHAMBERING
-    // ==========================================
     void Shoot()
     {
         currentAmmo--; 
         UpdateAmmoUI(); 
 
-        if (weaponAudio != null && fireSound != null)
-        {
-            weaponAudio.PlayOneShot(fireSound);
-        }
+        if (weaponAudio != null && fireSound != null) weaponAudio.PlayOneShot(fireSound);
 
         RaycastHit hit;
         if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
@@ -269,22 +276,17 @@ public class SimpleShoot : MonoBehaviour
             if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
         }
 
-        if (isBoltAction)
-        {
-            StartCoroutine(ChamberRoundRoutine());
-        }
+        if (isBoltAction) StartCoroutine(ChamberRoundRoutine());
     }
 
     IEnumerator ChamberRoundRoutine()
     {
         isChambering = true; 
-
         Vector3 targetDipPosition = originalPosition - new Vector3(0f, chamberHideDistance, 0f);
         float waitTimeAtBottom = chamberDuration - (slideDuration * 2f);
         if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.05f;
 
         float elapsedTime = 0f;
-
         while (elapsedTime < slideDuration)
         {
             transform.localPosition = Vector3.Lerp(originalPosition, targetDipPosition, elapsedTime / slideDuration);
@@ -303,13 +305,9 @@ public class SimpleShoot : MonoBehaviour
             yield return null; 
         }
         transform.localPosition = originalPosition;
-
         isChambering = false; 
     }
 
-    // ==========================================
-    // CALLED BY WEAPON SWITCHER
-    // ==========================================
     public IEnumerator HolsterWeaponRoutine()
     {
         isDrawing = true; 
@@ -328,5 +326,21 @@ public class SimpleShoot : MonoBehaviour
         }
         
         transform.localPosition = targetPos;
+    }
+
+    // ==========================================
+    // NEW: FUNCTION FOR THE AMMO BOX TO CALL
+    // ==========================================
+    public void AddAmmo(int amount)
+    {
+        reserveAmmo += amount;
+        
+        // Don't let the player carry a million bullets!
+        if (reserveAmmo > maxReserveAmmo)
+        {
+            reserveAmmo = maxReserveAmmo;
+        }
+        
+        UpdateAmmoUI();
     }
 }

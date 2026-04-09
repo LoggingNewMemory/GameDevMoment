@@ -259,6 +259,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 100
+  reserveAmmo: 90
+  maxReserveAmmo: 180
   hideDistance: 1.5
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 9bb71ab0f24545041b3cf8e9945c0095, type: 3}
@@ -1481,6 +1483,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6934175553500402260, guid: 114b0e4d396e409a7b5335d3a5f6804b, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 6973133540170319222, guid: 114b0e4d396e409a7b5335d3a5f6804b, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -1933,6 +1939,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 40
+  reserveAmmo: 90
+  maxReserveAmmo: 180
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 1d43bd6733bf31690bbacf49b6f3fdf5, type: 3}
@@ -2163,6 +2171,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 7
+  reserveAmmo: 90
+  maxReserveAmmo: 180
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: ba67f82a7b9ad99bd90e36723a8dd55d, type: 3}
@@ -2685,6 +2695,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 2
+  reserveAmmo: 90
+  maxReserveAmmo: 180
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 0e4eee2b51e7d7c689862b786cdef73b, type: 3}
@@ -3008,6 +3020,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 35
+  reserveAmmo: 90
+  maxReserveAmmo: 180
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 972473908e33142a299aadef99de62cf, type: 3}
@@ -3118,6 +3132,125 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1299374266 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+  m_PrefabInstance: {fileID: 1533710785}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1299374267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299374266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d638fe6e6e56cc2b87094b2fc205662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AmmoPickup
+  ammoAmount: 20
+  pickupSound: {fileID: 8300000, guid: 83e09c56afc21ff26a1fbd8355cc4aca, type: 3}
+--- !u!65 &1299374268
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299374266}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1135, y: 474, z: 713}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1001 &1533710785
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0005
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0005
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0005
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.315
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.262
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.226
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4216859302048453862, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      propertyPath: m_Name
+      value: AmmoBox
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1299374268}
+    - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1299374267}
+  m_SourcePrefab: {fileID: 100100000, guid: 45fb3b613218da844b047d1f9349e0d6, type: 3}
 --- !u!1 &1636846675 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6934175553500402260, guid: 114b0e4d396e409a7b5335d3a5f6804b, type: 3}
@@ -3409,6 +3542,8 @@ MonoBehaviour:
   chamberHideDistance: 0.1
   chamberDuration: 1
   magSize: 7
+  reserveAmmo: 90
+  maxReserveAmmo: 180
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 0}
@@ -3663,6 +3798,8 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 45
+  reserveAmmo: 90
+  maxReserveAmmo: 180
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: f8e11dd53ece2d74a8f3f2067c8ca18b, type: 3}
@@ -3997,6 +4134,8 @@ MonoBehaviour:
   chamberHideDistance: 0.1
   chamberDuration: 1.5
   magSize: 5
+  reserveAmmo: 90
+  maxReserveAmmo: 180
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: a8e1a2f9ce21b152d93fc6d1d02ecb41, type: 3}
@@ -4231,3 +4370,4 @@ SceneRoots:
   - {fileID: 538607344}
   - {fileID: 2077778003}
   - {fileID: 113758711}
+  - {fileID: 1533710785}
