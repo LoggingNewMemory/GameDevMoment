@@ -2986,7 +2986,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   typeOfItem: 3
-  pickupSound: {fileID: 0}
+  pickupSound: {fileID: 8300000, guid: 3ef26c804808af2d6a88a291a9d9dd94, type: 3}
   cheekiBreeki: {fileID: 0}
 --- !u!54 &977229138
 Rigidbody:
@@ -3384,7 +3384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   typeOfItem: 0
-  pickupSound: {fileID: 0}
+  pickupSound: {fileID: 8300000, guid: 3ef26c804808af2d6a88a291a9d9dd94, type: 3}
   cheekiBreeki: {fileID: 0}
 --- !u!54 &1120337028
 Rigidbody:
@@ -4842,7 +4842,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   typeOfItem: 2
-  pickupSound: {fileID: 0}
+  pickupSound: {fileID: 8300000, guid: 395afc27730f765e4b9a05e48a1fa270, type: 3}
   cheekiBreeki: {fileID: 8300000, guid: 56bb193cb77fa2a21866b12ba5215a11, type: 3}
 --- !u!82 &33559275944514897
 AudioSource:
@@ -5083,7 +5083,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   typeOfItem: 1
-  pickupSound: {fileID: 0}
+  pickupSound: {fileID: 8300000, guid: 3ef26c804808af2d6a88a291a9d9dd94, type: 3}
   cheekiBreeki: {fileID: 0}
 --- !u!54 &5339654673951924096
 Rigidbody:
