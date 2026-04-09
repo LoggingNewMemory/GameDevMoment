@@ -13,9 +13,9 @@ public class DoomMovement : MonoBehaviour
     public float slideSpeed = 25f; 
 
     [Header("Dashing")]
-    public float dashSpeed = 40f;      // How fast the dash burst is
-    public float dashDuration = 0.2f;  // How long the dash lasts (keep it short!)
-    public float dashCooldown = 1f;    // Wait 1 second before dashing again
+    public float dashSpeed = 40f;      
+    public float dashDuration = 0.2f;  
+    public float dashCooldown = 1f;    
     private bool isDashing = false;
     private float lastDashTime = -100f; 
     private Vector3 dashDirection;
@@ -24,6 +24,10 @@ public class DoomMovement : MonoBehaviour
     public float jumpHeight = 2f;
     public float gravity = -20f; 
     private Vector3 velocity; 
+
+    [Header("Knockback Physics")]
+    public float knockbackDecay = 10f; // How fast the pushback stops
+    private Vector3 knockbackVelocity = Vector3.zero;
 
     [Header("Looking")]
     public float mouseSensitivity = 0.1f; 
@@ -45,7 +49,7 @@ public class DoomMovement : MonoBehaviour
     [Header("Action Audio")]
     public AudioClip jumpSound;  
     public AudioClip slideSound; 
-    public AudioClip dashSound; // <-- NEW: Slot for a "whoosh" dash sound!
+    public AudioClip dashSound; 
 
     void Start()
     {
@@ -100,13 +104,12 @@ public class DoomMovement : MonoBehaviour
             StartCoroutine(SlideRoutine(inputDirection));
         }
 
-        // --- DASHING (Right Click) ---
+        // --- DASHING ---
         if (Mouse.current.rightButton.wasPressedThisFrame && !isDashing && !isSliding)
         {
             PlayerStats stats = GetComponent<PlayerStats>();
             bool hasEnergy = (stats != null && stats.hasUnlimitedEnergy);
 
-            // Dash if cooldown is done OR if we drank Extrajoss/Vodka!
             if (Time.time >= lastDashTime + dashCooldown || hasEnergy)
             {
                 StartCoroutine(DashRoutine(inputDirection));
@@ -115,21 +118,9 @@ public class DoomMovement : MonoBehaviour
 
         // --- APPLY MOVEMENT ---
         Vector3 move;
-        if (isDashing)
-        {
-            // Override everything with the massive dash burst!
-            move = dashDirection * dashSpeed;
-        }
-        else if (isSliding)
-        {
-            currentSpeed = slideSpeed;
-            move = slideDirection * currentSpeed; 
-        }
-        else
-        {
-            move = inputDirection * currentSpeed;
-        }
-
+        if (isDashing) move = dashDirection * dashSpeed;
+        else if (isSliding) { currentSpeed = slideSpeed; move = slideDirection * currentSpeed; }
+        else move = inputDirection * currentSpeed;
 
         // --- 4. JUMPING ---
         if (Keyboard.current.spaceKey.wasPressedThisFrame && controller.isGrounded && !isSliding && !isDashing)
@@ -139,65 +130,40 @@ public class DoomMovement : MonoBehaviour
         }
 
         velocity.y += gravity * Time.deltaTime;
-        controller.Move((move + velocity) * Time.deltaTime); 
 
+        // NEW: Add the knockback velocity to our movement!
+        controller.Move((move + velocity + knockbackVelocity) * Time.deltaTime); 
+
+        // NEW: Rapidly slow down the knockback force so we don't slide forever
+        knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecay * Time.deltaTime);
 
         // --- 5. FOOTSTEP AUDIO ---
-        // Don't play normal footsteps while sliding or dashing
         if (controller.isGrounded && controller.velocity.magnitude > 0.1f && !isSliding && !isDashing)
         {
             stepTimer -= Time.deltaTime;
-
-            if (stepTimer <= 0f)
-            {
-                PlayFootstepSound();
-                stepTimer = isRunning ? stepInterval * 0.7f : stepInterval; 
-            }
+            if (stepTimer <= 0f) { PlayFootstepSound(); stepTimer = isRunning ? stepInterval * 0.7f : stepInterval; }
         }
-        else
-        {
-            stepTimer = 0f; 
-        }
+        else stepTimer = 0f; 
     }
 
     IEnumerator SlideRoutine(Vector3 startDirection)
     {
-        isSliding = true;
-        slideDirection = startDirection; 
-
+        isSliding = true; slideDirection = startDirection; 
         controller.height = slideHeight;
-        
         Vector3 originalCamPos = playerCamera.localPosition;
         playerCamera.localPosition = new Vector3(originalCamPos.x, originalCamPos.y - (originalHeight - slideHeight) / 2f, originalCamPos.z);
-
         yield return new WaitForSeconds(slideDuration);
-
-        controller.height = originalHeight;
-        playerCamera.localPosition = originalCamPos;
+        controller.height = originalHeight; playerCamera.localPosition = originalCamPos;
         isSliding = false;
     }
 
     IEnumerator DashRoutine(Vector3 currentInputDirection)
     {
-        isDashing = true;
-        lastDashTime = Time.time; // Reset the cooldown timer!
-
-        // Play the dash sound
+        isDashing = true; lastDashTime = Time.time; 
         if (playerAudio != null && dashSound != null) playerAudio.PlayOneShot(dashSound);
-
-        // If the player isn't pressing WASD, default to dashing straight forward
-        if (currentInputDirection.magnitude == 0)
-        {
-            dashDirection = transform.forward;
-        }
-        else
-        {
-            dashDirection = currentInputDirection;
-        }
-
-        // Wait for the tiny fraction of a second the dash lasts
+        if (currentInputDirection.magnitude == 0) dashDirection = transform.forward;
+        else dashDirection = currentInputDirection;
         yield return new WaitForSeconds(dashDuration);
-
         isDashing = false;
     }
 
@@ -208,5 +174,20 @@ public class DoomMovement : MonoBehaviour
             int randomIndex = Random.Range(0, footstepSounds.Length);
             playerAudio.PlayOneShot(footstepSounds[randomIndex]);
         }
+    }
+
+    // ==========================================
+    // CALLED BY THE WEAPON SCRIPT WHEN SHOOTING!
+    // ==========================================
+    public void AddRecoil(float pushBackForce, float cameraKickUp)
+    {
+        // 1. Shove the player physically backwards (opposite of where the camera is looking)
+        knockbackVelocity -= playerCamera.forward * pushBackForce;
+        
+        // 2. Jerk the camera upwards
+        xRotation -= cameraKickUp;
+        
+        // Make sure the camera doesn't snap past looking straight up
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f); 
     }
 }
