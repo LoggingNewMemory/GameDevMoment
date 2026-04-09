@@ -254,6 +254,10 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 15
+  playerKnockbackForce: 0.5
+  cameraKickForce: 0.9
+  weaponVisualKick: 0.2
+  weaponRecoverySpeed: 8
   drawDuration: 0.5
   drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
@@ -1942,6 +1946,10 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 5
+  playerKnockbackForce: 0
+  cameraKickForce: 0.6
+  weaponVisualKick: 0.15
+  weaponRecoverySpeed: 12
   drawDuration: 0.5
   drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
@@ -2176,6 +2184,10 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
+  playerKnockbackForce: 0
+  cameraKickForce: 0.5
+  weaponVisualKick: 0.1
+  weaponRecoverySpeed: 15
   drawDuration: 0.5
   drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
@@ -2400,6 +2412,10 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.14363283
       objectReference: {fileID: 0}
+    - target: {fileID: 1813829617959390610, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 006ca217383f92edc873a34037a4c2f1, type: 2}
     - target: {fileID: 2508850885639083900, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
       propertyPath: m_DirtyAABB
       value: 0
@@ -2708,6 +2724,10 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
+  playerKnockbackForce: 15
+  cameraKickForce: 6
+  weaponVisualKick: 0.7
+  weaponRecoverySpeed: 3
   drawDuration: 0.5
   drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
@@ -3173,6 +3193,10 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 6
+  playerKnockbackForce: 0
+  cameraKickForce: 0.3
+  weaponVisualKick: 0.07
+  weaponRecoverySpeed: 17
   drawDuration: 0.5
   drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
@@ -3659,6 +3683,7 @@ MonoBehaviour:
   dashCooldown: 1
   jumpHeight: 2
   gravity: -20
+  knockbackDecay: 10
   mouseSensitivity: 0.1
   slideDuration: 0.8
   slideHeight: 1
@@ -3937,6 +3962,10 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 5
+  playerKnockbackForce: 5
+  cameraKickForce: 3
+  weaponVisualKick: 0.4
+  weaponRecoverySpeed: 5
   drawDuration: 0.5
   drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 0.1
@@ -4332,6 +4361,10 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 7
+  playerKnockbackForce: 0
+  cameraKickForce: 0.2
+  weaponVisualKick: 0.05
+  weaponRecoverySpeed: 20
   drawDuration: 0.5
   drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 1.5
@@ -4671,6 +4704,10 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 5
+  playerKnockbackForce: 0
+  cameraKickForce: 4.5
+  weaponVisualKick: 0.5
+  weaponRecoverySpeed: 4
   drawDuration: 0.5
   drawOffset: {x: 0.5, y: -0.8, z: 0}
   chamberHideDistance: 0.1
