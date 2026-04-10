@@ -75,16 +75,29 @@ public class SimpleShoot : MonoBehaviour
     public Color flashColor = new Color(1f, 1f, 1f, 1f); 
     public float flashFadeDuration = 0.5f; 
 
+    private Vector3 baseStartPos;    // <-- NEW: Stores the true, permanent original position
     private Vector3 originalPosition; 
     private bool hasStarted = false;
 
+    // --- SKILL INTEGRATION VARIABLES ---
+    private PlayerSkills playerSkills;
+    private bool wasHaluActive = false;
+    
+    // --- DUAL WIELD CLONE VARIABLES ---
+    private GameObject leftGunInstance;
+    private Transform leftGunMuzzle;
+    private BeamFader leftSpawnedBeamFader; 
+
     void Awake()
     {
-        originalPosition = transform.localPosition;
+        baseStartPos = transform.localPosition; // Store the permanent default
+        originalPosition = baseStartPos;        // This one can be temporarily changed by Halu!
+        
         currentAmmo = magSize; 
         hasStarted = true;
         
         playerMovement = GetComponentInParent<DoomMovement>();
+        playerSkills = GetComponentInParent<PlayerSkills>(); 
     }
 
     void Start()
@@ -107,9 +120,24 @@ public class SimpleShoot : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null || (playerMovement != null && playerMovement.isKnockedDown)) return;
         
+        // --- HALU OF CS CLONING LOGIC ---
+        if (playerSkills != null)
+        {
+            if (playerSkills.isHaluActive && !wasHaluActive)
+            {
+                EnableDualWield();
+                wasHaluActive = true;
+            }
+            else if (!playerSkills.isHaluActive && wasHaluActive)
+            {
+                DisableDualWield();
+                wasHaluActive = false;
+            }
+        }
+
         if (!isReloading && !isChambering && !isDrawing)
         {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, originalPosition, weaponRecoverySpeed * Time.deltaTime);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, originalPosition, weaponRecoverySpeed * Time.unscaledDeltaTime);
         }
 
         if (isReloading || isChambering || isDrawing) return;
@@ -126,18 +154,74 @@ public class SimpleShoot : MonoBehaviour
 
         if (isAutomatic)
         {
-            if (Mouse.current.leftButton.isPressed && Time.time >= nextTimeToFire && currentAmmo > 0)
+            if (Mouse.current.leftButton.isPressed && Time.unscaledTime >= nextTimeToFire && currentAmmo > 0)
             {
-                nextTimeToFire = Time.time + 1f / fireRate; Shoot();
+                nextTimeToFire = Time.unscaledTime + 1f / fireRate; Shoot();
             }
         }
         else
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame && Time.time >= nextTimeToFire && currentAmmo > 0)
+            if (Mouse.current.leftButton.wasPressedThisFrame && Time.unscaledTime >= nextTimeToFire && currentAmmo > 0)
             {
-                nextTimeToFire = Time.time + 1f / fireRate; Shoot();
+                nextTimeToFire = Time.unscaledTime + 1f / fireRate; Shoot();
             }
         }
+    }
+
+    void LateUpdate()
+    {
+        if (leftGunInstance != null)
+        {
+            Vector3 targetPos = transform.localPosition;
+            
+            // Just cleanly flip the X to the other side! No messy scaling needed.
+            targetPos.x = -targetPos.x; 
+            
+            leftGunInstance.transform.localPosition = targetPos;
+            
+            // Exact same rotation as the right gun so it points forward properly
+            leftGunInstance.transform.localRotation = transform.localRotation;
+        }
+    }
+
+    void EnableDualWield()
+    {
+        leftGunInstance = Instantiate(gameObject, transform.parent);
+        
+        Destroy(leftGunInstance.GetComponent<SimpleShoot>()); 
+        if (leftGunInstance.GetComponent("WeaponSway") != null) Destroy(leftGunInstance.GetComponent("WeaponSway"));
+        if (leftGunInstance.GetComponent("WeaponSwitcher") != null) Destroy(leftGunInstance.GetComponent("WeaponSwitcher"));
+
+        // --- NEW: If your gun is centered, physically shove the main gun to the right so there is room! ---
+        if (Mathf.Abs(baseStartPos.x) < 0.15f)
+        {
+            originalPosition = baseStartPos + new Vector3(0.4f, 0f, 0f);
+        }
+
+        if (muzzlePoint != null)
+        {
+            foreach (Transform child in leftGunInstance.GetComponentsInChildren<Transform>())
+            {
+                if (child.name == muzzlePoint.name)
+                {
+                    leftGunMuzzle = child;
+                    break;
+                }
+            }
+        }
+    }
+
+    void DisableDualWield()
+    {
+        if (leftGunInstance != null)
+        {
+            Destroy(leftGunInstance);
+            leftGunInstance = null;
+            leftGunMuzzle = null;
+        }
+        
+        // Reset the main gun back to its perfect center position!
+        originalPosition = baseStartPos;
     }
 
     void UpdateAmmoUI() { if (ammoTextDisplay != null) ammoTextDisplay.text = currentAmmo + " / " + reserveAmmo; }
@@ -152,7 +236,7 @@ public class SimpleShoot : MonoBehaviour
         while (elapsedTime < drawDuration)
         {
             transform.localPosition = Vector3.Lerp(startPos, originalPosition, elapsedTime / drawDuration);
-            elapsedTime += Time.deltaTime; yield return null; 
+            elapsedTime += Time.unscaledDeltaTime; yield return null; 
         }
         transform.localPosition = originalPosition; isDrawing = false;
     }
@@ -161,23 +245,30 @@ public class SimpleShoot : MonoBehaviour
     {
         isReloading = true;
         if (weaponAudio != null && reloadSound != null) weaponAudio.PlayOneShot(reloadSound);
+        
+        float speedMod = (playerSkills != null && playerSkills.isRageActive) ? playerSkills.rageSpeedMultiplier : 1f;
+        float currentSlide = slideDuration / speedMod;
+
         Vector3 targetHiddenPosition = originalPosition - new Vector3(0f, hideDistance, 0f);
         float audioLength = reloadSound != null ? reloadSound.length : 1.5f;
-        float waitTimeAtBottom = audioLength - (slideDuration * 2f);
+        float waitTimeAtBottom = (audioLength / speedMod) - (currentSlide * 2f);
         if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.1f; 
+
         float elapsedTime = 0f;
-        while (elapsedTime < slideDuration)
+        while (elapsedTime < currentSlide)
         {
-            transform.localPosition = Vector3.Lerp(originalPosition, targetHiddenPosition, elapsedTime / slideDuration);
-            elapsedTime += Time.deltaTime; yield return null; 
+            transform.localPosition = Vector3.Lerp(originalPosition, targetHiddenPosition, elapsedTime / currentSlide);
+            elapsedTime += Time.unscaledDeltaTime; yield return null; 
         }
         transform.localPosition = targetHiddenPosition; 
-        yield return new WaitForSeconds(waitTimeAtBottom);
+        
+        yield return new WaitForSecondsRealtime(waitTimeAtBottom);
+        
         elapsedTime = 0f;
-        while (elapsedTime < slideDuration)
+        while (elapsedTime < currentSlide)
         {
-            transform.localPosition = Vector3.Lerp(targetHiddenPosition, originalPosition, elapsedTime / slideDuration);
-            elapsedTime += Time.deltaTime; yield return null; 
+            transform.localPosition = Vector3.Lerp(targetHiddenPosition, originalPosition, elapsedTime / currentSlide);
+            elapsedTime += Time.unscaledDeltaTime; yield return null; 
         }
         transform.localPosition = originalPosition; 
         
@@ -190,28 +281,45 @@ public class SimpleShoot : MonoBehaviour
     IEnumerator ShotgunReloadRoutine()
     {
         isReloading = true;
+        
+        float speedMod = (playerSkills != null && playerSkills.isRageActive) ? playerSkills.rageSpeedMultiplier : 1f;
+        float currentSlide = slideDuration / speedMod;
+
         Vector3 targetHiddenPosition = originalPosition - new Vector3(0f, hideDistance, 0f);
         float elapsedTime = 0f;
-        while (elapsedTime < slideDuration)
+        while (elapsedTime < currentSlide)
         {
-            transform.localPosition = Vector3.Lerp(originalPosition, targetHiddenPosition, elapsedTime / slideDuration);
-            elapsedTime += Time.deltaTime; yield return null; 
+            transform.localPosition = Vector3.Lerp(originalPosition, targetHiddenPosition, elapsedTime / currentSlide);
+            elapsedTime += Time.unscaledDeltaTime; yield return null; 
         }
         transform.localPosition = targetHiddenPosition;
+        
         int shellsNeeded = magSize - currentAmmo;
         for (int i = 0; i < shellsNeeded; i++)
         {
             if (reserveAmmo <= 0) break;
-            if (weaponAudio != null && insertShellSound != null) { weaponAudio.PlayOneShot(insertShellSound); yield return new WaitForSeconds(insertShellSound.length); }
-            else yield return new WaitForSeconds(0.4f); 
+            
+            if (weaponAudio != null && insertShellSound != null) 
+            { 
+                weaponAudio.PlayOneShot(insertShellSound); 
+                yield return new WaitForSecondsRealtime(insertShellSound.length / speedMod); 
+            }
+            else yield return new WaitForSecondsRealtime(0.4f / speedMod); 
+            
             currentAmmo++; reserveAmmo--; UpdateAmmoUI(); 
         }
-        if (weaponAudio != null && pumpSound != null) { weaponAudio.PlayOneShot(pumpSound); yield return new WaitForSeconds(pumpSound.length); }
+        
+        if (weaponAudio != null && pumpSound != null) 
+        { 
+            weaponAudio.PlayOneShot(pumpSound); 
+            yield return new WaitForSecondsRealtime(pumpSound.length / speedMod); 
+        }
+        
         elapsedTime = 0f;
-        while (elapsedTime < slideDuration)
+        while (elapsedTime < currentSlide)
         {
-            transform.localPosition = Vector3.Lerp(targetHiddenPosition, originalPosition, elapsedTime / slideDuration);
-            elapsedTime += Time.deltaTime; yield return null; 
+            transform.localPosition = Vector3.Lerp(targetHiddenPosition, originalPosition, elapsedTime / currentSlide);
+            elapsedTime += Time.unscaledDeltaTime; yield return null; 
         }
         transform.localPosition = originalPosition; isReloading = false;
     }
@@ -224,7 +332,6 @@ public class SimpleShoot : MonoBehaviour
         if (playerMovement != null) playerMovement.AddRecoil(playerKnockbackForce, cameraKickForce);
         transform.localPosition = originalPosition - new Vector3(0f, 0f, weaponVisualKick);
 
-        // Standard Muzzle Flash
         if (muzzleFlashPrefab != null && muzzlePoint != null)
         {
             GameObject flash = Instantiate(muzzleFlashPrefab, muzzlePoint.position, muzzlePoint.rotation);
@@ -232,77 +339,81 @@ public class SimpleShoot : MonoBehaviour
             Destroy(flash, 0.05f); 
         }
 
-        // Railgun Screen Flash
+        if (wasHaluActive && muzzleFlashPrefab != null && leftGunMuzzle != null)
+        {
+            GameObject flashL = Instantiate(muzzleFlashPrefab, leftGunMuzzle.position, leftGunMuzzle.rotation);
+            flashL.transform.SetParent(leftGunMuzzle);
+            Destroy(flashL, 0.05f); 
+        }
+
         if (isRailgun && useScreenFlash && screenFlashImage != null)
         {
             StartCoroutine(ScreenFlashRoutine());
         }
 
         Vector3 rayOrigin = fpsCamera.transform.position;
-        Vector3 visualEndPoint = rayOrigin + (fpsCamera.transform.forward * range);
-        
-        // If it's a shotgun, fire multiple pellets. Otherwise, just fire 1.
-        int shotsToFire = isShotgun ? pelletCount : 1;
+        int gunsToFire = wasHaluActive ? 2 : 1;
 
-        for (int i = 0; i < shotsToFire; i++)
+        for (int g = 0; g < gunsToFire; g++)
         {
-            Vector3 rayDirection = fpsCamera.transform.forward;
+            Vector3 visualEndPoint = rayOrigin + (fpsCamera.transform.forward * range);
+            int shotsToFire = isShotgun ? pelletCount : 1;
 
-            // --- THE SHOTGUN SPREAD ---
-            if (isShotgun)
+            for (int i = 0; i < shotsToFire; i++)
             {
-                float spreadX = Random.Range(-spreadAngle, spreadAngle);
-                float spreadY = Random.Range(-spreadAngle, spreadAngle);
-                rayDirection = Quaternion.Euler(spreadX, spreadY, 0) * rayDirection;
-            }
+                Vector3 rayDirection = fpsCamera.transform.forward;
 
-            float finalDamage = damage;
-            PlayerStats stats = GetComponentInParent<PlayerStats>();
-            if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
-
-            // --- THE RAILGUN PIERCING BEAM ---
-            if (isRailgun)
-            {
-                RaycastHit[] hits = Physics.RaycastAll(rayOrigin, rayDirection, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
-                
-                foreach (RaycastHit hit in hits)
+                if (isShotgun)
                 {
-                    IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
-                    if (target != null) target.TakeDamage(finalDamage);
-                    
-                    if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                    float spreadX = Random.Range(-spreadAngle, spreadAngle);
+                    float spreadY = Random.Range(-spreadAngle, spreadAngle);
+                    rayDirection = Quaternion.Euler(spreadX, spreadY, 0) * rayDirection;
+                }
+
+                float finalDamage = damage;
+                PlayerStats stats = GetComponentInParent<PlayerStats>();
+                if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
+
+                if (isRailgun)
+                {
+                    RaycastHit[] hits = Physics.RaycastAll(rayOrigin, rayDirection, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+                    foreach (RaycastHit hit in hits)
+                    {
+                        IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
+                        if (target != null) target.TakeDamage(finalDamage);
+                        if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                    }
+                }
+                else 
+                {
+                    if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                    {
+                        IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
+                        if (target != null) target.TakeDamage(finalDamage);
+                        if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                        if (!isShotgun) visualEndPoint = hit.point;
+                    }
                 }
             }
-            // --- STANDARD GUNS & SHOTGUN PELLETS ---
-            else 
-            {
-                RaycastHit hit;
-                if (Physics.Raycast(rayOrigin, rayDirection, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                {
-                    IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
-                    if (target != null) target.TakeDamage(finalDamage);
 
-                    if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-                    
-                    if (!isShotgun) visualEndPoint = hit.point;
-                }
+            if (!isShotgun && beamEffectPrefab != null) 
+            {
+                if (g == 0 && muzzlePoint != null) HandleBeamVisuals(visualEndPoint, ref spawnedBeamFader, muzzlePoint);
+                if (g == 1 && leftGunMuzzle != null) HandleBeamVisuals(visualEndPoint, ref leftSpawnedBeamFader, leftGunMuzzle);
             }
         }
-
-        // Draw the Beam Visual (Only for single-shot/railgun weapons)
-        if (!isShotgun && muzzlePoint != null && beamEffectPrefab != null) HandleBeamVisuals(visualEndPoint);
         
         if (isBoltAction) StartCoroutine(ChamberRoundRoutine());
     }
 
-    void HandleBeamVisuals(Vector3 endPoint)
+    void HandleBeamVisuals(Vector3 endPoint, ref BeamFader fader, Transform muzzle)
     {
-        if (spawnedBeamFader == null)
+        if (fader == null)
         {
             GameObject newBeam = Instantiate(beamEffectPrefab, Vector3.zero, Quaternion.identity);
-            spawnedBeamFader = newBeam.GetComponent<BeamFader>();
+            fader = newBeam.GetComponent<BeamFader>();
         }
-        spawnedBeamFader.ActivateBeam(muzzlePoint.position, endPoint);
+        fader.ActivateBeam(muzzle.position, endPoint);
     }
 
     IEnumerator ScreenFlashRoutine()
@@ -311,7 +422,7 @@ public class SimpleShoot : MonoBehaviour
         float elapsed = 0f;
         while(elapsed < flashFadeDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             float alpha = Mathf.Lerp(1f, 0f, elapsed / flashFadeDuration);
             screenFlashImage.color = new Color(flashColor.r, flashColor.g, flashColor.b, alpha);
             yield return null;
@@ -322,22 +433,29 @@ public class SimpleShoot : MonoBehaviour
     IEnumerator ChamberRoundRoutine()
     {
         isChambering = true; 
+        
+        float speedMod = (playerSkills != null && playerSkills.isRageActive) ? playerSkills.rageSpeedMultiplier : 1f;
+        float currentSlide = slideDuration / speedMod;
+
         Vector3 targetDipPosition = originalPosition - new Vector3(0f, chamberHideDistance, 0f);
-        float waitTimeAtBottom = chamberDuration - (slideDuration * 2f);
+        float waitTimeAtBottom = (chamberDuration / speedMod) - (currentSlide * 2f);
         if (waitTimeAtBottom < 0) waitTimeAtBottom = 0.05f;
+
         float elapsedTime = 0f;
-        while (elapsedTime < slideDuration)
+        while (elapsedTime < currentSlide)
         {
-            transform.localPosition = Vector3.Lerp(originalPosition, targetDipPosition, elapsedTime / slideDuration);
-            elapsedTime += Time.deltaTime; yield return null; 
+            transform.localPosition = Vector3.Lerp(originalPosition, targetDipPosition, elapsedTime / currentSlide);
+            elapsedTime += Time.unscaledDeltaTime; yield return null; 
         }
         transform.localPosition = targetDipPosition;
-        yield return new WaitForSeconds(waitTimeAtBottom);
+        
+        yield return new WaitForSecondsRealtime(waitTimeAtBottom);
+        
         elapsedTime = 0f;
-        while (elapsedTime < slideDuration)
+        while (elapsedTime < currentSlide)
         {
-            transform.localPosition = Vector3.Lerp(targetDipPosition, originalPosition, elapsedTime / slideDuration);
-            elapsedTime += Time.deltaTime; yield return null; 
+            transform.localPosition = Vector3.Lerp(targetDipPosition, originalPosition, elapsedTime / currentSlide);
+            elapsedTime += Time.unscaledDeltaTime; yield return null; 
         }
         transform.localPosition = originalPosition; isChambering = false; 
     }
@@ -351,7 +469,7 @@ public class SimpleShoot : MonoBehaviour
         while (elapsedTime < drawDuration)
         {
             transform.localPosition = Vector3.Lerp(currentPos, targetPos, elapsedTime / drawDuration);
-            elapsedTime += Time.deltaTime; yield return null; 
+            elapsedTime += Time.unscaledDeltaTime; yield return null; 
         }
         transform.localPosition = targetPos;
     }

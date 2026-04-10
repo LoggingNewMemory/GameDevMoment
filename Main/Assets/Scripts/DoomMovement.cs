@@ -11,6 +11,7 @@ public class DoomMovement : MonoBehaviour
     public float walkSpeed = 10f; 
     public float runSpeed = 18f; 
     public float slideSpeed = 25f; 
+    public float speedMultiplier = 1f; // <-- NEW: Used by Rage of CS
 
     [Header("Dashing")]
     public float dashSpeed = 40f;      
@@ -30,8 +31,6 @@ public class DoomMovement : MonoBehaviour
     private Vector3 knockbackVelocity = Vector3.zero;
     public bool isKnockedDown = false; 
     private float stumbleTimer = 0f; 
-    
-    // --- NEW: Tracks the roll so it can smoothly reset when sober ---
     private float currentDizzyRoll = 0f; 
 
     [Header("Looking")]
@@ -65,8 +64,9 @@ public class DoomMovement : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null) return;
 
+        // Use UNSCALED time so player ignores Sandevistan
         if (controller.isGrounded && velocity.y < 0) velocity.y = -2f; 
-        velocity.y += gravity * Time.deltaTime;
+        velocity.y += gravity * Time.unscaledDeltaTime;
 
         Vector3 move = Vector3.zero;
 
@@ -76,12 +76,11 @@ public class DoomMovement : MonoBehaviour
             xRotation -= mouseDelta.y * mouseSensitivity;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f); 
 
-            // --- DIZZY CAMERA SWAY & RANDOM STUMBLING ---
             PlayerStats stats = GetComponent<PlayerStats>();
             
             if (stats != null && stats.dizzyStacks > 0)
             {
-                currentDizzyRoll = Mathf.Sin(Time.time * (2f + stats.dizzyStacks)) * (2f * stats.dizzyStacks);
+                currentDizzyRoll = Mathf.Sin(Time.unscaledTime * (2f + stats.dizzyStacks)) * (2f * stats.dizzyStacks);
 
                 if (Random.Range(0f, 100f) < (0.5f * stats.dizzyStacks)) 
                 {
@@ -90,13 +89,11 @@ public class DoomMovement : MonoBehaviour
             }
             else
             {
-                // Smoothly return the camera tilt back to perfectly level
-                currentDizzyRoll = Mathf.Lerp(currentDizzyRoll, 0f, Time.deltaTime * 5f);
+                currentDizzyRoll = Mathf.Lerp(currentDizzyRoll, 0f, Time.unscaledDeltaTime * 5f);
             }
 
             playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, currentDizzyRoll);
             transform.Rotate(Vector3.up * (mouseDelta.x * mouseSensitivity));
-            // ----------------------------------------------
 
             float x = 0f; float z = 0f;
             if (Keyboard.current.wKey.isPressed) z += 1f;
@@ -111,10 +108,12 @@ public class DoomMovement : MonoBehaviour
             bool isRunning = Keyboard.current.leftShiftKey.isPressed && z > 0;
             if (isRunning && !isSliding && !isDashing) currentSpeed = runSpeed;
 
-            // Apply Stumble slow-down
+            // Apply Rage of CS Boost
+            currentSpeed *= speedMultiplier;
+
             if (stumbleTimer > 0f)
             {
-                stumbleTimer -= Time.deltaTime;
+                stumbleTimer -= Time.unscaledDeltaTime;
                 currentSpeed *= 0.1f; 
             }
 
@@ -126,7 +125,7 @@ public class DoomMovement : MonoBehaviour
 
             if (Mouse.current.rightButton.wasPressedThisFrame && !isDashing && !isSliding)
             {
-                if (Time.time >= lastDashTime + dashCooldown || (stats != null && stats.hasUnlimitedEnergy))
+                if (Time.unscaledTime >= lastDashTime + dashCooldown || (stats != null && stats.hasUnlimitedEnergy))
                     StartCoroutine(DashRoutine(inputDirection));
             }
 
@@ -136,20 +135,20 @@ public class DoomMovement : MonoBehaviour
                 if (playerAudio != null && jumpSound != null) playerAudio.PlayOneShot(jumpSound);
             }
 
-            if (isDashing) move = dashDirection * dashSpeed;
-            else if (isSliding) move = slideDirection * slideSpeed;
+            if (isDashing) move = dashDirection * dashSpeed * speedMultiplier;
+            else if (isSliding) move = slideDirection * slideSpeed * speedMultiplier;
             else move = inputDirection * currentSpeed;
 
             if (controller.isGrounded && controller.velocity.magnitude > 0.1f && !isSliding && !isDashing)
             {
-                stepTimer -= Time.deltaTime;
+                stepTimer -= Time.unscaledDeltaTime;
                 if (stepTimer <= 0f) { PlayFootstepSound(); stepTimer = isRunning ? stepInterval * 0.7f : stepInterval; }
             }
             else stepTimer = 0f; 
         }
 
-        controller.Move((move + velocity + knockbackVelocity) * Time.deltaTime); 
-        knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecay * Time.deltaTime);
+        controller.Move((move + velocity + knockbackVelocity) * Time.unscaledDeltaTime); 
+        knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecay * Time.unscaledDeltaTime);
     }
 
     public void ApplyPunchKnockback(Vector3 direction, float force)
@@ -168,25 +167,19 @@ public class DoomMovement : MonoBehaviour
         while (elapsed < duration)
         {
             if (isKnockedDown) yield break; 
-            
-            float step = (kickAmount / duration) * Time.deltaTime;
+            float step = (kickAmount / duration) * Time.unscaledDeltaTime;
             xRotation -= step;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-            
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
     }
 
-    public void TriggerKnockdown()
-    {
-        if (!isKnockedDown) StartCoroutine(KnockdownRoutine());
-    }
+    public void TriggerKnockdown() { if (!isKnockedDown) StartCoroutine(KnockdownRoutine()); }
 
     IEnumerator KnockdownRoutine()
     {
         isKnockedDown = true;
-        
         SimpleShoot activeGun = GetComponentInChildren<SimpleShoot>();
         SimpleMelee activeMelee = GetComponentInChildren<SimpleMelee>();
 
@@ -203,20 +196,20 @@ public class DoomMovement : MonoBehaviour
 
         while(elapsed < fallDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             playerCamera.localPosition = Vector3.Lerp(normalCamPos, fallenCamPos, elapsed / fallDuration);
             xRotation = Mathf.Lerp(startXRot, 75f, elapsed / fallDuration); 
             playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, Mathf.Lerp(0f, 65f, elapsed / fallDuration)); 
             yield return null;
         }
 
-        yield return new WaitForSeconds(1.5f); 
+        yield return new WaitForSecondsRealtime(1.5f); 
 
         elapsed = 0f;
         float riseDuration = 0.5f; 
         while(elapsed < riseDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             playerCamera.localPosition = Vector3.Lerp(fallenCamPos, normalCamPos, elapsed / riseDuration);
             xRotation = Mathf.Lerp(75f, 0f, elapsed / riseDuration);
             playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, Mathf.Lerp(65f, 0f, elapsed / riseDuration));
@@ -232,7 +225,7 @@ public class DoomMovement : MonoBehaviour
     }
 
     public void AddRecoil(float pushBackForce, float cameraKickUp) { if (isKnockedDown) return; knockbackVelocity -= playerCamera.forward * pushBackForce; xRotation -= cameraKickUp; xRotation = Mathf.Clamp(xRotation, -90f, 90f); }
-    IEnumerator SlideRoutine(Vector3 startDirection) { isSliding = true; slideDirection = startDirection; controller.height = slideHeight; Vector3 originalCamPos = playerCamera.localPosition; playerCamera.localPosition = new Vector3(originalCamPos.x, originalCamPos.y - (originalHeight - slideHeight) / 2f, originalCamPos.z); yield return new WaitForSeconds(slideDuration); controller.height = originalHeight; playerCamera.localPosition = originalCamPos; isSliding = false; }
-    IEnumerator DashRoutine(Vector3 currentInputDirection) { isDashing = true; lastDashTime = Time.time; if (playerAudio != null && dashSound != null) playerAudio.PlayOneShot(dashSound); if (currentInputDirection.magnitude == 0) dashDirection = transform.forward; else dashDirection = currentInputDirection; yield return new WaitForSeconds(dashDuration); isDashing = false; }
+    IEnumerator SlideRoutine(Vector3 startDirection) { isSliding = true; slideDirection = startDirection; controller.height = slideHeight; Vector3 originalCamPos = playerCamera.localPosition; playerCamera.localPosition = new Vector3(originalCamPos.x, originalCamPos.y - (originalHeight - slideHeight) / 2f, originalCamPos.z); yield return new WaitForSecondsRealtime(slideDuration); controller.height = originalHeight; playerCamera.localPosition = originalCamPos; isSliding = false; }
+    IEnumerator DashRoutine(Vector3 currentInputDirection) { isDashing = true; lastDashTime = Time.unscaledTime; if (playerAudio != null && dashSound != null) playerAudio.PlayOneShot(dashSound); if (currentInputDirection.magnitude == 0) dashDirection = transform.forward; else dashDirection = currentInputDirection; yield return new WaitForSecondsRealtime(dashDuration); isDashing = false; }
     void PlayFootstepSound() { if (footstepSounds != null && footstepSounds.Length > 0 && playerAudio != null) { int randomIndex = Random.Range(0, footstepSounds.Length); playerAudio.PlayOneShot(footstepSounds[randomIndex]); } }
 }

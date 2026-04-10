@@ -2368,6 +2368,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6934175553500402260, guid: 114b0e4d396e409a7b5335d3a5f6804b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1636846704}
+    - targetCorrespondingSourceObject: {fileID: 6934175553500402260, guid: 114b0e4d396e409a7b5335d3a5f6804b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1636846713}
   m_SourcePrefab: {fileID: 100100000, guid: 114b0e4d396e409a7b5335d3a5f6804b, type: 3}
 --- !u!1 &455410648
 GameObject:
@@ -5732,6 +5735,7 @@ MonoBehaviour:
   walkSpeed: 10
   runSpeed: 18
   slideSpeed: 25
+  speedMultiplier: 1
   dashSpeed: 40
   dashDuration: 0.2
   dashCooldown: 1
@@ -5902,6 +5906,27 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.9
   m_Center: {x: 0, y: 0.87, z: 0}
+--- !u!114 &1636846713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636846675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a100717b05d3d5052b4367abc5168cfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSkills
+  rageDuration: 15
+  rageSpeedMultiplier: 1.5
+  isRageActive: 0
+  haluBaseDuration: 10
+  haluKillBonus: 0.2
+  isHaluActive: 0
+  timeForCodingDuration: 5
+  slowMotionScale: 0.2
+  isTimeCodingActive: 0
 --- !u!1001 &1650544279
 PrefabInstance:
   m_ObjectHideFlags: 0

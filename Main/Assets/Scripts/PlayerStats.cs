@@ -108,21 +108,24 @@ public class PlayerStats : MonoBehaviour
     {
         if (isDead) return;
 
-        bool hadOverheal = currentHealth > maxHealth;
+        // --- NEW: CANCEL HALU OF CS IF HIT ---
+        PlayerSkills skills = GetComponent<PlayerSkills>();
+        if (skills != null)
+        {
+            skills.CancelHaluOfCS();
+        }
 
+        bool hadOverheal = currentHealth > maxHealth;
         currentHealth -= damageAmount;
 
         if (hadOverheal && currentHealth <= maxHealth)
         {
-            if (sfxSource != null && overhealBreakSound != null)
-            {
-                sfxSource.PlayOneShot(overhealBreakSound);
-            }
+            if (sfxSource != null && overhealBreakSound != null) sfxSource.PlayOneShot(overhealBreakSound);
         }
 
         UpdateHealthUI();
 
-        lastHitTime = Time.time;
+        lastHitTime = Time.unscaledTime;
         consecutiveHits++;
 
         bool isKnockout = false; 
@@ -143,7 +146,6 @@ public class PlayerStats : MonoBehaviour
             }
             else 
             {
-                // Push the player ONLY if there is a physical attacker (not SteJew's magic)
                 if (attacker != null)
                 {
                     Vector3 pushDirection = (transform.position - attacker.position).normalized;
@@ -151,7 +153,6 @@ public class PlayerStats : MonoBehaviour
                     playerMovement.ApplyPunchKnockback(pushDirection, 15f); 
                 }
                 
-                // Flash the screen red for ALL damage types!
                 if (bloodScreen != null)
                 {
                     StopCoroutine("FlashBloodScreen"); 
@@ -160,35 +161,21 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
-        // --- AUDIO PRIORITY LOGIC ---
         if (currentHealth <= 0 && !isDead)
         {
             currentHealth = 0;
             isDead = true;
             currentFlashAlpha = 1f; 
-            
-            // Priority 1: Death Sound
-            if (sfxSource != null && playerDeathSound != null)
-            {
-                sfxSource.PlayOneShot(playerDeathSound);
-            }
+            if (sfxSource != null && playerDeathSound != null) sfxSource.PlayOneShot(playerDeathSound);
             Debug.Log("PLAYER IS DEAD!");
         }
         else if (isKnockout)
         {
-            // Priority 2: Knockout Sound
-            if (sfxSource != null && playerKnockoutSound != null)
-            {
-                sfxSource.PlayOneShot(playerKnockoutSound);
-            }
+            if (sfxSource != null && playerKnockoutSound != null) sfxSource.PlayOneShot(playerKnockoutSound);
         }
         else if (!isDead)
         {
-            // Priority 3: Normal Hit Sound
-            if (sfxSource != null && playerHitSound != null)
-            {
-                sfxSource.PlayOneShot(playerHitSound);
-            }
+            if (sfxSource != null && playerHitSound != null) sfxSource.PlayOneShot(playerHitSound);
         }
     }
 
@@ -199,7 +186,7 @@ public class PlayerStats : MonoBehaviour
 
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime; // <-- Fixed to ignore Sandevistan!
             currentFlashAlpha = Mathf.Lerp(targetAlpha, 0f, elapsed / duration);
             yield return null;
         }
