@@ -6515,6 +6515,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SteJewAI
   moveSpeed: 12
   fleeDistance: 20
+  panicDistance: 6
+  panicSpeed: 25
+  wallCheckDistance: 3
+  bounceDuration: 0.5
   attackDamage: 5
   attackCooldown: 5
   damageDelay: 1
