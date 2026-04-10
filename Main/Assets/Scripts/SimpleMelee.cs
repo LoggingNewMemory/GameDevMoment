@@ -81,8 +81,6 @@ public class SimpleMelee : MonoBehaviour
 
         if (weaponAudio != null && swingSound != null) weaponAudio.PlayOneShot(swingSound);
 
-        // --- THE CAMERA MOMENTUM ---
-        // Violently pull the camera down to simulate the weight of the swing
         if (playerMovement != null) 
             playerMovement.AddRecoil(0f, cameraSwingKickDown);
 
@@ -93,28 +91,26 @@ public class SimpleMelee : MonoBehaviour
 
         bool hitConnected = DetectHit();
 
-        // 1. THE SLASH (Using Cubic Ease-Out for a violent, snappy strike)
         while (elapsed < swingSpeed)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime; // <-- FIXED
             float t = elapsed / swingSpeed;
-            float easeT = 1f - Mathf.Pow(1f - t, 3f); // Snaps fast, slows down at the very end
+            float easeT = 1f - Mathf.Pow(1f - t, 3f); 
 
             transform.localRotation = Quaternion.Slerp(startRot, targetRot, easeT);
             transform.localPosition = Vector3.Lerp(originalPosition, targetPos, easeT);
             yield return null;
         }
 
-        // 2. THE RECOVERY (Using Cubic Ease-In-Out for a smooth pull-back)
         elapsed = 0f;
         float recoveryTime = swingCooldown - swingSpeed; 
         if (recoveryTime <= 0) recoveryTime = 0.1f;
 
         while (elapsed < recoveryTime)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime; // <-- FIXED
             float t = elapsed / recoveryTime;
-            float easeT = t * t * (3f - 2f * t); // Smoothly pulls the weapon back to ready
+            float easeT = t * t * (3f - 2f * t); 
 
             transform.localRotation = Quaternion.Slerp(targetRot, startRot, easeT);
             transform.localPosition = Vector3.Lerp(targetPos, originalPosition, easeT);
@@ -144,7 +140,6 @@ public class SimpleMelee : MonoBehaviour
                 if (weaponAudio != null && hitSound != null) weaponAudio.PlayOneShot(hitSound);
                 if (hitEffectPrefab != null) Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
                 
-                // --- THE HIT-STOP SECRET ---
                 if (useHitStop) StartCoroutine(HitStopRoutine());
             }
         }
@@ -153,10 +148,11 @@ public class SimpleMelee : MonoBehaviour
 
     IEnumerator HitStopRoutine()
     {
-        // Freezes the game scale to 10% speed for a microsecond to make the hit feel brutal
-        Time.timeScale = 0.1f;
+        // --- FIXED: Save the current time scale so we don't accidentally cancel Sandevistan! ---
+        float originalScale = Time.timeScale; 
+        Time.timeScale = 0.05f; // Extra slow for the hit stop
         yield return new WaitForSecondsRealtime(0.04f); 
-        Time.timeScale = 1f;
+        Time.timeScale = originalScale; // Restore to what it was
     }
 
     public IEnumerator DrawWeaponRoutine()
@@ -168,7 +164,7 @@ public class SimpleMelee : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < drawTime)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime; // <-- FIXED
             float easeT = elapsed / drawTime;
             transform.localPosition = Vector3.Lerp(originalPosition + drawOffset, originalPosition, easeT);
             yield return null;
@@ -185,7 +181,7 @@ public class SimpleMelee : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < drawTime)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime; // <-- FIXED
             transform.localPosition = Vector3.Lerp(originalPosition, originalPosition + drawOffset, elapsed / drawTime);
             yield return null;
         }

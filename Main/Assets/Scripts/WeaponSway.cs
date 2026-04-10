@@ -14,9 +14,7 @@ public class WeaponSway : MonoBehaviour
     public float maxSway = 4f;       
 
     [Header("Shooting / Steadying")]
-    // Drops the sway down to 20% of its normal movement while firing
     public float steadyMultiplier = 0.2f; 
-    // How fast the character braces and un-braces the weapon
     public float steadyTransitionSpeed = 15f; 
     
     [Header("Smoothing")]
@@ -26,7 +24,6 @@ public class WeaponSway : MonoBehaviour
     private Quaternion startRotation;
     private float timer = 0f;
     
-    // Tracks the current multiplier (transitions between 1.0 and steadyMultiplier)
     private float currentSwayMultiplier = 1f;
 
     void Start()
@@ -42,12 +39,11 @@ public class WeaponSway : MonoBehaviour
         // ==========================================
         // 0. SHOOTING / BRACING CHECK
         // ==========================================
-        // If the left mouse button is pressed, target the steady multiplier. Otherwise, target 1.0 (normal).
         bool isShooting = Mouse.current.leftButton.isPressed;
         float targetMultiplier = isShooting ? steadyMultiplier : 1f;
 
-        // Smoothly glide the multiplier up or down
-        currentSwayMultiplier = Mathf.Lerp(currentSwayMultiplier, targetMultiplier, Time.deltaTime * steadyTransitionSpeed);
+        // <-- FIXED: Unscaled Time
+        currentSwayMultiplier = Mathf.Lerp(currentSwayMultiplier, targetMultiplier, Time.unscaledDeltaTime * steadyTransitionSpeed);
 
 
         // ==========================================
@@ -55,15 +51,16 @@ public class WeaponSway : MonoBehaviour
         // ==========================================
         Vector2 mouseDelta = Mouse.current.delta.ReadValue();
         
-        // Apply the currentSwayMultiplier to the mouse sway!
-        float mouseX = -mouseDelta.x * swayMultiplier * currentSwayMultiplier * Time.deltaTime;
-        float mouseY = -mouseDelta.y * swayMultiplier * currentSwayMultiplier * Time.deltaTime;
+        // <-- FIXED: Unscaled Time
+        float mouseX = -mouseDelta.x * swayMultiplier * currentSwayMultiplier * Time.unscaledDeltaTime;
+        float mouseY = -mouseDelta.y * swayMultiplier * currentSwayMultiplier * Time.unscaledDeltaTime;
 
         mouseX = Mathf.Clamp(mouseX, -maxSway, maxSway);
         mouseY = Mathf.Clamp(mouseY, -maxSway, maxSway);
 
         Quaternion targetRotation = startRotation * Quaternion.Euler(mouseY, mouseX, 0f);
-        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, smoothStep * Time.deltaTime);
+        // <-- FIXED: Unscaled Time
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, smoothStep * Time.unscaledDeltaTime);
 
 
         // ==========================================
@@ -84,19 +81,21 @@ public class WeaponSway : MonoBehaviour
             bool isRunning = Keyboard.current.leftShiftKey.isPressed && zInput > 0;
             float currentBobSpeed = isRunning ? runBobSpeed : walkBobSpeed;
 
-            timer += Time.deltaTime * currentBobSpeed;
+            // <-- FIXED: Unscaled Time
+            timer += Time.unscaledDeltaTime * currentBobSpeed;
 
-            // Apply the currentSwayMultiplier to the walking bob!
             float bobX = Mathf.Cos(timer / 2) * bobAmountX * currentSwayMultiplier; 
             float bobY = Mathf.Sin(timer) * bobAmountY * currentSwayMultiplier;
 
             Vector3 targetPosition = startPosition + new Vector3(bobX, bobY, 0f);
-            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, smoothStep * Time.deltaTime);
+            // <-- FIXED: Unscaled Time
+            transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, smoothStep * Time.unscaledDeltaTime);
         }
         else
         {
             timer = 0f;
-            transform.localPosition = Vector3.Lerp(transform.localPosition, startPosition, smoothStep * Time.deltaTime);
+            // <-- FIXED: Unscaled Time
+            transform.localPosition = Vector3.Lerp(transform.localPosition, startPosition, smoothStep * Time.unscaledDeltaTime);
         }
     }
 }
