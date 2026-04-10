@@ -315,11 +315,15 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
+  muzzlePoint: {fileID: 1524701126}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: b8e78032f8af0954784d1fe9e5a09187, type: 3}
-  muzzlePoint: {fileID: 1524701126}
   beamEffectPrefab: {fileID: 0}
+  useScreenFlash: 0
+  screenFlashImage: {fileID: 0}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashFadeDuration: 0.5
 --- !u!82 &56225601
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2104,11 +2108,15 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   muzzleFlashPrefab: {fileID: 100000, guid: 8eaaa4f553116f44b8459bc24201c514, type: 3}
+  muzzlePoint: {fileID: 1103203918}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: b8e78032f8af0954784d1fe9e5a09187, type: 3}
-  muzzlePoint: {fileID: 1103203918}
   beamEffectPrefab: {fileID: 0}
+  useScreenFlash: 0
+  screenFlashImage: {fileID: 0}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashFadeDuration: 0.5
 --- !u!82 &513542623
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2346,11 +2354,15 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
+  muzzlePoint: {fileID: 1800099433}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: 8c89ed5746a4faa48bb97701cc2f2e35, type: 3}
-  muzzlePoint: {fileID: 1800099433}
   beamEffectPrefab: {fileID: 0}
+  useScreenFlash: 0
+  screenFlashImage: {fileID: 0}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashFadeDuration: 0.5
 --- !u!82 &516085126
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3045,6 +3057,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8617890155258181923, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       insertIndex: -1
       addedObject: {fileID: 837610982}
+    - targetCorrespondingSourceObject: {fileID: 8617890155258181923, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 837610983}
   m_SourcePrefab: {fileID: 100100000, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
 --- !u!4 &837610978 stripped
 Transform:
@@ -3096,11 +3111,15 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   muzzleFlashPrefab: {fileID: 0}
+  muzzlePoint: {fileID: 1539720662}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: 552478a654d2eb8478c30045279d5688, type: 3}
-  muzzlePoint: {fileID: 1539720662}
-  beamEffectPrefab: {fileID: 54037218827058310, guid: 7af3b1a49709559ceb0c39abc26470d7, type: 3}
+  beamEffectPrefab: {fileID: 0}
+  useScreenFlash: 1
+  screenFlashImage: {fileID: 2113606502}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashFadeDuration: 0.5
 --- !u!82 &837610982
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3198,6 +3217,69 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &837610983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837610980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f404a7354d8546fcd820f81e33c856cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Railgun
+  fpsCamera: {fileID: 0}
+  range: 100
+  damage: 20
+  isAutomatic: 0
+  isBoltAction: 0
+  fireRate: 10
+  nextTimeToFire: 0
+  playerKnockbackForce: 0
+  cameraKickForce: 1
+  weaponVisualKick: 0.1
+  weaponRecoverySpeed: 10
+  playerMovement: {fileID: 0}
+  drawDuration: 0.5
+  drawOffset: {x: 0.5, y: -0.8, z: 0}
+  isDrawing: 0
+  chamberHideDistance: 0.3
+  chamberDuration: 1.5
+  magSize: 30
+  reserveAmmo: 90
+  maxReserveAmmo: 180
+  currentAmmo: 0
+  isReloading: 0
+  isChambering: 0
+  hideDistance: 1.2
+  slideDuration: 0.3
+  reloadSound: {fileID: 0}
+  isShotgunReload: 0
+  insertShellSound: {fileID: 0}
+  pumpSound: {fileID: 0}
+  weaponAudio: {fileID: 0}
+  fireSound: {fileID: 0}
+  equipSound: {fileID: 0}
+  impactEffectPrefab: {fileID: 0}
+  muzzleFlashPrefab: {fileID: 0}
+  muzzlePoint: {fileID: 0}
+  ammoTextDisplay: {fileID: 0}
+  crosshairDisplay: {fileID: 0}
+  weaponCrosshair: {fileID: 0}
+  originalPosition: {x: 0, y: 0, z: 0}
+  hasStarted: 0
+  lastHitPoint: {x: 0, y: 0, z: 0}
+  beamEffectPrefab: {fileID: 0}
+  spawnedBeamFader: {fileID: 0}
+  useScreenFlash: 1
+  screenFlashImage: {fileID: 2113606502}
+  flashColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  flashFadeDuration: 0.5
 --- !u!1 &864993908
 GameObject:
   m_ObjectHideFlags: 0
@@ -3695,11 +3777,15 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
+  muzzlePoint: {fileID: 349902947}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: b8e78032f8af0954784d1fe9e5a09187, type: 3}
-  muzzlePoint: {fileID: 349902947}
   beamEffectPrefab: {fileID: 0}
+  useScreenFlash: 0
+  screenFlashImage: {fileID: 0}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashFadeDuration: 0.5
 --- !u!82 &988825460
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5150,11 +5236,15 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
+  muzzlePoint: {fileID: 864993909}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: dcd5aae0341bd0642858735fe7fdc429, type: 3}
-  muzzlePoint: {fileID: 864993909}
   beamEffectPrefab: {fileID: 0}
+  useScreenFlash: 0
+  screenFlashImage: {fileID: 0}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashFadeDuration: 0.5
 --- !u!82 &1650544284
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5768,11 +5858,15 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
+  muzzlePoint: {fileID: 52769282}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: b8e78032f8af0954784d1fe9e5a09187, type: 3}
-  muzzlePoint: {fileID: 52769282}
   beamEffectPrefab: {fileID: 0}
+  useScreenFlash: 0
+  screenFlashImage: {fileID: 0}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashFadeDuration: 0.5
 --- !u!82 &2073259926
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5969,6 +6063,7 @@ RectTransform:
   - {fileID: 455410649}
   - {fileID: 2044579617}
   - {fileID: 828217649}
+  - {fileID: 2113606501}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6116,11 +6211,15 @@ MonoBehaviour:
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
   muzzleFlashPrefab: {fileID: 100000, guid: 8eaaa4f553116f44b8459bc24201c514, type: 3}
+  muzzlePoint: {fileID: 757415040}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: 8c89ed5746a4faa48bb97701cc2f2e35, type: 3}
-  muzzlePoint: {fileID: 757415040}
   beamEffectPrefab: {fileID: 0}
+  useScreenFlash: 0
+  screenFlashImage: {fileID: 0}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashFadeDuration: 0.5
 --- !u!82 &2099701047
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6218,6 +6317,81 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &2113606500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2113606501}
+  - component: {fileID: 2113606503}
+  - component: {fileID: 2113606502}
+  m_Layer: 5
+  m_Name: RailGun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2113606501
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113606500}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2077778003}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2113606502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113606500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 5d02840c80665fefe820cf85bf0f7e10, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &2113606503
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113606500}
+  m_CullTransparentMesh: 1
 --- !u!4 &2129677732 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8202999975695923775, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}

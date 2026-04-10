@@ -53,15 +53,19 @@ public class SimpleShoot : MonoBehaviour
 
     [Header("Visuals")]
     public GameObject impactEffectPrefab;
-    public GameObject muzzleFlashPrefab; // <-- NEW: Slot for the flash!
+    public GameObject muzzleFlashPrefab; 
+    public Transform muzzlePoint;        
     public TextMeshProUGUI ammoTextDisplay; 
     public Image crosshairDisplay;   
     public Sprite weaponCrosshair;
 
-    [Header("Railgun Visuals")]
-    public Transform muzzlePoint;        // Used for both Railgun AND Muzzle Flash now
+    [Header("Railgun Specific Effects")]
     public GameObject beamEffectPrefab; 
     private BeamFader spawnedBeamFader; 
+    public bool useScreenFlash = false; 
+    public Image screenFlashImage; 
+    public Color flashColor = new Color(1f, 1f, 1f, 1f); 
+    public float flashFadeDuration = 0.5f; 
 
     private Vector3 originalPosition; 
     private bool hasStarted = false;
@@ -95,7 +99,6 @@ public class SimpleShoot : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null || (playerMovement != null && playerMovement.isKnockedDown)) return;
         
-        // --- WEAPON VISUAL RECOVERY ---
         if (!isReloading && !isChambering && !isDrawing)
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, originalPosition, weaponRecoverySpeed * Time.deltaTime);
@@ -213,17 +216,19 @@ public class SimpleShoot : MonoBehaviour
         if (playerMovement != null) playerMovement.AddRecoil(playerKnockbackForce, cameraKickForce);
         transform.localPosition = originalPosition - new Vector3(0f, 0f, weaponVisualKick);
 
-        // --- NEW: MUZZLE FLASH ---
+        // Standard Muzzle Flash
         if (muzzleFlashPrefab != null && muzzlePoint != null)
         {
-            // Spawn the flash at the tip of the barrel
             GameObject flash = Instantiate(muzzleFlashPrefab, muzzlePoint.position, muzzlePoint.rotation);
-            // Parent it to the muzzle so if you are running, the flash stays attached to the gun!
             flash.transform.SetParent(muzzlePoint);
-            // Destroy it after 0.05 seconds so it looks like a lightning-fast strobe light
             Destroy(flash, 0.05f); 
         }
-        // -------------------------
+
+        // Railgun Screen Flash
+        if (useScreenFlash && screenFlashImage != null)
+        {
+            StartCoroutine(ScreenFlashRoutine());
+        }
 
         RaycastHit hit;
         Vector3 rayOrigin = fpsCamera.transform.position;
@@ -236,14 +241,12 @@ public class SimpleShoot : MonoBehaviour
             PlayerStats stats = GetComponentInParent<PlayerStats>();
             if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
 
-            // --- THE INTERFACE MAGIC ---
             IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
             
             if (target != null)
             {
                 target.TakeDamage(finalDamage);
             }
-            // ---------------------------
 
             if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
             visualEndPoint = hit.point;
@@ -253,7 +256,9 @@ public class SimpleShoot : MonoBehaviour
             visualEndPoint = rayOrigin + (rayDirection * range);
         }
 
+        // Draw the Railgun Beam
         if (muzzlePoint != null && beamEffectPrefab != null) HandleBeamVisuals(visualEndPoint);
+        
         if (isBoltAction) StartCoroutine(ChamberRoundRoutine());
     }
 
@@ -265,6 +270,20 @@ public class SimpleShoot : MonoBehaviour
             spawnedBeamFader = newBeam.GetComponent<BeamFader>();
         }
         spawnedBeamFader.ActivateBeam(muzzlePoint.position, endPoint);
+    }
+
+    IEnumerator ScreenFlashRoutine()
+    {
+        screenFlashImage.color = flashColor;
+        float elapsed = 0f;
+        while(elapsed < flashFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / flashFadeDuration);
+            screenFlashImage.color = new Color(flashColor.r, flashColor.g, flashColor.b, alpha);
+            yield return null;
+        }
+        screenFlashImage.color = new Color(flashColor.r, flashColor.g, flashColor.b, 0f);
     }
 
     IEnumerator ChamberRoundRoutine()
@@ -306,12 +325,10 @@ public class SimpleShoot : MonoBehaviour
 
     public void InstantHide()
     {
-        StopAllCoroutines(); // Immediately cancel any reloading or shooting!
+        StopAllCoroutines(); 
         isDrawing = false; 
         isReloading = false; 
         isChambering = false;
-        
-        // Snap the gun to its hidden position instantly
         transform.localPosition = originalPosition + drawOffset; 
     }
 
