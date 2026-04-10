@@ -864,6 +864,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSwitcher
   weapons: []
   switchDelay: 0.5
+  ammoCounterUI: {fileID: 0}
 --- !u!1 &349902946
 GameObject:
   m_ObjectHideFlags: 0
@@ -3478,6 +3479,7 @@ MonoBehaviour:
   - {fileID: 2099701045}
   - {fileID: 837610980}
   switchDelay: 0.5
+  ammoCounterUI: {fileID: 122824185}
 --- !u!4 &968045068 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7988842657319523523, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}

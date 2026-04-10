@@ -9,6 +9,9 @@ public class WeaponSwitcher : MonoBehaviour
     
     [Header("Settings")]
     public float switchDelay = 0.5f; 
+
+    [Header("UI Elements")]
+    public GameObject ammoCounterUI; // <-- NEW: Slot for your Canvas Ammo Counter
     
     private int currentWeaponIndex = 0;
     private bool isSwitching = false;
@@ -22,6 +25,12 @@ public class WeaponSwitcher : MonoBehaviour
                 weapons[i].SetActive(i == currentWeaponIndex);
             }
         }
+    }
+
+    void Start()
+    {
+        // Make sure the UI is correct the exact second the game starts!
+        UpdateAmmoUIState(currentWeaponIndex);
     }
 
     void Update()
@@ -46,7 +55,6 @@ public class WeaponSwitcher : MonoBehaviour
         }
 
         // --- NUMBER KEY SWITCHING (1-9) ---
-        // digit1Key corresponds to index 0, digit2Key to index 1, etc.
         if (Keyboard.current.digit1Key.wasPressedThisFrame) currentWeaponIndex = 0;
         if (Keyboard.current.digit2Key.wasPressedThisFrame && weapons.Length > 1) currentWeaponIndex = 1;
         if (Keyboard.current.digit3Key.wasPressedThisFrame && weapons.Length > 2) currentWeaponIndex = 2;
@@ -90,6 +98,20 @@ public class WeaponSwitcher : MonoBehaviour
         weapons[oldIndex].SetActive(false);
         weapons[newIndex].SetActive(true);
 
+        // --- NEW: Update the Ammo UI Visibility! ---
+        UpdateAmmoUIState(newIndex);
+
         isSwitching = false;
+    }
+
+    void UpdateAmmoUIState(int index)
+    {
+        if (ammoCounterUI != null && weapons[index] != null)
+        {
+            // If the active weapon has a SimpleShoot script, it's a gun! Turn UI ON.
+            // If it doesn't (like the Sword), turn UI OFF.
+            bool isGun = weapons[index].GetComponent<SimpleShoot>() != null;
+            ammoCounterUI.SetActive(isGun);
+        }
     }
 }
