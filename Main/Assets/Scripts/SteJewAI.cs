@@ -24,6 +24,9 @@ public class SteJewAI : MonoBehaviour
     private Animator anim;
     private UniversalHealth healthScript;
     private Rigidbody rb; 
+    
+    // --- NEW: Tracks if he is currently throwing magic ---
+    private bool isCasting = false; 
 
     void Start()
     {
@@ -57,25 +60,21 @@ public class SteJewAI : MonoBehaviour
         if (playerTarget == null) return;
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
+        Vector3 currentMoveDir = Vector3.zero;
 
-        // --- FLEE LOGIC ---
+        // --- 1. MOVEMENT LOGIC (Always run away if close enough) ---
         if (distance < fleeDistance)
         {
-            Vector3 fleeDir = (transform.position - playerTarget.position).normalized;
-            fleeDir.y = 0; 
+            currentMoveDir = (transform.position - playerTarget.position).normalized;
+            currentMoveDir.y = 0; 
             
             if (rb != null)
             {
-                rb.MovePosition(transform.position + fleeDir * moveSpeed * Time.deltaTime);
+                rb.MovePosition(transform.position + currentMoveDir * moveSpeed * Time.deltaTime);
             }
             else
             {
-                transform.position += fleeDir * moveSpeed * Time.deltaTime;
-            }
-            
-            if (fleeDir != Vector3.zero)
-            {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(fleeDir), Time.deltaTime * 10f);
+                transform.position += currentMoveDir * moveSpeed * Time.deltaTime;
             }
 
             if (anim != null) anim.SetBool("isChasing", true); 
@@ -83,6 +82,24 @@ public class SteJewAI : MonoBehaviour
         else
         {
             if (anim != null) anim.SetBool("isChasing", false);
+        }
+
+        // --- 2. ROTATION LOGIC (Look where running, UNLESS casting magic!) ---
+        if (isCasting)
+        {
+            // Spin around and face the player while the magic casts!
+            Vector3 lookDir = (playerTarget.position - transform.position).normalized;
+            lookDir.y = 0;
+            if (lookDir != Vector3.zero)
+            {
+                // Spins a little faster (15f) to snap to the player during the quick attack
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 15f);
+            }
+        }
+        else if (currentMoveDir != Vector3.zero)
+        {
+            // Normal running - look in the direction of the escape route
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(currentMoveDir), Time.deltaTime * 10f);
         }
 
         // --- GLOBAL ATTACK LOGIC ---
@@ -95,6 +112,8 @@ public class SteJewAI : MonoBehaviour
     void AttackPlayer()
     {
         lastAttackTime = Time.time;
+        isCasting = true; // Tell the Update loop to start facing the player!
+
         if (anim != null) anim.SetTrigger("Attack");
 
         if (audioSource != null && attackCastSound != null)
@@ -107,7 +126,11 @@ public class SteJewAI : MonoBehaviour
 
     IEnumerator MagicHitRoutine()
     {
+        // Wait for the animation to play out
         yield return new WaitForSeconds(damageDelay);
+        
+        // Attack finished, go back to looking at the escape route!
+        isCasting = false; 
 
         if (healthScript != null && healthScript.isDead) yield break;
 
