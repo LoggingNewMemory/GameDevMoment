@@ -16,6 +16,14 @@ public class SimpleShoot : MonoBehaviour
     public float fireRate = 10f; 
     private float nextTimeToFire = 0f; 
 
+    [Header("Shotgun Settings")]
+    public bool isShotgun = false;
+    public int pelletCount = 8;
+    public float spreadAngle = 3f;
+
+    [Header("Railgun Settings")]
+    public bool isRailgun = false;
+
     [Header("Recoil & Knockback Settings")]
     public float playerKnockbackForce = 0f; 
     public float cameraKickForce = 1f;      
@@ -225,39 +233,64 @@ public class SimpleShoot : MonoBehaviour
         }
 
         // Railgun Screen Flash
-        if (useScreenFlash && screenFlashImage != null)
+        if (isRailgun && useScreenFlash && screenFlashImage != null)
         {
             StartCoroutine(ScreenFlashRoutine());
         }
 
-        RaycastHit hit;
         Vector3 rayOrigin = fpsCamera.transform.position;
-        Vector3 rayDirection = fpsCamera.transform.forward;
-        Vector3 visualEndPoint; 
+        Vector3 visualEndPoint = rayOrigin + (fpsCamera.transform.forward * range);
+        
+        // If it's a shotgun, fire multiple pellets. Otherwise, just fire 1.
+        int shotsToFire = isShotgun ? pelletCount : 1;
 
-        if (Physics.Raycast(rayOrigin, rayDirection, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        for (int i = 0; i < shotsToFire; i++)
         {
+            Vector3 rayDirection = fpsCamera.transform.forward;
+
+            // --- THE SHOTGUN SPREAD ---
+            if (isShotgun)
+            {
+                float spreadX = Random.Range(-spreadAngle, spreadAngle);
+                float spreadY = Random.Range(-spreadAngle, spreadAngle);
+                rayDirection = Quaternion.Euler(spreadX, spreadY, 0) * rayDirection;
+            }
+
             float finalDamage = damage;
             PlayerStats stats = GetComponentInParent<PlayerStats>();
             if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
 
-            IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
-            
-            if (target != null)
+            // --- THE RAILGUN PIERCING BEAM ---
+            if (isRailgun)
             {
-                target.TakeDamage(finalDamage);
+                RaycastHit[] hits = Physics.RaycastAll(rayOrigin, rayDirection, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+                
+                foreach (RaycastHit hit in hits)
+                {
+                    IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
+                    if (target != null) target.TakeDamage(finalDamage);
+                    
+                    if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                }
             }
+            // --- STANDARD GUNS & SHOTGUN PELLETS ---
+            else 
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(rayOrigin, rayDirection, out hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                {
+                    IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
+                    if (target != null) target.TakeDamage(finalDamage);
 
-            if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
-            visualEndPoint = hit.point;
-        }
-        else 
-        {
-            visualEndPoint = rayOrigin + (rayDirection * range);
+                    if (impactEffectPrefab != null) Instantiate(impactEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
+                    
+                    if (!isShotgun) visualEndPoint = hit.point;
+                }
+            }
         }
 
-        // Draw the Railgun Beam
-        if (muzzlePoint != null && beamEffectPrefab != null) HandleBeamVisuals(visualEndPoint);
+        // Draw the Beam Visual (Only for single-shot/railgun weapons)
+        if (!isShotgun && muzzlePoint != null && beamEffectPrefab != null) HandleBeamVisuals(visualEndPoint);
         
         if (isBoltAction) StartCoroutine(ChamberRoundRoutine());
     }

@@ -293,6 +293,10 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 10
+  isShotgun: 0
+  pelletCount: 8
+  spreadAngle: 3
+  isRailgun: 0
   playerKnockbackForce: 0.5
   cameraKickForce: 0.9
   weaponVisualKick: 0.2
@@ -2086,6 +2090,10 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 13.5
+  isShotgun: 0
+  pelletCount: 8
+  spreadAngle: 3
+  isRailgun: 0
   playerKnockbackForce: 0
   cameraKickForce: 0.6
   weaponVisualKick: 0.15
@@ -2332,6 +2340,10 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 8
+  isShotgun: 0
+  pelletCount: 8
+  spreadAngle: 3
+  isRailgun: 0
   playerKnockbackForce: 0
   cameraKickForce: 0.5
   weaponVisualKick: 0.1
@@ -3089,6 +3101,10 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
+  isShotgun: 0
+  pelletCount: 8
+  spreadAngle: 3
+  isRailgun: 1
   playerKnockbackForce: 15
   cameraKickForce: 6
   weaponVisualKick: 0.7
@@ -3755,6 +3771,10 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 14.5
+  isShotgun: 0
+  pelletCount: 8
+  spreadAngle: 3
+  isRailgun: 0
   playerKnockbackForce: 0
   cameraKickForce: 0.3
   weaponVisualKick: 0.07
@@ -5210,10 +5230,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
   range: 10
-  damage: 120
+  damage: 50
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 1.5
+  isShotgun: 1
+  pelletCount: 4
+  spreadAngle: 4
+  isRailgun: 0
   playerKnockbackForce: 5
   cameraKickForce: 3
   weaponVisualKick: 0.4
@@ -5836,6 +5860,10 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 20
+  isShotgun: 0
+  pelletCount: 8
+  spreadAngle: 3
+  isRailgun: 0
   playerKnockbackForce: 0
   cameraKickForce: 0.2
   weaponVisualKick: 0.05
@@ -6189,6 +6217,10 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 1.2
+  isShotgun: 0
+  pelletCount: 8
+  spreadAngle: 3
+  isRailgun: 0
   playerKnockbackForce: 0
   cameraKickForce: 4.5
   weaponVisualKick: 0.5
