@@ -40,6 +40,11 @@ public class PlayerStats : MonoBehaviour
     public bool isDrunk = false;
     private int vodkaCount = 0;
 
+    [Header("Dizzy Effect")]
+    public int dizzyStacks = 0;
+    public int maxDizzyStacks = 5;
+    private float dizzyDecayTimer = 0f;
+
     [Header("Audio")]
     public AudioSource bgmSource;
 
@@ -64,6 +69,20 @@ public class PlayerStats : MonoBehaviour
             consecutiveHits = 0;
         }
 
+        // --- DIZZY DECAY ---
+        if (dizzyStacks > 0)
+        {
+            dizzyDecayTimer -= Time.deltaTime;
+            if (dizzyDecayTimer <= 0f)
+            {
+                dizzyStacks--;
+                if (dizzyStacks > 0) dizzyDecayTimer = 4f; 
+            }
+            
+            // If we are fully sober, turn off the drunk debuff!
+            if (dizzyStacks == 0) isDrunk = false;
+        }
+
         if (bloodScreen != null)
         {
             float finalAlpha = currentFlashAlpha; 
@@ -82,12 +101,10 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(float damageAmount, Transform attacker = null)
     {
-        // Remember if we had overheal BEFORE taking the hit
         bool hadOverheal = currentHealth > maxHealth;
 
         currentHealth -= damageAmount;
 
-        // If we had overheal, but the hit dropped us to 100 or below, play the break sound!
         if (hadOverheal && currentHealth <= maxHealth)
         {
             if (sfxSource != null && overhealBreakSound != null)
@@ -98,7 +115,6 @@ public class PlayerStats : MonoBehaviour
 
         UpdateHealthUI();
 
-        // Hit Reactions
         lastHitTime = Time.time;
         consecutiveHits++;
 
@@ -132,7 +148,6 @@ public class PlayerStats : MonoBehaviour
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-            Debug.Log("PLAYER IS DEAD!");
             currentFlashAlpha = 1f; 
         }
     }
@@ -153,7 +168,6 @@ public class PlayerStats : MonoBehaviour
 
     public void HealPercentage(float percent, bool canOverheal = false)
     {
-        // Remember if we had overheal BEFORE drinking
         bool hadOverheal = currentHealth > maxHealth;
 
         float healAmount = maxHealth * (percent / 100f);
@@ -162,7 +176,6 @@ public class PlayerStats : MonoBehaviour
         float cap = canOverheal ? maxOverheal : maxHealth;
         if (currentHealth > cap) currentHealth = cap;
 
-        // If we DID NOT have overheal, but the drink pushed us over 100, play the gain sound!
         if (!hadOverheal && currentHealth > maxHealth)
         {
             if (sfxSource != null && overhealGainSound != null)
@@ -180,15 +193,48 @@ public class PlayerStats : MonoBehaviour
         {
             healthTextDisplay.text = "HP: " + Mathf.RoundToInt(currentHealth);
             
-            // Turn the health text cyan if we are overhealed!
             if (currentHealth > maxHealth) healthTextDisplay.color = new Color(0.2f, 0.8f, 1f); 
             else if (currentHealth <= lowHealthThreshold) healthTextDisplay.color = Color.red; 
             else healthTextDisplay.color = Color.white;
         }
     }
 
+    public void AddDizzyStack()
+    {
+        if (dizzyStacks < maxDizzyStacks) 
+        {
+            dizzyStacks++;
+        }
+        
+        isDrunk = true; 
+        dizzyDecayTimer = 4f; 
+    }
+
     public void TriggerUnlimitedEnergy(float duration) { StartCoroutine(EnergyRoutine(duration)); }
     private IEnumerator EnergyRoutine(float duration) { hasUnlimitedEnergy = true; yield return new WaitForSeconds(duration); hasUnlimitedEnergy = false; }
-    public void DrinkVodka(AudioClip cheekiBreeki, float duration) { vodkaCount++; if (bgmSource != null && cheekiBreeki != null) { bgmSource.clip = cheekiBreeki; bgmSource.Play(); StartCoroutine(StopBGM(duration)); } if (vodkaCount >= 3) { isDrunk = true; Debug.Log("PLAYER IS DIZZY! Damage +20%"); } }
+    
+    // --- VODKA NOW TRIGGERS THE FULL DIZZY EFFECT ---
+    public void DrinkVodka(AudioClip cheekiBreeki, float duration) 
+    { 
+        vodkaCount++; 
+        if (bgmSource != null && cheekiBreeki != null) 
+        { 
+            bgmSource.clip = cheekiBreeki; 
+            bgmSource.Play(); 
+            StartCoroutine(StopBGM(duration)); 
+        } 
+        if (vodkaCount >= 3) 
+        { 
+            isDrunk = true; 
+            
+            // Instantly max out the dizziness!
+            dizzyStacks = maxDizzyStacks;
+            // Takes longer to wear off because it's alcohol, not a magic attack!
+            dizzyDecayTimer = 8f; 
+            
+            Debug.Log("PLAYER IS DIZZY FROM VODKA! Damage +20%"); 
+        } 
+    }
+    
     private IEnumerator StopBGM(float duration) { yield return new WaitForSeconds(duration); bgmSource.Stop(); }
 }

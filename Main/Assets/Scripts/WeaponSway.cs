@@ -45,12 +45,6 @@ public class WeaponSway : MonoBehaviour
         // If the left mouse button is pressed, target the steady multiplier. Otherwise, target 1.0 (normal).
         bool isShooting = Mouse.current.leftButton.isPressed;
         float targetMultiplier = isShooting ? steadyMultiplier : 1f;
-        
-        PlayerStats stats = GetComponentInParent<PlayerStats>();
-        if (stats != null && stats.isDrunk)
-        {
-            targetMultiplier *= 5f; // Makes the gun wobble uncontrollably!
-        }
 
         // Smoothly glide the multiplier up or down
         currentSwayMultiplier = Mathf.Lerp(currentSwayMultiplier, targetMultiplier, Time.deltaTime * steadyTransitionSpeed);

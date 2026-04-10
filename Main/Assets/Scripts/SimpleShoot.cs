@@ -371,4 +371,17 @@ public class SimpleShoot : MonoBehaviour
         if (reserveAmmo > maxReserveAmmo) reserveAmmo = maxReserveAmmo;
         UpdateAmmoUI();
     }
+
+    public void EmptyMagazine()
+    {
+        currentAmmo = 0;
+        UpdateAmmoUI();
+    }
+
+    public void StealReserveAmmo(int amount)
+    {
+        reserveAmmo -= amount;
+        if (reserveAmmo < 0) reserveAmmo = 0;
+        UpdateAmmoUI();
+    }
 }

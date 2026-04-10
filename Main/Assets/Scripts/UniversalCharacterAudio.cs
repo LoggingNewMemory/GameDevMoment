@@ -4,8 +4,8 @@ using UnityEngine;
 public class UniversalCharacterAudio : MonoBehaviour
 {
     [Header("Audio Clips")]
-    public AudioClip[] hitSounds;   // You can add 1 or 5 different grunts here!
-    public AudioClip[] deathSounds; // Same for death sounds
+    public AudioClip hitSound;   // <-- Just 1 slot now!
+    public AudioClip deathSound; // <-- Just 1 slot now!
 
     [Header("Settings")]
     [Range(0.0f, 0.3f)] 
@@ -26,26 +26,19 @@ public class UniversalCharacterAudio : MonoBehaviour
 
     public void PlayHitSound()
     {
-        PlayRandomClip(hitSounds);
+        if (hitSound == null) return;
+
+        // Slightly randomize the pitch (e.g., between 0.85x and 1.15x speed)
+        audioSource.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
+        audioSource.PlayOneShot(hitSound);
     }
 
     public void PlayDeathSound()
     {
-        PlayRandomClip(deathSounds);
-    }
+        if (deathSound == null) return;
 
-    private void PlayRandomClip(AudioClip[] clips)
-    {
-        // If we forgot to assign sounds, just ignore it and don't crash
-        if (clips == null || clips.Length == 0) return;
-
-        // Pick a random clip from the list
-        AudioClip clipToPlay = clips[Random.Range(0, clips.Length)];
-
-        // Slightly randomize the pitch (e.g., between 0.85x and 1.15x speed)
+        // Slightly randomize the pitch 
         audioSource.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
-
-        // Play it! (PlayOneShot allows multiple hits to overlap naturally)
-        audioSource.PlayOneShot(clipToPlay);
+        audioSource.PlayOneShot(deathSound);
     }
 }

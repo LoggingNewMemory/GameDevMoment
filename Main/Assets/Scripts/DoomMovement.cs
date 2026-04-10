@@ -29,7 +29,7 @@ public class DoomMovement : MonoBehaviour
     public float knockbackDecay = 10f; 
     private Vector3 knockbackVelocity = Vector3.zero;
     public bool isKnockedDown = false; 
-    private float stumbleTimer = 0f; // NEW: Tracks if you are currently stumbling from a punch!
+    private float stumbleTimer = 0f; 
 
     [Header("Looking")]
     public float mouseSensitivity = 0.1f; 
@@ -72,8 +72,26 @@ public class DoomMovement : MonoBehaviour
             Vector2 mouseDelta = Mouse.current.delta.ReadValue();
             xRotation -= mouseDelta.y * mouseSensitivity;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f); 
-            playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+            // --- DIZZY CAMERA SWAY & RANDOM STUMBLING ---
+            float dizzyRoll = 0f;
+            PlayerStats stats = GetComponent<PlayerStats>();
+            
+            if (stats != null && stats.dizzyStacks > 0)
+            {
+                // Roll the camera based on how many stacks you have
+                dizzyRoll = Mathf.Sin(Time.time * (2f + stats.dizzyStacks)) * (2f * stats.dizzyStacks);
+
+                // Randomly trigger the stumble effect so the player trips!
+                if (Random.Range(0f, 100f) < (0.5f * stats.dizzyStacks)) 
+                {
+                    stumbleTimer = 0.4f; 
+                }
+            }
+
+            playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, dizzyRoll);
             transform.Rotate(Vector3.up * (mouseDelta.x * mouseSensitivity));
+            // ----------------------------------------------
 
             float x = 0f; float z = 0f;
             if (Keyboard.current.wKey.isPressed) z += 1f;
@@ -88,8 +106,7 @@ public class DoomMovement : MonoBehaviour
             bool isRunning = Keyboard.current.leftShiftKey.isPressed && z > 0;
             if (isRunning && !isSliding && !isDashing) currentSpeed = runSpeed;
 
-            // --- REVISION: STUMBLE EFFECT ---
-            // If you just got punched, you lose your footing and slow down by 90% for a split second!
+            // Apply Stumble slow-down
             if (stumbleTimer > 0f)
             {
                 stumbleTimer -= Time.deltaTime;
@@ -104,7 +121,6 @@ public class DoomMovement : MonoBehaviour
 
             if (Mouse.current.rightButton.wasPressedThisFrame && !isDashing && !isSliding)
             {
-                PlayerStats stats = GetComponent<PlayerStats>();
                 if (Time.time >= lastDashTime + dashCooldown || (stats != null && stats.hasUnlimitedEnergy))
                     StartCoroutine(DashRoutine(inputDirection));
             }
@@ -131,14 +147,13 @@ public class DoomMovement : MonoBehaviour
         knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecay * Time.deltaTime);
     }
 
-    // --- REVISION: FAST CAMERA KICK & STUMBLE ---
     public void ApplyPunchKnockback(Vector3 direction, float force)
     {
         if (!isKnockedDown)
         {
             knockbackVelocity += direction * force;
-            stumbleTimer = 0.35f; // You stagger for a third of a second!
-            StartCoroutine(SmoothCameraPunchRoutine(12f, 0.08f)); // Faster, sharper camera snap!
+            stumbleTimer = 0.35f; 
+            StartCoroutine(SmoothCameraPunchRoutine(12f, 0.08f)); 
         }
     }
 
@@ -163,23 +178,18 @@ public class DoomMovement : MonoBehaviour
         if (!isKnockedDown) StartCoroutine(KnockdownRoutine());
     }
 
-    // --- REVISION: INSTANT WEAPON HIDE & FAST AS HELL FALL ---
     IEnumerator KnockdownRoutine()
     {
         isKnockedDown = true;
         
-        // --- NEW: Check for BOTH Guns and Swords! ---
         SimpleShoot activeGun = GetComponentInChildren<SimpleShoot>();
         SimpleMelee activeMelee = GetComponentInChildren<SimpleMelee>();
 
         if (activeGun != null) activeGun.InstantHide();
         if (activeMelee != null) activeMelee.InstantHide();
-        // ------------------------------------------
 
-        // Shove backward extremely hard
         knockbackVelocity = -transform.forward * 25f; 
 
-        // FAST AS HELL FALL (0.15s)
         float fallDuration = 0.15f; 
         float elapsed = 0f;
         Vector3 normalCamPos = playerCamera.localPosition;
@@ -195,9 +205,8 @@ public class DoomMovement : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(1.5f); // Laying on the floor feeling the pain
+        yield return new WaitForSeconds(1.5f); 
 
-        // Rise (Still fast, but slower than the fall so it feels like effort)
         elapsed = 0f;
         float riseDuration = 0.5f; 
         while(elapsed < riseDuration)
@@ -213,7 +222,6 @@ public class DoomMovement : MonoBehaviour
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         isKnockedDown = false; 
 
-        // --- NEW: Draw whichever weapon was equipped! ---
         if (activeGun != null) StartCoroutine(activeGun.DrawWeaponRoutine());
         if (activeMelee != null) StartCoroutine(activeMelee.DrawWeaponRoutine());
     }
