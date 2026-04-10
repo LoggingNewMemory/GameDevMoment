@@ -17,9 +17,10 @@ public class PlayerStats : MonoBehaviour
     public AudioClip overhealBreakSound;      
 
     [Header("Player VOs (Voice/SFX)")]
-    public AudioClip playerKnockoutSound;    // Plays when consecutive hits trigger a knockdown
-    public AudioClip playerDeathSound;       // Plays when HP reaches 0
-    private bool isDead = false;             // Prevents the death sound from spamming
+    public AudioClip playerHitSound;         // <-- NEW: Plays on standard damage
+    public AudioClip playerKnockoutSound;    
+    public AudioClip playerDeathSound;       
+    private bool isDead = false;             
 
     [Header("Damage UI (Hits)")]
     public Image bloodScreen;          
@@ -69,14 +70,13 @@ public class PlayerStats : MonoBehaviour
 
     void Update()
     {
-        if (isDead) return; // Stop updating hit counters if dead
+        if (isDead) return; 
 
         if (consecutiveHits > 0 && Time.time > lastHitTime + hitResetTime)
         {
             consecutiveHits = 0;
         }
 
-        // --- DIZZY DECAY (Strict 2-Second Reset) ---
         if (dizzyStacks > 0)
         {
             dizzyDecayTimer -= Time.deltaTime;
@@ -125,18 +125,15 @@ public class PlayerStats : MonoBehaviour
         lastHitTime = Time.time;
         consecutiveHits++;
 
+        bool isKnockout = false; 
+
         if (playerMovement != null)
         {
             if (consecutiveHits >= 3)
             {
+                isKnockout = true;
                 playerMovement.TriggerKnockdown();
                 consecutiveHits = 0; 
-                
-                // --- PLAY KNOCKOUT SOUND ---
-                if (sfxSource != null && playerKnockoutSound != null)
-                {
-                    sfxSource.PlayOneShot(playerKnockoutSound);
-                }
                 
                 if (bloodScreen != null)
                 {
@@ -144,12 +141,17 @@ public class PlayerStats : MonoBehaviour
                     StartCoroutine(FlashBloodScreen(knockdownAlpha, 1.5f)); 
                 }
             }
-            else if (attacker != null)
+            else 
             {
-                Vector3 pushDirection = (transform.position - attacker.position).normalized;
-                pushDirection.y = 0; 
-                playerMovement.ApplyPunchKnockback(pushDirection, 15f); 
+                // Push the player ONLY if there is a physical attacker (not SteJew's magic)
+                if (attacker != null)
+                {
+                    Vector3 pushDirection = (transform.position - attacker.position).normalized;
+                    pushDirection.y = 0; 
+                    playerMovement.ApplyPunchKnockback(pushDirection, 15f); 
+                }
                 
+                // Flash the screen red for ALL damage types!
                 if (bloodScreen != null)
                 {
                     StopCoroutine("FlashBloodScreen"); 
@@ -158,19 +160,35 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
+        // --- AUDIO PRIORITY LOGIC ---
         if (currentHealth <= 0 && !isDead)
         {
             currentHealth = 0;
             isDead = true;
             currentFlashAlpha = 1f; 
             
-            // --- PLAY DEATH SOUND ---
+            // Priority 1: Death Sound
             if (sfxSource != null && playerDeathSound != null)
             {
                 sfxSource.PlayOneShot(playerDeathSound);
             }
-            
             Debug.Log("PLAYER IS DEAD!");
+        }
+        else if (isKnockout)
+        {
+            // Priority 2: Knockout Sound
+            if (sfxSource != null && playerKnockoutSound != null)
+            {
+                sfxSource.PlayOneShot(playerKnockoutSound);
+            }
+        }
+        else if (!isDead)
+        {
+            // Priority 3: Normal Hit Sound
+            if (sfxSource != null && playerHitSound != null)
+            {
+                sfxSource.PlayOneShot(playerHitSound);
+            }
         }
     }
 
@@ -190,7 +208,7 @@ public class PlayerStats : MonoBehaviour
 
     public void HealPercentage(float percent, bool canOverheal = false)
     {
-        if (isDead) return; // Can't heal a dead player!
+        if (isDead) return; 
 
         bool hadOverheal = currentHealth > maxHealth;
 

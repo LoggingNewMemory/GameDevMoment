@@ -5865,6 +5865,7 @@ MonoBehaviour:
   sfxSource: {fileID: 1636846694}
   overhealGainSound: {fileID: 8300000, guid: a7db2e6862f091baca2208cb80222189, type: 3}
   overhealBreakSound: {fileID: 8300000, guid: 0b04f6804f4d173af9e4cf5f5990af4f, type: 3}
+  playerHitSound: {fileID: 8300000, guid: fb530921aaabecd55adfb50083db0ade, type: 3}
   playerKnockoutSound: {fileID: 8300000, guid: 1648e66fc47c50c1e96ebf4b0a14adb4, type: 3}
   playerDeathSound: {fileID: 8300000, guid: fa42a9009e6aa07dd89b2335f60dcf6f, type: 3}
   bloodScreen: {fileID: 828217650}
