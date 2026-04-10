@@ -69,18 +69,17 @@ public class PlayerStats : MonoBehaviour
             consecutiveHits = 0;
         }
 
-        // --- DIZZY DECAY ---
+        // --- DIZZY DECAY (Strict 2-Second Reset) ---
         if (dizzyStacks > 0)
         {
             dizzyDecayTimer -= Time.deltaTime;
             if (dizzyDecayTimer <= 0f)
             {
-                dizzyStacks--;
-                if (dizzyStacks > 0) dizzyDecayTimer = 4f; 
+                // Clear all stacks entirely after the 2-second window
+                dizzyStacks = 0;
+                isDrunk = false; 
+                Debug.Log("Dizzy effect cleared! Player is sober again.");
             }
-            
-            // If we are fully sober, turn off the drunk debuff!
-            if (dizzyStacks == 0) isDrunk = false;
         }
 
         if (bloodScreen != null)
@@ -207,13 +206,12 @@ public class PlayerStats : MonoBehaviour
         }
         
         isDrunk = true; 
-        dizzyDecayTimer = 4f; 
+        dizzyDecayTimer = 2f; // <-- Set to exactly 2 seconds
     }
 
     public void TriggerUnlimitedEnergy(float duration) { StartCoroutine(EnergyRoutine(duration)); }
     private IEnumerator EnergyRoutine(float duration) { hasUnlimitedEnergy = true; yield return new WaitForSeconds(duration); hasUnlimitedEnergy = false; }
     
-    // --- VODKA NOW TRIGGERS THE FULL DIZZY EFFECT ---
     public void DrinkVodka(AudioClip cheekiBreeki, float duration) 
     { 
         vodkaCount++; 
@@ -226,12 +224,8 @@ public class PlayerStats : MonoBehaviour
         if (vodkaCount >= 3) 
         { 
             isDrunk = true; 
-            
-            // Instantly max out the dizziness!
             dizzyStacks = maxDizzyStacks;
-            // Takes longer to wear off because it's alcohol, not a magic attack!
-            dizzyDecayTimer = 8f; 
-            
+            dizzyDecayTimer = 2f; // <-- Set to exactly 2 seconds
             Debug.Log("PLAYER IS DIZZY FROM VODKA! Damage +20%"); 
         } 
     }

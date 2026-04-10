@@ -23,13 +23,13 @@ public class SteJewAI : MonoBehaviour
 
     private Animator anim;
     private UniversalHealth healthScript;
-    private Rigidbody rb; // <-- NEW: Grabbing the physics body!
+    private Rigidbody rb; 
 
     void Start()
     {
         anim = GetComponent<Animator>();
         healthScript = GetComponent<UniversalHealth>();
-        rb = GetComponent<Rigidbody>(); // <-- NEW: Assigning the Rigidbody
+        rb = GetComponent<Rigidbody>(); 
         
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
@@ -41,7 +41,19 @@ public class SteJewAI : MonoBehaviour
 
     void Update()
     {
-        if (healthScript != null && healthScript.isDead) return;
+        // --- DEATH PHYSICS FIX ---
+        if (healthScript != null && healthScript.isDead) 
+        {
+            if (rb != null && !rb.isKinematic)
+            {
+                rb.isKinematic = true; 
+                
+                Collider col = GetComponent<Collider>();
+                if (col != null) col.enabled = false;
+            }
+            return;
+        }
+
         if (playerTarget == null) return;
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
@@ -52,14 +64,12 @@ public class SteJewAI : MonoBehaviour
             Vector3 fleeDir = (transform.position - playerTarget.position).normalized;
             fleeDir.y = 0; 
             
-            // --- NEW: Using Rigidbody to move so he can't pass through walls! ---
             if (rb != null)
             {
                 rb.MovePosition(transform.position + fleeDir * moveSpeed * Time.deltaTime);
             }
             else
             {
-                // Fallback just in case the Rigidbody is missing
                 transform.position += fleeDir * moveSpeed * Time.deltaTime;
             }
             

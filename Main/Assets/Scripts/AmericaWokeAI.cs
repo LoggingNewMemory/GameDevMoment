@@ -20,7 +20,7 @@ public class AmericaWokeAI : MonoBehaviour
     private Transform playerTarget;
     private Animator anim;
     private UniversalHealth healthScript;
-    private Rigidbody rb; // <-- NEW: Grabbing the physics body!
+    private Rigidbody rb; 
     
     private float lastAttackTime = 0f;
     private bool isDashing = false;
@@ -29,7 +29,7 @@ public class AmericaWokeAI : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         healthScript = GetComponent<UniversalHealth>();
-        rb = GetComponent<Rigidbody>(); // <-- NEW: Assigning the Rigidbody
+        rb = GetComponent<Rigidbody>(); 
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
@@ -37,7 +37,19 @@ public class AmericaWokeAI : MonoBehaviour
 
     void Update()
     {
-        if (healthScript != null && healthScript.isDead) return;
+        // --- DEATH PHYSICS FIX ---
+        if (healthScript != null && healthScript.isDead) 
+        {
+            if (rb != null && !rb.isKinematic)
+            {
+                rb.isKinematic = true; 
+                
+                Collider col = GetComponent<Collider>();
+                if (col != null) col.enabled = false;
+            }
+            return;
+        }
+
         if (playerTarget == null) return;
         if (isDashing) return; 
 
@@ -49,7 +61,6 @@ public class AmericaWokeAI : MonoBehaviour
             Vector3 moveDir = (playerTarget.position - transform.position).normalized;
             moveDir.y = 0; 
             
-            // --- NEW: Using Rigidbody to move so he can't pass through walls! ---
             if (rb != null)
             {
                 rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
@@ -111,14 +122,12 @@ public class AmericaWokeAI : MonoBehaviour
         float dashDuration = 0.2f; 
         float elapsed = 0f;
 
-        // Physically launch him at the player using the Rigidbody!
         while (elapsed < dashDuration)
         {
             if (healthScript != null && healthScript.isDead) yield break;
             
             elapsed += Time.deltaTime;
             
-            // --- NEW: Rigidbody movement for the high-speed dash ---
             if (rb != null)
             {
                 rb.MovePosition(transform.position + dashDir * dashSpeed * Time.deltaTime);

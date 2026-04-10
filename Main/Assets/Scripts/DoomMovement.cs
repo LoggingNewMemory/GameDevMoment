@@ -30,6 +30,9 @@ public class DoomMovement : MonoBehaviour
     private Vector3 knockbackVelocity = Vector3.zero;
     public bool isKnockedDown = false; 
     private float stumbleTimer = 0f; 
+    
+    // --- NEW: Tracks the roll so it can smoothly reset when sober ---
+    private float currentDizzyRoll = 0f; 
 
     [Header("Looking")]
     public float mouseSensitivity = 0.1f; 
@@ -74,22 +77,24 @@ public class DoomMovement : MonoBehaviour
             xRotation = Mathf.Clamp(xRotation, -90f, 90f); 
 
             // --- DIZZY CAMERA SWAY & RANDOM STUMBLING ---
-            float dizzyRoll = 0f;
             PlayerStats stats = GetComponent<PlayerStats>();
             
             if (stats != null && stats.dizzyStacks > 0)
             {
-                // Roll the camera based on how many stacks you have
-                dizzyRoll = Mathf.Sin(Time.time * (2f + stats.dizzyStacks)) * (2f * stats.dizzyStacks);
+                currentDizzyRoll = Mathf.Sin(Time.time * (2f + stats.dizzyStacks)) * (2f * stats.dizzyStacks);
 
-                // Randomly trigger the stumble effect so the player trips!
                 if (Random.Range(0f, 100f) < (0.5f * stats.dizzyStacks)) 
                 {
                     stumbleTimer = 0.4f; 
                 }
             }
+            else
+            {
+                // Smoothly return the camera tilt back to perfectly level
+                currentDizzyRoll = Mathf.Lerp(currentDizzyRoll, 0f, Time.deltaTime * 5f);
+            }
 
-            playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, dizzyRoll);
+            playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, currentDizzyRoll);
             transform.Rotate(Vector3.up * (mouseDelta.x * mouseSensitivity));
             // ----------------------------------------------
 
