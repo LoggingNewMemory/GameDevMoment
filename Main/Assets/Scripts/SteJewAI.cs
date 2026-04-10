@@ -23,11 +23,13 @@ public class SteJewAI : MonoBehaviour
 
     private Animator anim;
     private UniversalHealth healthScript;
+    private Rigidbody rb; // <-- NEW: Grabbing the physics body!
 
     void Start()
     {
         anim = GetComponent<Animator>();
         healthScript = GetComponent<UniversalHealth>();
+        rb = GetComponent<Rigidbody>(); // <-- NEW: Assigning the Rigidbody
         
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
@@ -50,7 +52,16 @@ public class SteJewAI : MonoBehaviour
             Vector3 fleeDir = (transform.position - playerTarget.position).normalized;
             fleeDir.y = 0; 
             
-            transform.position += fleeDir * moveSpeed * Time.deltaTime;
+            // --- NEW: Using Rigidbody to move so he can't pass through walls! ---
+            if (rb != null)
+            {
+                rb.MovePosition(transform.position + fleeDir * moveSpeed * Time.deltaTime);
+            }
+            else
+            {
+                // Fallback just in case the Rigidbody is missing
+                transform.position += fleeDir * moveSpeed * Time.deltaTime;
+            }
             
             if (fleeDir != Vector3.zero)
             {
@@ -90,7 +101,6 @@ public class SteJewAI : MonoBehaviour
 
         if (healthScript != null && healthScript.isDead) yield break;
 
-        // 1. ALWAYS apply base damage and dizziness
         PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
         if (stats != null)
         {
@@ -98,16 +108,13 @@ public class SteJewAI : MonoBehaviour
             stats.AddDizzyStack();
         }
 
-        // 2. ROLL FOR EXTRA EFFECTS
         float roll = Random.Range(0f, 100f);
         SimpleShoot activeGun = playerTarget.GetComponentInChildren<SimpleShoot>();
 
-        // 60% Chance: JUST NORMAL ATTACK (Do nothing extra)
         if (roll <= 60f) 
         {
             Debug.Log("SteJew just did a normal magic attack!");
         }
-        // 25% Chance: STEAL RESERVE AMMO
         else if (roll > 60f && roll <= 85f) 
         {
             if (activeGun != null)
@@ -117,7 +124,6 @@ public class SteJewAI : MonoBehaviour
                 Debug.Log("SteJew used Global Magic to steal 30 Reserve Ammo!");
             }
         }
-        // 15% Chance: EMPTY MAGAZINE
         else 
         {
             if (activeGun != null)
