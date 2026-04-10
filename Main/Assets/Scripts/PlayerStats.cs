@@ -5,24 +5,29 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
-    [Header("Health System")]
+    [Header("Health & Overheal System")]
     public float maxHealth = 100f;         
-    public float overhealMax = 125f;       
+    public float maxOverheal = 150f;       
     public float currentHealth;
     public TextMeshProUGUI healthTextDisplay;
 
+    [Header("Overheal Audio")]
+    public AudioSource sfxSource;          
+    public AudioClip overhealGainSound;      
+    public AudioClip overhealBreakSound;      
+
     [Header("Damage UI (Hits)")]
     public Image bloodScreen;          
-    public float normalHitAlpha = 0.4f;  // Semi-transparent for normal punches
-    public float knockdownAlpha = 0.85f; // Almost solid red for getting knocked down!
+    public float normalHitAlpha = 0.4f;  
+    public float knockdownAlpha = 0.85f; 
     public float flashDuration = 0.5f;   
 
     [Header("Low Health UI (Pulse)")]
-    public float lowHealthThreshold = 30f; // HP where the pulsing starts
-    public float pulseSpeed = 2f;          // How fast the heartbeat pulses
-    public float maxPulseAlpha = 0.5f;     // How dark the pulse gets
+    public float lowHealthThreshold = 30f; 
+    public float pulseSpeed = 2f;          
+    public float maxPulseAlpha = 0.5f;     
 
-    private float currentFlashAlpha = 0f;  // Tracks the sudden hit flashes
+    private float currentFlashAlpha = 0f;  
 
     [Header("Hit Reactions")]
     public float hitResetTime = 3f; 
@@ -54,28 +59,21 @@ public class PlayerStats : MonoBehaviour
 
     void Update()
     {
-        // 1. Reset the hit combo if you evaded for a while
         if (consecutiveHits > 0 && Time.time > lastHitTime + hitResetTime)
         {
             consecutiveHits = 0;
         }
 
-        // 2. --- NEW: DYNAMIC BLOOD SCREEN BLENDING ---
         if (bloodScreen != null)
         {
-            float finalAlpha = currentFlashAlpha; // Start with the hit flash
+            float finalAlpha = currentFlashAlpha; 
 
-            // If health is dangerously low, calculate a heartbeat pulse!
             if (currentHealth <= lowHealthThreshold && currentHealth > 0)
             {
-                // PingPong creates a smooth wave that goes up and down over time
                 float pulse = Mathf.PingPong(Time.time * pulseSpeed, maxPulseAlpha);
-                
-                // Keep whichever is higher: The sudden hit flash, or the heartbeat pulse
                 finalAlpha = Mathf.Max(currentFlashAlpha, pulse);
             }
 
-            // Apply it to the screen
             Color c = bloodScreen.color;
             c.a = finalAlpha;
             bloodScreen.color = c;
@@ -84,9 +82,23 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(float damageAmount, Transform attacker = null)
     {
+        // Remember if we had overheal BEFORE taking the hit
+        bool hadOverheal = currentHealth > maxHealth;
+
         currentHealth -= damageAmount;
+
+        // If we had overheal, but the hit dropped us to 100 or below, play the break sound!
+        if (hadOverheal && currentHealth <= maxHealth)
+        {
+            if (sfxSource != null && overhealBreakSound != null)
+            {
+                sfxSource.PlayOneShot(overhealBreakSound);
+            }
+        }
+
         UpdateHealthUI();
 
+        // Hit Reactions
         lastHitTime = Time.time;
         consecutiveHits++;
 
@@ -97,11 +109,10 @@ public class PlayerStats : MonoBehaviour
                 playerMovement.TriggerKnockdown();
                 consecutiveHits = 0; 
                 
-                // --- NEW: MASSIVE FLASH FOR KNOCKDOWN ---
                 if (bloodScreen != null)
                 {
                     StopCoroutine("FlashBloodScreen"); 
-                    StartCoroutine(FlashBloodScreen(knockdownAlpha, 1.5f)); // Dark red, lasts longer!
+                    StartCoroutine(FlashBloodScreen(knockdownAlpha, 1.5f)); 
                 }
             }
             else if (attacker != null)
@@ -110,7 +121,6 @@ public class PlayerStats : MonoBehaviour
                 pushDirection.y = 0; 
                 playerMovement.ApplyPunchKnockback(pushDirection, 15f); 
                 
-                // --- NEW: NORMAL FLASH FOR PUNCH ---
                 if (bloodScreen != null)
                 {
                     StopCoroutine("FlashBloodScreen"); 
@@ -123,11 +133,10 @@ public class PlayerStats : MonoBehaviour
         {
             currentHealth = 0;
             Debug.Log("PLAYER IS DEAD!");
-            currentFlashAlpha = 1f; // Screen goes pitch red when dead!
+            currentFlashAlpha = 1f; 
         }
     }
 
-    // --- REVISION: CUSTOMIZABLE FADE OUT ---
     IEnumerator FlashBloodScreen(float targetAlpha, float duration)
     {
         currentFlashAlpha = targetAlpha;
@@ -139,17 +148,29 @@ public class PlayerStats : MonoBehaviour
             currentFlashAlpha = Mathf.Lerp(targetAlpha, 0f, elapsed / duration);
             yield return null;
         }
-
         currentFlashAlpha = 0f;
     }
 
     public void HealPercentage(float percent, bool canOverheal = false)
     {
-        if (!canOverheal && currentHealth >= maxHealth) return;
+        // Remember if we had overheal BEFORE drinking
+        bool hadOverheal = currentHealth > maxHealth;
+
         float healAmount = maxHealth * (percent / 100f);
         currentHealth += healAmount;
-        if (!canOverheal && currentHealth > maxHealth) currentHealth = maxHealth; 
-        else if (canOverheal && currentHealth > overhealMax) currentHealth = overhealMax; 
+        
+        float cap = canOverheal ? maxOverheal : maxHealth;
+        if (currentHealth > cap) currentHealth = cap;
+
+        // If we DID NOT have overheal, but the drink pushed us over 100, play the gain sound!
+        if (!hadOverheal && currentHealth > maxHealth)
+        {
+            if (sfxSource != null && overhealGainSound != null)
+            {
+                sfxSource.PlayOneShot(overhealGainSound);
+            }
+        }
+
         UpdateHealthUI();
     }
 
@@ -158,8 +179,10 @@ public class PlayerStats : MonoBehaviour
         if (healthTextDisplay != null)
         {
             healthTextDisplay.text = "HP: " + Mathf.RoundToInt(currentHealth);
-            if (currentHealth > maxHealth) healthTextDisplay.color = Color.cyan;
-            else if (currentHealth <= lowHealthThreshold) healthTextDisplay.color = Color.red; // Text turns red too!
+            
+            // Turn the health text cyan if we are overhealed!
+            if (currentHealth > maxHealth) healthTextDisplay.color = new Color(0.2f, 0.8f, 1f); 
+            else if (currentHealth <= lowHealthThreshold) healthTextDisplay.color = Color.red; 
             else healthTextDisplay.color = Color.white;
         }
     }

@@ -43,29 +43,32 @@ public class ConsumableItem : MonoBehaviour
 
             if (stats != null)
             {
-                // SMART PICKUP: If health is full, don't let them accidentally eat food and waste it!
+                // SMART PICKUP (FOOD): If health is full, don't waste food
                 if ((typeOfItem == ItemType.IndomieUdon || typeOfItem == ItemType.MacNCheese) && stats.currentHealth >= stats.maxHealth)
                 {
-                    return; // Abort pickup. Leave it on the floor!
+                    return; 
+                }
+
+                // SMART PICKUP (DRINKS): If overheal is maxed, don't waste drinks
+                if ((typeOfItem == ItemType.Extrajoss || typeOfItem == ItemType.VodkaRey) && stats.currentHealth >= stats.maxOverheal)
+                {
+                    return; 
                 }
 
                 switch (typeOfItem)
                 {
-                    // Food: FALSE (Caps at 100)
                     case ItemType.IndomieUdon:
                         stats.HealPercentage(10f, false); 
                         break;
                     case ItemType.MacNCheese:
                         stats.HealPercentage(20f, false);
                         break;
-                    
-                    // Drinks: TRUE (Allows Overheal up to 125!)
                     case ItemType.Extrajoss:
-                        stats.HealPercentage(5f, true);
+                        stats.HealPercentage(25f, true); 
                         stats.TriggerUnlimitedEnergy(10f);
                         break;
                     case ItemType.VodkaRey:
-                        stats.HealPercentage(2f, true);
+                        stats.HealPercentage(15f, true); 
                         stats.TriggerUnlimitedEnergy(7f);
                         stats.DrinkVodka(cheekiBreeki, 7f);
                         break;
