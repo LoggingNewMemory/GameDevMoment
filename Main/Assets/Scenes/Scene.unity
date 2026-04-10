@@ -5603,9 +5603,6 @@ PrefabInstance:
       addedObject: {fileID: 1716133318}
     - targetCorrespondingSourceObject: {fileID: 8028931671935164916, guid: 8dcd59b6f0bef865492ddaf85ae3f36f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1716133317}
-    - targetCorrespondingSourceObject: {fileID: 8028931671935164916, guid: 8dcd59b6f0bef865492ddaf85ae3f36f, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1716133322}
   m_SourcePrefab: {fileID: 100100000, guid: 8dcd59b6f0bef865492ddaf85ae3f36f, type: 3}
 --- !u!1 &1716133307 stripped
@@ -5636,21 +5633,6 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &1716133317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1716133307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b7dc39ad66d3f070a18e4cbfabfa271, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UniversalMeleeAttack
-  attackSound: {fileID: 0}
-  damageDelay: 0.4
-  hitTrackingRange: 3
 --- !u!114 &1716133318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5806,11 +5788,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb0d31a881f89474863ff2a29636e8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteJewAI
-  moveSpeed: 6
-  fleeDistance: 15
-  attackRange: 2.5
+  moveSpeed: 12
+  fleeDistance: 20
   attackDamage: 5
-  attackCooldown: 1
+  attackCooldown: 5
+  damageDelay: 1
+  audioSource: {fileID: 1636846694}
+  attackCastSound: {fileID: 8300000, guid: 8628c05288ffb3d01b0519332c845092, type: 3}
+  emptyMagSound: {fileID: 8300000, guid: efa28c4b65c106976baab635addacfa7, type: 3}
+  stealReserveSound: {fileID: 8300000, guid: 8409b586475ee4ab49835e3027325a00, type: 3}
 --- !u!1 &1800099432
 GameObject:
   m_ObjectHideFlags: 0

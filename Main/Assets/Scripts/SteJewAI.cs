@@ -1,15 +1,22 @@
 using UnityEngine;
+using System.Collections; 
 
 public class SteJewAI : MonoBehaviour
 {
-    [Header("Flee & Combat Settings")]
-    public float moveSpeed = 6f;
+    [Header("Flee Settings")]
+    public float moveSpeed = 22f; 
     public float fleeDistance = 15f; 
-    public float attackRange = 3f; 
+
+    [Header("Global Combat Settings")]
     public float attackDamage = 5f;
-    
-    [Tooltip("How fast he spams his magic attack. Lower is faster!")]
-    public float attackCooldown = 0.4f; 
+    public float attackCooldown = 8f; 
+    public float damageDelay = 1f; 
+
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+    public AudioClip attackCastSound;    
+    public AudioClip emptyMagSound;      
+    public AudioClip stealReserveSound;  
 
     private Transform playerTarget;
     private float lastAttackTime = 0f;
@@ -21,9 +28,13 @@ public class SteJewAI : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         healthScript = GetComponent<UniversalHealth>();
+        
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
+
+        lastAttackTime = Time.time; 
     }
 
     void Update()
@@ -33,6 +44,7 @@ public class SteJewAI : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
 
+        // --- FLEE LOGIC ---
         if (distance < fleeDistance)
         {
             Vector3 fleeDir = (transform.position - playerTarget.position).normalized;
@@ -46,16 +58,16 @@ public class SteJewAI : MonoBehaviour
             }
 
             if (anim != null) anim.SetBool("isChasing", true); 
-
-            // If player is close, rapid-fire magic!
-            if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
-            {
-                AttackPlayer();
-            }
         }
         else
         {
             if (anim != null) anim.SetBool("isChasing", false);
+        }
+
+        // --- GLOBAL ATTACK LOGIC ---
+        if (Time.time >= lastAttackTime + attackCooldown)
+        {
+            AttackPlayer();
         }
     }
 
@@ -64,27 +76,55 @@ public class SteJewAI : MonoBehaviour
         lastAttackTime = Time.time;
         if (anim != null) anim.SetTrigger("Attack");
 
+        if (audioSource != null && attackCastSound != null)
+        {
+            audioSource.PlayOneShot(attackCastSound);
+        }
+
+        StartCoroutine(MagicHitRoutine());
+    }
+
+    IEnumerator MagicHitRoutine()
+    {
+        yield return new WaitForSeconds(damageDelay);
+
+        if (healthScript != null && healthScript.isDead) yield break;
+
+        // 1. ALWAYS apply base damage and dizziness
         PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
         if (stats != null)
         {
-            stats.TakeDamage(attackDamage, transform); 
+            stats.TakeDamage(attackDamage, null); 
             stats.AddDizzyStack();
         }
 
+        // 2. ROLL FOR EXTRA EFFECTS
+        float roll = Random.Range(0f, 100f);
         SimpleShoot activeGun = playerTarget.GetComponentInChildren<SimpleShoot>();
-        if (activeGun != null)
+
+        // 60% Chance: JUST NORMAL ATTACK (Do nothing extra)
+        if (roll <= 60f) 
         {
-            float roll = Random.Range(0f, 100f);
-            
-            if (roll <= 10f) 
-            {
-                activeGun.EmptyMagazine();
-                Debug.Log("SteJew used Magic to empty your magazine!");
-            }
-            else if (roll > 10f && roll <= 30f) 
+            Debug.Log("SteJew just did a normal magic attack!");
+        }
+        // 25% Chance: STEAL RESERVE AMMO
+        else if (roll > 60f && roll <= 85f) 
+        {
+            if (activeGun != null)
             {
                 activeGun.StealReserveAmmo(30); 
-                Debug.Log("SteJew used Magic to steal 30 Reserve Ammo!");
+                if (stealReserveSound != null) AudioSource.PlayClipAtPoint(stealReserveSound, playerTarget.position);
+                Debug.Log("SteJew used Global Magic to steal 30 Reserve Ammo!");
+            }
+        }
+        // 15% Chance: EMPTY MAGAZINE
+        else 
+        {
+            if (activeGun != null)
+            {
+                activeGun.EmptyMagazine();
+                if (emptyMagSound != null) AudioSource.PlayClipAtPoint(emptyMagSound, playerTarget.position);
+                Debug.Log("SteJew used Global Magic to empty your magazine!");
             }
         }
     }
