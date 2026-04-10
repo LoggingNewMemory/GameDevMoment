@@ -254,11 +254,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
-  range: 110
-  damage: 20
+  range: 60
+  damage: 30
   isAutomatic: 1
   isBoltAction: 0
-  fireRate: 15
+  fireRate: 10
   playerKnockbackForce: 0.5
   cameraKickForce: 0.9
   weaponVisualKick: 0.2
@@ -2003,11 +2003,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
-  range: 110
-  damage: 15
+  range: 50
+  damage: 25
   isAutomatic: 1
   isBoltAction: 0
-  fireRate: 5
+  fireRate: 13.5
   playerKnockbackForce: 0
   cameraKickForce: 0.6
   weaponVisualKick: 0.15
@@ -2241,11 +2241,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
-  range: 50
-  damage: 20
+  range: 30
+  damage: 35
   isAutomatic: 0
   isBoltAction: 0
-  fireRate: 5
+  fireRate: 8
   playerKnockbackForce: 0
   cameraKickForce: 0.5
   weaponVisualKick: 0.1
@@ -2519,9 +2519,6 @@ PrefabInstance:
       addedObject: {fileID: 538607346}
     - targetCorrespondingSourceObject: {fileID: 9170976204198151676, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 538607355}
-    - targetCorrespondingSourceObject: {fileID: 9170976204198151676, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 538607368}
     - targetCorrespondingSourceObject: {fileID: 9170976204198151676, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
       insertIndex: -1
@@ -2529,6 +2526,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9170976204198151676, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
       insertIndex: -1
       addedObject: {fileID: 538607377}
+    - targetCorrespondingSourceObject: {fileID: 9170976204198151676, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 538607378}
+    - targetCorrespondingSourceObject: {fileID: 9170976204198151676, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 538607379}
     - targetCorrespondingSourceObject: {fileID: 6343491904991348843, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1446544595}
@@ -2573,29 +2576,6 @@ CapsuleCollider:
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.85, z: 0}
---- !u!114 &538607355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 538607345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17e30d0c81925ffefa35840404985ccc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  health: 60
-  moveSpeed: 5
-  attackRange: 2
-  attackDamage: 15
-  attackCooldown: 1.5
-  anim: {fileID: 538607360}
---- !u!95 &538607360 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 1813829617959390610, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
-  m_PrefabInstance: {fileID: 538607344}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &538607368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2655,6 +2635,36 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &538607378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538607345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2898ad50274204da38f77dbe386324e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniversalHealth
+  maxHealth: 100
+  health: 0
+--- !u!114 &538607379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 538607345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20032dee4df3cc9c68fabab1ef4f7fa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BasicChaserAI
+  moveSpeed: 5
+  attackRange: 2
+  attackDamage: 15
+  attackCooldown: 1.5
 --- !u!1 &828217648
 GameObject:
   m_ObjectHideFlags: 0
@@ -2944,8 +2954,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
-  range: 300
-  damage: 100
+  range: 200
+  damage: 500
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
@@ -3503,11 +3513,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
-  range: 50
-  damage: 15
+  range: 25
+  damage: 18
   isAutomatic: 1
   isBoltAction: 0
-  fireRate: 6
+  fireRate: 14.5
   playerKnockbackForce: 0
   cameraKickForce: 0.3
   weaponVisualKick: 0.07
@@ -3789,6 +3799,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4991325769921379425, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1878638918}
+    - targetCorrespondingSourceObject: {fileID: 4991325769921379425, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1878638919}
   m_SourcePrefab: {fileID: 100100000, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
 --- !u!1001 &1120337021
 PrefabInstance:
@@ -4305,7 +4318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7c3357bbbc2551689d124682f4b9e43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleMelee
-  damage: 40
+  damage: 100
   range: 2.5
   swingSpeed: 0.15
   swingCooldown: 0.6
@@ -4869,11 +4882,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
-  range: 50
-  damage: 30
+  range: 10
+  damage: 120
   isAutomatic: 0
   isBoltAction: 1
-  fireRate: 5
+  fireRate: 1.5
   playerKnockbackForce: 5
   cameraKickForce: 3
   weaponVisualKick: 0.4
@@ -5014,7 +5027,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 890f61c4a301765028b6de99da730c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StalkerAI
-  health: 70
   moveSpeed: 8
   attackRange: 2
   attackDamage: 10
@@ -5103,6 +5115,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1878638919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878638897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2898ad50274204da38f77dbe386324e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniversalHealth
+  maxHealth: 350
+  health: 0
 --- !u!1 &1992596205 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6530757577853156899, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
@@ -5439,11 +5465,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
-  range: 45
+  range: 15
   damage: 10
   isAutomatic: 1
   isBoltAction: 0
-  fireRate: 7
+  fireRate: 20
   playerKnockbackForce: 0
   cameraKickForce: 0.2
   weaponVisualKick: 0.05
@@ -5783,11 +5809,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleShoot
   fpsCamera: {fileID: 330585545}
-  range: 300
-  damage: 40
+  range: 100
+  damage: 75
   isAutomatic: 0
   isBoltAction: 1
-  fireRate: 5
+  fireRate: 1.2
   playerKnockbackForce: 0
   cameraKickForce: 4.5
   weaponVisualKick: 0.5
