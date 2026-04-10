@@ -11,6 +11,12 @@ public class AmericaWokeAI : MonoBehaviour
     public float attackRange = 3f;
     public float attackDamage = 30f;
     public float attackCooldown = 2f;
+
+    [Header("Universal Attack Settings")]
+    public AudioClip normalAttackSound;
+    public AudioClip knockdownAttackSound;
+    public float damageDelay = 0.3f;
+    public float hitTrackingRange = 3f; 
     
     [Header("Dash Knockdown Ability")]
     [Range(0f, 100f)]
@@ -98,9 +104,27 @@ public class AmericaWokeAI : MonoBehaviour
         
         if (roll <= dashChance)
         {
+            // Play Knockdown Sound
+            if (knockdownAttackSound != null) AudioSource.PlayClipAtPoint(knockdownAttackSound, transform.position);
             StartCoroutine(DashKnockdownRoutine());
         }
         else
+        {
+            // Play Normal Attack Sound
+            if (normalAttackSound != null) AudioSource.PlayClipAtPoint(normalAttackSound, transform.position);
+            StartCoroutine(NormalAttackRoutine());
+        }
+    }
+
+    // --- NEW: Normal Attack Routine (Uses damageDelay and hitTrackingRange) ---
+    IEnumerator NormalAttackRoutine()
+    {
+        yield return new WaitForSeconds(damageDelay);
+
+        if (healthScript != null && healthScript.isDead) yield break;
+
+        // The Dodge Check! Did the player dash away in time?
+        if (Vector3.Distance(transform.position, playerTarget.position) <= hitTrackingRange)
         {
             PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
             if (stats != null)
@@ -128,7 +152,6 @@ public class AmericaWokeAI : MonoBehaviour
             
             elapsed += Time.deltaTime;
             
-            // --- FIX 1: Hit the brakes! Only move if we aren't already colliding with the player ---
             if (Vector3.Distance(transform.position, playerTarget.position) > stoppingDistance)
             {
                 if (rb != null)
@@ -144,7 +167,8 @@ public class AmericaWokeAI : MonoBehaviour
             yield return null;
         }
 
-        if (Vector3.Distance(transform.position, playerTarget.position) <= attackRange + 1f)
+        // Updated to also use the new hitTrackingRange limit!
+        if (Vector3.Distance(transform.position, playerTarget.position) <= hitTrackingRange)
         {
             PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
             if (stats != null) stats.TakeDamage(attackDamage, transform); 
@@ -156,7 +180,6 @@ public class AmericaWokeAI : MonoBehaviour
                 Debug.Log("AmericaWoke used Dash Knockdown!");
             }
 
-            // --- FIX 2: Stop and wait for 1.5 seconds so he doesn't trample you while you are down! ---
             if (anim != null) anim.SetBool("isChasing", false);
             yield return new WaitForSeconds(1.5f);
         }

@@ -807,9 +807,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3201118208650897455, guid: 716342dc9051b83619b782cf8ff74a64, type: 3}
       insertIndex: -1
       addedObject: {fileID: 325259173}
-    - targetCorrespondingSourceObject: {fileID: 3201118208650897455, guid: 716342dc9051b83619b782cf8ff74a64, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 325259182}
   m_SourcePrefab: {fileID: 100100000, guid: 716342dc9051b83619b782cf8ff74a64, type: 3}
 --- !u!1 &325259158 stripped
 GameObject:
@@ -999,6 +996,10 @@ MonoBehaviour:
   attackRange: 3
   attackDamage: 30
   attackCooldown: 2
+  normalAttackSound: {fileID: 8300000, guid: 5f791cf1107865f96a9f1f0ad6521f2a, type: 3}
+  knockdownAttackSound: {fileID: 8300000, guid: 02fc85397b04027ef8c1a8850c246133, type: 3}
+  damageDelay: 0.3
+  hitTrackingRange: 3
   dashChance: 30
   dashSpeed: 35
 --- !u!54 &325259173
@@ -1028,21 +1029,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
---- !u!114 &325259182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 325259158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b7dc39ad66d3f070a18e4cbfabfa271, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UniversalMeleeAttack
-  attackSound: {fileID: 0}
-  damageDelay: 0.3
-  hitTrackingRange: 3
 --- !u!1 &328905834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5220779146825101857, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
@@ -5879,6 +5865,8 @@ MonoBehaviour:
   sfxSource: {fileID: 1636846694}
   overhealGainSound: {fileID: 8300000, guid: a7db2e6862f091baca2208cb80222189, type: 3}
   overhealBreakSound: {fileID: 8300000, guid: 0b04f6804f4d173af9e4cf5f5990af4f, type: 3}
+  playerKnockoutSound: {fileID: 8300000, guid: 1648e66fc47c50c1e96ebf4b0a14adb4, type: 3}
+  playerDeathSound: {fileID: 8300000, guid: fa42a9009e6aa07dd89b2335f60dcf6f, type: 3}
   bloodScreen: {fileID: 828217650}
   normalHitAlpha: 0.4
   knockdownAlpha: 0.85

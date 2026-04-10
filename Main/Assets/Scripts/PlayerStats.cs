@@ -16,6 +16,11 @@ public class PlayerStats : MonoBehaviour
     public AudioClip overhealGainSound;      
     public AudioClip overhealBreakSound;      
 
+    [Header("Player VOs (Voice/SFX)")]
+    public AudioClip playerKnockoutSound;    // Plays when consecutive hits trigger a knockdown
+    public AudioClip playerDeathSound;       // Plays when HP reaches 0
+    private bool isDead = false;             // Prevents the death sound from spamming
+
     [Header("Damage UI (Hits)")]
     public Image bloodScreen;          
     public float normalHitAlpha = 0.4f;  
@@ -64,6 +69,8 @@ public class PlayerStats : MonoBehaviour
 
     void Update()
     {
+        if (isDead) return; // Stop updating hit counters if dead
+
         if (consecutiveHits > 0 && Time.time > lastHitTime + hitResetTime)
         {
             consecutiveHits = 0;
@@ -75,7 +82,6 @@ public class PlayerStats : MonoBehaviour
             dizzyDecayTimer -= Time.deltaTime;
             if (dizzyDecayTimer <= 0f)
             {
-                // Clear all stacks entirely after the 2-second window
                 dizzyStacks = 0;
                 isDrunk = false; 
                 Debug.Log("Dizzy effect cleared! Player is sober again.");
@@ -100,6 +106,8 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(float damageAmount, Transform attacker = null)
     {
+        if (isDead) return;
+
         bool hadOverheal = currentHealth > maxHealth;
 
         currentHealth -= damageAmount;
@@ -124,6 +132,12 @@ public class PlayerStats : MonoBehaviour
                 playerMovement.TriggerKnockdown();
                 consecutiveHits = 0; 
                 
+                // --- PLAY KNOCKOUT SOUND ---
+                if (sfxSource != null && playerKnockoutSound != null)
+                {
+                    sfxSource.PlayOneShot(playerKnockoutSound);
+                }
+                
                 if (bloodScreen != null)
                 {
                     StopCoroutine("FlashBloodScreen"); 
@@ -144,10 +158,19 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isDead)
         {
             currentHealth = 0;
+            isDead = true;
             currentFlashAlpha = 1f; 
+            
+            // --- PLAY DEATH SOUND ---
+            if (sfxSource != null && playerDeathSound != null)
+            {
+                sfxSource.PlayOneShot(playerDeathSound);
+            }
+            
+            Debug.Log("PLAYER IS DEAD!");
         }
     }
 
@@ -167,6 +190,8 @@ public class PlayerStats : MonoBehaviour
 
     public void HealPercentage(float percent, bool canOverheal = false)
     {
+        if (isDead) return; // Can't heal a dead player!
+
         bool hadOverheal = currentHealth > maxHealth;
 
         float healAmount = maxHealth * (percent / 100f);
@@ -200,13 +225,15 @@ public class PlayerStats : MonoBehaviour
 
     public void AddDizzyStack()
     {
+        if (isDead) return;
+
         if (dizzyStacks < maxDizzyStacks) 
         {
             dizzyStacks++;
         }
         
         isDrunk = true; 
-        dizzyDecayTimer = 2f; // <-- Set to exactly 2 seconds
+        dizzyDecayTimer = 2f; 
     }
 
     public void TriggerUnlimitedEnergy(float duration) { StartCoroutine(EnergyRoutine(duration)); }
@@ -214,6 +241,8 @@ public class PlayerStats : MonoBehaviour
     
     public void DrinkVodka(AudioClip cheekiBreeki, float duration) 
     { 
+        if (isDead) return;
+
         vodkaCount++; 
         if (bgmSource != null && cheekiBreeki != null) 
         { 
@@ -225,7 +254,7 @@ public class PlayerStats : MonoBehaviour
         { 
             isDrunk = true; 
             dizzyStacks = maxDizzyStacks;
-            dizzyDecayTimer = 2f; // <-- Set to exactly 2 seconds
+            dizzyDecayTimer = 2f; 
             Debug.Log("PLAYER IS DIZZY FROM VODKA! Damage +20%"); 
         } 
     }
