@@ -124,6 +124,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2049977056430061286, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
   m_PrefabInstance: {fileID: 1485064053}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &52769281
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 52769282}
+  m_Layer: 0
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &52769282
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52769281}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000059604645, y: 1.110223e-16, z: -1.11022296e-16, w: 1}
+  m_LocalPosition: {x: -0, y: -0.0023, z: 0.0904}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1096114423}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &56225597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -222,7 +253,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8202999975695923775, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1524701126}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1768742856745986826, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       insertIndex: -1
@@ -280,10 +314,11 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: 3610c795f43db6bb8991d1b5ff5b8640, type: 3}
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
+  muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: b8e78032f8af0954784d1fe9e5a09187, type: 3}
-  muzzlePoint: {fileID: 0}
+  muzzlePoint: {fileID: 1524701126}
   beamEffectPrefab: {fileID: 0}
 --- !u!82 &56225601
 AudioSource:
@@ -598,6 +633,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 122824185}
   m_CullTransparentMesh: 1
+--- !u!4 &191498180 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1286875742794173524, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+  m_PrefabInstance: {fileID: 2099701042}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &328905834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5220779146825101857, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
@@ -816,6 +856,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSwitcher
   weapons: []
   switchDelay: 0.5
+--- !u!1 &349902946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 349902947}
+  m_Layer: 0
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &349902947
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349902946}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 5.3032175e-32, z: 2.4264695e-24, w: 1}
+  m_LocalPosition: {x: 0, y: -0.002, z: 0.165}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1423182044}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,7 +2042,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6642383236301723706, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1103203918}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4185518912306324553, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       insertIndex: -1
@@ -2029,10 +2103,11 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: df5fd00fca24ec9fe81d81881c38a9e2, type: 3}
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
+  muzzleFlashPrefab: {fileID: 100000, guid: 8eaaa4f553116f44b8459bc24201c514, type: 3}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: b8e78032f8af0954784d1fe9e5a09187, type: 3}
-  muzzlePoint: {fileID: 0}
+  muzzlePoint: {fileID: 1103203918}
   beamEffectPrefab: {fileID: 0}
 --- !u!82 &513542623
 AudioSource:
@@ -2209,7 +2284,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 690637162659710289, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1800099433}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4920507860935382577, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
       insertIndex: -1
@@ -2267,10 +2345,11 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: d86debc0cb61a385ea47360618020cb5, type: 3}
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
+  muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: 8c89ed5746a4faa48bb97701cc2f2e35, type: 3}
-  muzzlePoint: {fileID: 0}
+  muzzlePoint: {fileID: 1800099433}
   beamEffectPrefab: {fileID: 0}
 --- !u!82 &516085126
 AudioSource:
@@ -2665,6 +2744,42 @@ MonoBehaviour:
   attackRange: 2
   attackDamage: 15
   attackCooldown: 1.5
+--- !u!4 &736162913 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6642383236301723706, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+  m_PrefabInstance: {fileID: 513542618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &757415039
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 757415040}
+  m_Layer: 0
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &757415040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757415039}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000059604645, y: 1.110223e-16, z: -1.11022296e-16, w: 1}
+  m_LocalPosition: {x: 0, y: -0.03872514, z: 0.43999958}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 191498180}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &828217648
 GameObject:
   m_ObjectHideFlags: 0
@@ -2920,8 +3035,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 1709167524799873316, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
-      insertIndex: 0
+    - targetCorrespondingSourceObject: {fileID: 7988842657319523523, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1539720662}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8617890155258181923, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
@@ -2980,6 +3095,7 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: da6d37670a38971ffb1c995e75114c9a, type: 3}
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
+  muzzleFlashPrefab: {fileID: 0}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: 552478a654d2eb8478c30045279d5688, type: 3}
@@ -3082,6 +3198,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &864993908
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 864993909}
+  m_Layer: 0
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &864993909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864993908}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000059604645, y: 1.110223e-16, z: -1.11022296e-16, w: 1}
+  m_LocalPosition: {x: 0, y: -0.0014, z: 0.2684}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1216106632}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &919299094 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3952602739410776479, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
@@ -3233,6 +3380,11 @@ MonoBehaviour:
   - {fileID: 2099701045}
   - {fileID: 837610980}
   switchDelay: 0.5
+--- !u!4 &968045068 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7988842657319523523, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+  m_PrefabInstance: {fileID: 837610977}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &977229132
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3481,7 +3633,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 159110142401637580, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 349902947}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7660624483632653708, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       insertIndex: -1
@@ -3539,10 +3694,11 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: eec51bf4388f4c4e0bd4f7fc32b3ef40, type: 3}
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
+  muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: b8e78032f8af0954784d1fe9e5a09187, type: 3}
-  muzzlePoint: {fileID: 0}
+  muzzlePoint: {fileID: 349902947}
   beamEffectPrefab: {fileID: 0}
 --- !u!82 &988825460
 AudioSource:
@@ -3803,6 +3959,42 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1878638919}
   m_SourcePrefab: {fileID: 100100000, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
+--- !u!4 &1096114423 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1609098481170476526, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+  m_PrefabInstance: {fileID: 2073259923}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1103203917
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1103203918}
+  m_Layer: 0
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1103203918
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103203917}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 5.3032175e-32, z: 2.4264695e-24, w: 1}
+  m_LocalPosition: {x: 0, y: -0.0012, z: 0.3451}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 736162913}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1120337021
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4010,6 +4202,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1395686f4ceee24eac6819ac1c44b2a, type: 3}
+--- !u!4 &1216106632 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 759476938066311421, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+  m_PrefabInstance: {fileID: 1650544279}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1259453557 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3086653380740737163, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
@@ -4075,6 +4272,11 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   m_DirtyAABB: 0
+--- !u!4 &1285569193 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 690637162659710289, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+  m_PrefabInstance: {fileID: 516085121}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1288909569 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5084443872233652809, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
@@ -4152,6 +4354,11 @@ Rigidbody:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5197607479468775806, guid: f1395686f4ceee24eac6819ac1c44b2a, type: 3}
   m_PrefabInstance: {fileID: 1125906324}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1423182044 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 159110142401637580, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+  m_PrefabInstance: {fileID: 988825456}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1446544593 stripped
 GameObject:
@@ -4434,6 +4641,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1524701125
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1524701126}
+  m_Layer: 0
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1524701126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524701125}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.000000059604645, y: 1.110223e-16, z: -1.11022296e-16, w: 1}
+  m_LocalPosition: {x: -0, y: -0.0006, z: 0.5076}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2129677732}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1533710785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4540,12 +4778,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1539720661}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1856, z: 2.012}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.0188159, y: 0.15609255, z: 1.7392762}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 837610978}
+  m_Father: {fileID: 968045068}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1636846675 stripped
 GameObject:
@@ -4850,7 +5088,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 759476938066311421, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 864993909}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3289723630241895714, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       insertIndex: -1
@@ -4908,10 +5149,11 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: ac47e8c2fbdf1167aa044d2da8c64a7a, type: 3}
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
+  muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: dcd5aae0341bd0642858735fe7fdc429, type: 3}
-  muzzlePoint: {fileID: 0}
+  muzzlePoint: {fileID: 864993909}
   beamEffectPrefab: {fileID: 0}
 --- !u!82 &1650544284
 AudioSource:
@@ -5010,6 +5252,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1800099432
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1800099433}
+  m_Layer: 0
+  m_Name: MuzzleFlash
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1800099433
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800099432}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.23200019}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1285569193}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1878638897 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4991325769921379425, guid: fc196a94218e5012f9f9f59738d46d03, type: 3}
@@ -5438,7 +5711,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1609098481170476526, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 52769282}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8712849249800013046, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
       insertIndex: -1
@@ -5491,10 +5767,11 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: d2c9aed6780df8db3997744ac21c57ac, type: 3}
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
+  muzzleFlashPrefab: {fileID: 100000, guid: 03a4a1935a9f4454c861dfa0aa6df562, type: 3}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: b8e78032f8af0954784d1fe9e5a09187, type: 3}
-  muzzlePoint: {fileID: 0}
+  muzzlePoint: {fileID: 52769282}
   beamEffectPrefab: {fileID: 0}
 --- !u!82 &2073259926
 AudioSource:
@@ -5777,7 +6054,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1286875742794173524, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 757415040}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5782696911360418534, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
       insertIndex: -1
@@ -5835,10 +6115,11 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: e507dabd5b59cd628ac705c55215f0fa, type: 3}
   equipSound: {fileID: 8300000, guid: 8ce80f7e451225afe954dc902b61ee82, type: 3}
   impactEffectPrefab: {fileID: 2604904142689238664, guid: 70bc77b34655c025bbca469e36aca963, type: 3}
+  muzzleFlashPrefab: {fileID: 100000, guid: 8eaaa4f553116f44b8459bc24201c514, type: 3}
   ammoTextDisplay: {fileID: 122824187}
   crosshairDisplay: {fileID: 455410650}
   weaponCrosshair: {fileID: 21300000, guid: 8c89ed5746a4faa48bb97701cc2f2e35, type: 3}
-  muzzlePoint: {fileID: 0}
+  muzzlePoint: {fileID: 757415040}
   beamEffectPrefab: {fileID: 0}
 --- !u!82 &2099701047
 AudioSource:
@@ -5937,6 +6218,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!4 &2129677732 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8202999975695923775, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+  m_PrefabInstance: {fileID: 56225597}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2140956668
 GameObject:
   m_ObjectHideFlags: 0

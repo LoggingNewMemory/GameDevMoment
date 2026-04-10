@@ -53,12 +53,13 @@ public class SimpleShoot : MonoBehaviour
 
     [Header("Visuals")]
     public GameObject impactEffectPrefab;
+    public GameObject muzzleFlashPrefab; // <-- NEW: Slot for the flash!
     public TextMeshProUGUI ammoTextDisplay; 
     public Image crosshairDisplay;   
     public Sprite weaponCrosshair;
 
     [Header("Railgun Visuals")]
-    public Transform muzzlePoint;     
+    public Transform muzzlePoint;        // Used for both Railgun AND Muzzle Flash now
     public GameObject beamEffectPrefab; 
     private BeamFader spawnedBeamFader; 
 
@@ -212,6 +213,18 @@ public class SimpleShoot : MonoBehaviour
         if (playerMovement != null) playerMovement.AddRecoil(playerKnockbackForce, cameraKickForce);
         transform.localPosition = originalPosition - new Vector3(0f, 0f, weaponVisualKick);
 
+        // --- NEW: MUZZLE FLASH ---
+        if (muzzleFlashPrefab != null && muzzlePoint != null)
+        {
+            // Spawn the flash at the tip of the barrel
+            GameObject flash = Instantiate(muzzleFlashPrefab, muzzlePoint.position, muzzlePoint.rotation);
+            // Parent it to the muzzle so if you are running, the flash stays attached to the gun!
+            flash.transform.SetParent(muzzlePoint);
+            // Destroy it after 0.05 seconds so it looks like a lightning-fast strobe light
+            Destroy(flash, 0.05f); 
+        }
+        // -------------------------
+
         RaycastHit hit;
         Vector3 rayOrigin = fpsCamera.transform.position;
         Vector3 rayDirection = fpsCamera.transform.forward;
@@ -224,7 +237,6 @@ public class SimpleShoot : MonoBehaviour
             if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
 
             // --- THE INTERFACE MAGIC ---
-            // The gun simply looks for the "IDamageable" tag. It doesn't care what the object actually is!
             IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
             
             if (target != null)

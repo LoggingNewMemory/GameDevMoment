@@ -45,7 +45,7 @@ public class WeaponSwitcher : MonoBehaviour
             if (currentWeaponIndex < 0) currentWeaponIndex = weapons.Length - 1;
         }
 
-        // --- NUMBER KEY SWITCHING (1-8) ---
+        // --- NUMBER KEY SWITCHING (1-9) ---
         // digit1Key corresponds to index 0, digit2Key to index 1, etc.
         if (Keyboard.current.digit1Key.wasPressedThisFrame) currentWeaponIndex = 0;
         if (Keyboard.current.digit2Key.wasPressedThisFrame && weapons.Length > 1) currentWeaponIndex = 1;
@@ -55,6 +55,7 @@ public class WeaponSwitcher : MonoBehaviour
         if (Keyboard.current.digit6Key.wasPressedThisFrame && weapons.Length > 5) currentWeaponIndex = 5;
         if (Keyboard.current.digit7Key.wasPressedThisFrame && weapons.Length > 6) currentWeaponIndex = 6;
         if (Keyboard.current.digit8Key.wasPressedThisFrame && weapons.Length > 7) currentWeaponIndex = 7;
+        if (Keyboard.current.digit9Key.wasPressedThisFrame && weapons.Length > 8) currentWeaponIndex = 8;
 
         if (previousWeapon != currentWeaponIndex)
         {
@@ -73,7 +74,7 @@ public class WeaponSwitcher : MonoBehaviour
             yield return StartCoroutine(oldGun.HolsterWeaponRoutine());
         }
 
-        // 2. --- NEW: Check if the old weapon was the SWORD! ---
+        // 2. Check if the old weapon was the SWORD
         SimpleMelee oldMelee = weapons[oldIndex].GetComponent<SimpleMelee>();
         if (oldMelee != null)
         {
