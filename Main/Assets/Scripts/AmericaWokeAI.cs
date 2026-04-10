@@ -128,13 +128,17 @@ public class AmericaWokeAI : MonoBehaviour
             
             elapsed += Time.deltaTime;
             
-            if (rb != null)
+            // --- FIX 1: Hit the brakes! Only move if we aren't already colliding with the player ---
+            if (Vector3.Distance(transform.position, playerTarget.position) > stoppingDistance)
             {
-                rb.MovePosition(transform.position + dashDir * dashSpeed * Time.deltaTime);
-            }
-            else
-            {
-                transform.position += dashDir * dashSpeed * Time.deltaTime;
+                if (rb != null)
+                {
+                    rb.MovePosition(transform.position + dashDir * dashSpeed * Time.deltaTime);
+                }
+                else
+                {
+                    transform.position += dashDir * dashSpeed * Time.deltaTime;
+                }
             }
             
             yield return null;
@@ -151,6 +155,10 @@ public class AmericaWokeAI : MonoBehaviour
                 movement.TriggerKnockdown();
                 Debug.Log("AmericaWoke used Dash Knockdown!");
             }
+
+            // --- FIX 2: Stop and wait for 1.5 seconds so he doesn't trample you while you are down! ---
+            if (anim != null) anim.SetBool("isChasing", false);
+            yield return new WaitForSeconds(1.5f);
         }
 
         isDashing = false; 

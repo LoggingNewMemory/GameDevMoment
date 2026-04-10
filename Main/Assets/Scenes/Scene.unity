@@ -807,6 +807,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3201118208650897455, guid: 716342dc9051b83619b782cf8ff74a64, type: 3}
       insertIndex: -1
       addedObject: {fileID: 325259173}
+    - targetCorrespondingSourceObject: {fileID: 3201118208650897455, guid: 716342dc9051b83619b782cf8ff74a64, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 325259182}
   m_SourcePrefab: {fileID: 100100000, guid: 716342dc9051b83619b782cf8ff74a64, type: 3}
 --- !u!1 &325259158 stripped
 GameObject:
@@ -1025,6 +1028,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &325259182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325259158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b7dc39ad66d3f070a18e4cbfabfa271, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniversalMeleeAttack
+  attackSound: {fileID: 0}
+  damageDelay: 0.3
+  hitTrackingRange: 3
 --- !u!1 &328905834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5220779146825101857, guid: 1b70fef7b15ef6f9b9e3a85572527793, type: 3}
