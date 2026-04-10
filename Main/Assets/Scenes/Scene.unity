@@ -2765,10 +2765,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20032dee4df3cc9c68fabab1ef4f7fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BasicChaserAI
-  moveSpeed: 5
-  attackRange: 2
-  attackDamage: 15
-  attackCooldown: 1.5
+  moveSpeed: 6
+  attackRange: 2.5
+  attackDamage: 20
+  attackCooldown: 1.2
 --- !u!4 &736162913 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6642383236301723706, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
@@ -3246,57 +3246,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f404a7354d8546fcd820f81e33c856cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Railgun
-  fpsCamera: {fileID: 0}
-  range: 100
-  damage: 20
-  isAutomatic: 0
-  isBoltAction: 0
-  fireRate: 10
-  nextTimeToFire: 0
-  playerKnockbackForce: 0
-  cameraKickForce: 1
-  weaponVisualKick: 0.1
-  weaponRecoverySpeed: 10
-  playerMovement: {fileID: 0}
-  drawDuration: 0.5
-  drawOffset: {x: 0.5, y: -0.8, z: 0}
-  isDrawing: 0
-  chamberHideDistance: 0.3
-  chamberDuration: 1.5
-  magSize: 30
-  reserveAmmo: 90
-  maxReserveAmmo: 180
-  currentAmmo: 0
-  isReloading: 0
-  isChambering: 0
-  hideDistance: 1.2
-  slideDuration: 0.3
-  reloadSound: {fileID: 0}
-  isShotgunReload: 0
-  insertShellSound: {fileID: 0}
-  pumpSound: {fileID: 0}
-  weaponAudio: {fileID: 0}
-  fireSound: {fileID: 0}
-  equipSound: {fileID: 0}
-  impactEffectPrefab: {fileID: 0}
-  muzzleFlashPrefab: {fileID: 0}
-  muzzlePoint: {fileID: 0}
-  ammoTextDisplay: {fileID: 0}
-  crosshairDisplay: {fileID: 0}
-  weaponCrosshair: {fileID: 0}
-  originalPosition: {x: 0, y: 0, z: 0}
-  hasStarted: 0
-  lastHitPoint: {x: 0, y: 0, z: 0}
-  beamEffectPrefab: {fileID: 0}
-  spawnedBeamFader: {fileID: 0}
-  useScreenFlash: 1
-  screenFlashImage: {fileID: 2113606502}
-  flashColor:
-    r: 1
-    g: 1
-    b: 1
-    a: 1
-  flashFadeDuration: 0.5
 --- !u!1 &864993908
 GameObject:
   m_ObjectHideFlags: 0
@@ -5067,9 +5016,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxHealth: 100
-  overhealMax: 125
+  maxOverheal: 150
   currentHealth: 0
   healthTextDisplay: {fileID: 2044579618}
+  sfxSource: {fileID: 1636846694}
+  overhealGainSound: {fileID: 8300000, guid: a7db2e6862f091baca2208cb80222189, type: 3}
+  overhealBreakSound: {fileID: 8300000, guid: 0b04f6804f4d173af9e4cf5f5990af4f, type: 3}
   bloodScreen: {fileID: 828217650}
   normalHitAlpha: 0.4
   knockdownAlpha: 0.85
@@ -5416,12 +5368,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 890f61c4a301765028b6de99da730c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StalkerAI
-  moveSpeed: 8
-  attackRange: 2
-  attackDamage: 10
-  teleportDamage: 20
-  attackCooldown: 1.2
-  teleportCooldown: 10
+  moveSpeed: 8.5
+  attackRange: 2.5
+  attackDamage: 30
+  teleportDamage: 45
+  attackCooldown: 1
+  teleportCooldown: 8
 --- !u!136 &1878638907
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5458,7 +5410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UniversalMeleeAttack
   attackSound: {fileID: 8300000, guid: 3392f168313d8872490d33bccf01090a, type: 3}
-  damageDelay: 0.4
+  damageDelay: 0.5
   hitTrackingRange: 3
 --- !u!114 &1878638909
 MonoBehaviour:

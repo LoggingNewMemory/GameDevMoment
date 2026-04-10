@@ -168,9 +168,13 @@ public class DoomMovement : MonoBehaviour
     {
         isKnockedDown = true;
         
-        // INSTANTLY rip the weapon out of your hands!
+        // --- NEW: Check for BOTH Guns and Swords! ---
         SimpleShoot activeGun = GetComponentInChildren<SimpleShoot>();
+        SimpleMelee activeMelee = GetComponentInChildren<SimpleMelee>();
+
         if (activeGun != null) activeGun.InstantHide();
+        if (activeMelee != null) activeMelee.InstantHide();
+        // ------------------------------------------
 
         // Shove backward extremely hard
         knockbackVelocity = -transform.forward * 25f; 
@@ -209,8 +213,9 @@ public class DoomMovement : MonoBehaviour
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         isKnockedDown = false; 
 
-        // Quickly draw the weapon back out!
+        // --- NEW: Draw whichever weapon was equipped! ---
         if (activeGun != null) StartCoroutine(activeGun.DrawWeaponRoutine());
+        if (activeMelee != null) StartCoroutine(activeMelee.DrawWeaponRoutine());
     }
 
     public void AddRecoil(float pushBackForce, float cameraKickUp) { if (isKnockedDown) return; knockbackVelocity -= playerCamera.forward * pushBackForce; xRotation -= cameraKickUp; xRotation = Mathf.Clamp(xRotation, -90f, 90f); }
