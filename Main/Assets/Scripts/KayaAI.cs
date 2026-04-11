@@ -8,13 +8,13 @@ public class KayaAI : MonoBehaviour
     public float stoppingDistance = 2f; 
 
     [Header("Teleport Settings")]
-    public float teleportCooldown = 7f; // How often she can warp behind you
-    public float teleportDistance = 2f; // How far behind you she lands
+    public float teleportCooldown = 7f; 
+    public float teleportDistance = 2f; 
     public AudioClip teleportSound;
 
     [Header("Combat Settings (Flashbang)")]
     public float attackRange = 2.5f;
-    public float attackDamage = 5f; // Small damage, mostly just to stun!
+    public float attackDamage = 5f; 
     public float attackCooldown = 4f;
     public float flashbangDuration = 1f;
     public AudioClip flashbangSound;
@@ -33,20 +33,24 @@ public class KayaAI : MonoBehaviour
         healthScript = GetComponent<UniversalHealth>();
         rb = GetComponent<Rigidbody>(); 
 
+        // --- THE TRUTH REVEALER ---
         GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null) playerTarget = p.transform;
+        if (p != null) 
+        {
+            playerTarget = p.transform;
+            Debug.Log("<color=red>" + gameObject.name + " is currently chasing: " + p.name + "</color>");
+        }
 
-        // Randomize her first teleport so it catches the player off guard!
         nextTeleportTime = Time.time + Random.Range(2f, 5f); 
     }
 
     void Update()
     {
-        // --- DEATH PHYSICS FIX ---
         if (healthScript != null && healthScript.isDead) 
         {
             if (rb != null && !rb.isKinematic)
             {
+                rb.linearVelocity = Vector3.zero; // Stop moving instantly when dead
                 rb.isKinematic = true; 
                 Collider col = GetComponent<Collider>();
                 if (col != null) col.enabled = false;
@@ -58,39 +62,48 @@ public class KayaAI : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
 
-        // --- 1. TELEPORT LOGIC ---
-        // If her cooldown is ready and she isn't already in your face
+        // 1. TELEPORT LOGIC 
         if (Time.time >= nextTeleportTime && distance > attackRange)
         {
             TeleportBehindPlayer();
             return; 
         }
 
-        // --- 2. ALWAYS CHASE ---
+        // 2. MOVEMENT & CHASING 
         if (distance > stoppingDistance)
         {
-            Vector3 moveDir = (playerTarget.position - transform.position).normalized;
-            moveDir.y = 0; 
+            // Flatten the target position so she doesn't try to fly up or dig down
+            Vector3 targetPos = playerTarget.position;
+            targetPos.y = transform.position.y;
             
-            if (rb != null) rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
-            else transform.position += moveDir * moveSpeed * Time.deltaTime;
+            Vector3 moveDir = (targetPos - transform.position).normalized;
             
+            // --- NEW: Using Velocity makes physics 100x smoother! ---
+            if (rb != null)
+            {
+                rb.linearVelocity = new Vector3(moveDir.x * moveSpeed, rb.linearVelocity.y, moveDir.z * moveSpeed);
+            }
+
             if (moveDir != Vector3.zero)
+            {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), Time.deltaTime * 10f);
+            }
 
             if (anim != null) anim.SetBool("isChasing", true);
         }
         else
         {
+            // --- NEW: Hit the brakes when she reaches you! ---
+            if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            
             if (anim != null) anim.SetBool("isChasing", false);
             
-            // Keep looking at the player even when stopped
             Vector3 lookDir = (playerTarget.position - transform.position).normalized;
             lookDir.y = 0;
             if (lookDir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
         }
 
-        // --- 3. ATTACK (FLASHBANG) ---
+        // 3. ATTACK (FLASHBANG) 
         if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
         {
             AttackPlayer();
@@ -103,19 +116,16 @@ public class KayaAI : MonoBehaviour
         
         if (teleportSound != null) AudioSource.PlayClipAtPoint(teleportSound, transform.position);
 
-        // Calculate the exact spot behind the player's back!
         Vector3 behindPos = playerTarget.position - (playerTarget.forward * teleportDistance);
-        behindPos.y = transform.position.y; // Keep her flat on the floor
+        behindPos.y = transform.position.y; 
 
         transform.position = behindPos;
 
-        // Snap her rotation so she is instantly looking at your back
         Vector3 lookDir = (playerTarget.position - transform.position).normalized;
         lookDir.y = 0;
-        transform.rotation = Quaternion.LookRotation(lookDir);
+        if (lookDir != Vector3.zero) transform.rotation = Quaternion.LookRotation(lookDir);
 
         if (teleportSound != null) AudioSource.PlayClipAtPoint(teleportSound, transform.position);
-        Debug.Log("Kaya teleported behind you!");
     }
 
     void AttackPlayer()
@@ -129,7 +139,7 @@ public class KayaAI : MonoBehaviour
         if (stats != null)
         {
             stats.TakeDamage(attackDamage, transform); 
-            stats.TriggerFlashbang(flashbangDuration); // Call the new blind effect!
+            stats.TriggerFlashbang(flashbangDuration); 
         }
     }
 }

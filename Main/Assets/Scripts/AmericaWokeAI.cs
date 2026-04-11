@@ -43,13 +43,12 @@ public class AmericaWokeAI : MonoBehaviour
 
     void Update()
     {
-        // --- DEATH PHYSICS FIX ---
         if (healthScript != null && healthScript.isDead) 
         {
             if (rb != null && !rb.isKinematic)
             {
+                rb.linearVelocity = Vector3.zero; // Stop moving instantly when dead
                 rb.isKinematic = true; 
-                
                 Collider col = GetComponent<Collider>();
                 if (col != null) col.enabled = false;
             }
@@ -64,18 +63,16 @@ public class AmericaWokeAI : MonoBehaviour
         // 1. ALWAYS CHASE
         if (distance > stoppingDistance)
         {
-            Vector3 moveDir = (playerTarget.position - transform.position).normalized;
-            moveDir.y = 0; 
+            Vector3 targetPos = playerTarget.position;
+            targetPos.y = transform.position.y;
+            Vector3 moveDir = (targetPos - transform.position).normalized;
             
+            // --- NEW: Physics Velocity Movement ---
             if (rb != null)
             {
-                rb.MovePosition(transform.position + moveDir * moveSpeed * Time.deltaTime);
+                rb.linearVelocity = new Vector3(moveDir.x * moveSpeed, rb.linearVelocity.y, moveDir.z * moveSpeed);
             }
-            else
-            {
-                transform.position += moveDir * moveSpeed * Time.deltaTime;
-            }
-            
+
             if (moveDir != Vector3.zero)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), Time.deltaTime * 10f);
@@ -85,6 +82,8 @@ public class AmericaWokeAI : MonoBehaviour
         }
         else
         {
+            // --- NEW: Hit the brakes! ---
+            if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
             if (anim != null) anim.SetBool("isChasing", false);
         }
 
@@ -104,33 +103,26 @@ public class AmericaWokeAI : MonoBehaviour
         
         if (roll <= dashChance)
         {
-            // Play Knockdown Sound
             if (knockdownAttackSound != null) AudioSource.PlayClipAtPoint(knockdownAttackSound, transform.position);
             StartCoroutine(DashKnockdownRoutine());
         }
         else
         {
-            // Play Normal Attack Sound
             if (normalAttackSound != null) AudioSource.PlayClipAtPoint(normalAttackSound, transform.position);
             StartCoroutine(NormalAttackRoutine());
         }
     }
 
-    // --- NEW: Normal Attack Routine (Uses damageDelay and hitTrackingRange) ---
     IEnumerator NormalAttackRoutine()
     {
         yield return new WaitForSeconds(damageDelay);
 
         if (healthScript != null && healthScript.isDead) yield break;
 
-        // The Dodge Check! Did the player dash away in time?
         if (Vector3.Distance(transform.position, playerTarget.position) <= hitTrackingRange)
         {
             PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
-            if (stats != null)
-            {
-                stats.TakeDamage(attackDamage, transform); 
-            }
+            if (stats != null) stats.TakeDamage(attackDamage, transform); 
         }
     }
 
@@ -140,8 +132,9 @@ public class AmericaWokeAI : MonoBehaviour
         
         Vector3 startPos = transform.position;
         Vector3 targetPos = playerTarget.position;
+        targetPos.y = transform.position.y; 
+        
         Vector3 dashDir = (targetPos - startPos).normalized;
-        dashDir.y = 0;
 
         float dashDuration = 0.2f; 
         float elapsed = 0f;
@@ -156,18 +149,21 @@ public class AmericaWokeAI : MonoBehaviour
             {
                 if (rb != null)
                 {
-                    rb.MovePosition(transform.position + dashDir * dashSpeed * Time.deltaTime);
+                    rb.linearVelocity = new Vector3(dashDir.x * dashSpeed, rb.linearVelocity.y, dashDir.z * dashSpeed);
                 }
-                else
-                {
-                    transform.position += dashDir * dashSpeed * Time.deltaTime;
-                }
+            }
+            else
+            {
+                // Brake early if we hit the player!
+                if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
             }
             
             yield return null;
         }
+        
+        // Ensure velocity resets to 0 when the dash finishes
+        if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
 
-        // Updated to also use the new hitTrackingRange limit!
         if (Vector3.Distance(transform.position, playerTarget.position) <= hitTrackingRange)
         {
             PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
