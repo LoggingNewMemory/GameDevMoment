@@ -9,6 +9,10 @@ public class UniversalLootDrop : MonoBehaviour
     public GameObject vodkaPrefab;
     public GameObject extraJossPrefab;
 
+    [Header("Settings")]
+    [Tooltip("How many seconds until the loot vanishes to save memory?")]
+    public float lootLifetime = 5f; // <-- NEW: Easily adjust the disappear time in the Inspector!
+
     public void DropLoot()
     {
         // Roll a number between 1 and 100
@@ -27,7 +31,7 @@ public class UniversalLootDrop : MonoBehaviour
         }
         else if (roll <= 75) 
         {
-            itemToDrop = ammoBoxPrefab;      // 50% chance (Rolls 26 to 75) <-- MASSIVE BOOST
+            itemToDrop = ammoBoxPrefab;      // 50% chance (Rolls 26 to 75)
         }
         else if (roll <= 85) 
         {
@@ -41,7 +45,11 @@ public class UniversalLootDrop : MonoBehaviour
         // Spawn the item if the slot isn't empty
         if (itemToDrop != null)
         {
-            Instantiate(itemToDrop, transform.position + Vector3.up, Quaternion.identity);
+            // 1. We spawn the item and save a reference to it in "droppedItem"
+            GameObject droppedItem = Instantiate(itemToDrop, transform.position + Vector3.up, Quaternion.identity);
+            
+            // 2. We tell Unity to automatically delete that specific item after the timer runs out!
+            Destroy(droppedItem, lootLifetime);
         }
     }
 }
