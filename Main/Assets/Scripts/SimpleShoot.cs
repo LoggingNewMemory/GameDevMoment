@@ -114,6 +114,17 @@ public class SimpleShoot : MonoBehaviour
             if (crosshairObj != null) crosshairDisplay = crosshairObj.GetComponent<Image>();
         }
 
+        // --- NEW: BULLETPROOF AUTO-ASSIGN RAILGUN FLASH ---
+        if (isRailgun && useScreenFlash && screenFlashImage == null)
+        {
+            Canvas mainCanvas = FindFirstObjectByType<Canvas>();
+            if (mainCanvas != null)
+            {
+                Transform flashObj = mainCanvas.transform.Find("RailGun");
+                if (flashObj != null) screenFlashImage = flashObj.GetComponent<Image>();
+            }
+        }
+
         UpdateAmmoUI(); 
         UpdateCrosshairUI();
     }
@@ -422,6 +433,7 @@ public class SimpleShoot : MonoBehaviour
 
     IEnumerator ScreenFlashRoutine()
     {
+        screenFlashImage.gameObject.SetActive(true); // Wake it up just in case!
         screenFlashImage.color = flashColor;
         float elapsed = 0f;
         while(elapsed < flashFadeDuration)
@@ -432,6 +444,7 @@ public class SimpleShoot : MonoBehaviour
             yield return null;
         }
         screenFlashImage.color = new Color(flashColor.r, flashColor.g, flashColor.b, 0f);
+        screenFlashImage.gameObject.SetActive(false); // Put it back to sleep!
     }
 
     IEnumerator ChamberRoundRoutine()
