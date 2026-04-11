@@ -63,8 +63,32 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
-        // --- NEW: Reset the game clock back to normal just in case you restarted the level! ---
         Time.timeScale = 1f;
+
+        // --- AUTO-ASSIGN ALL UI ELEMENTS ---
+        if (healthTextDisplay == null)
+        {
+            GameObject hpObj = GameObject.Find("HealthText");
+            if (hpObj != null) healthTextDisplay = hpObj.GetComponent<TextMeshProUGUI>();
+        }
+        
+        if (bloodScreen == null)
+        {
+            GameObject bloodObj = GameObject.Find("BloodScreen");
+            if (bloodObj != null) bloodScreen = bloodObj.GetComponent<Image>();
+        }
+
+        if (deadScreenImage == null)
+        {
+            GameObject deadObj = GameObject.Find("Dead Screen");
+            if (deadObj != null) deadScreenImage = deadObj.GetComponent<Image>();
+        }
+
+        if (flashbangScreenImage == null)
+        {
+            GameObject flashObj = GameObject.Find("Flashbang");
+            if (flashObj != null) flashbangScreenImage = flashObj.GetComponent<Image>();
+        }
 
         currentHealth = maxHealth;
         playerMovement = GetComponent<DoomMovement>();
@@ -197,7 +221,6 @@ public class PlayerStats : MonoBehaviour
                 StartCoroutine(FadeInDeadScreenRoutine());
             }
 
-            // --- NEW: Freeze the entire game world instantly! ---
             Time.timeScale = 0f; 
         }
         else if (isKnockout)

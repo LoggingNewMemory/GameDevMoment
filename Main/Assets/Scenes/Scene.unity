@@ -2886,7 +2886,7 @@ MonoBehaviour:
   panicSpeed: 25
   wallCheckDistance: 3
   bounceDuration: 0.5
-  attackDamage: 5
+  attackDamage: 2
   attackCooldown: 5
   damageDelay: 1
   audioSource: {fileID: 1636846694}

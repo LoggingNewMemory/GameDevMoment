@@ -75,23 +75,21 @@ public class SimpleShoot : MonoBehaviour
     public Color flashColor = new Color(1f, 1f, 1f, 1f); 
     public float flashFadeDuration = 0.5f; 
 
-    private Vector3 baseStartPos;    // <-- NEW: Stores the true, permanent original position
+    private Vector3 baseStartPos;    
     private Vector3 originalPosition; 
     private bool hasStarted = false;
 
-    // --- SKILL INTEGRATION VARIABLES ---
     private PlayerSkills playerSkills;
     private bool wasHaluActive = false;
     
-    // --- DUAL WIELD CLONE VARIABLES ---
     private GameObject leftGunInstance;
     private Transform leftGunMuzzle;
     private BeamFader leftSpawnedBeamFader; 
 
     void Awake()
     {
-        baseStartPos = transform.localPosition; // Store the permanent default
-        originalPosition = baseStartPos;        // This one can be temporarily changed by Halu!
+        baseStartPos = transform.localPosition; 
+        originalPosition = baseStartPos;        
         
         currentAmmo = magSize; 
         hasStarted = true;
@@ -102,7 +100,22 @@ public class SimpleShoot : MonoBehaviour
 
     void Start()
     {
-        UpdateAmmoUI(); UpdateCrosshairUI();
+        // --- AUTO-ASSIGN AMMO COUNTER ---
+        if (ammoTextDisplay == null)
+        {
+            GameObject ammoObj = GameObject.Find("AmmoCounter");
+            if (ammoObj != null) ammoTextDisplay = ammoObj.GetComponent<TextMeshProUGUI>();
+        }
+
+        // --- AUTO-ASSIGN CROSSHAIR ---
+        if (crosshairDisplay == null)
+        {
+            GameObject crosshairObj = GameObject.Find("Crosshair");
+            if (crosshairObj != null) crosshairDisplay = crosshairObj.GetComponent<Image>();
+        }
+
+        UpdateAmmoUI(); 
+        UpdateCrosshairUI();
     }
 
     void OnEnable()
@@ -120,7 +133,6 @@ public class SimpleShoot : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null || (playerMovement != null && playerMovement.isKnockedDown)) return;
         
-        // --- HALU OF CS CLONING LOGIC ---
         if (playerSkills != null)
         {
             if (playerSkills.isHaluActive && !wasHaluActive)
@@ -173,13 +185,8 @@ public class SimpleShoot : MonoBehaviour
         if (leftGunInstance != null)
         {
             Vector3 targetPos = transform.localPosition;
-            
-            // Just cleanly flip the X to the other side! No messy scaling needed.
             targetPos.x = -targetPos.x; 
-            
             leftGunInstance.transform.localPosition = targetPos;
-            
-            // Exact same rotation as the right gun so it points forward properly
             leftGunInstance.transform.localRotation = transform.localRotation;
         }
     }
@@ -192,7 +199,6 @@ public class SimpleShoot : MonoBehaviour
         if (leftGunInstance.GetComponent("WeaponSway") != null) Destroy(leftGunInstance.GetComponent("WeaponSway"));
         if (leftGunInstance.GetComponent("WeaponSwitcher") != null) Destroy(leftGunInstance.GetComponent("WeaponSwitcher"));
 
-        // --- NEW: If your gun is centered, physically shove the main gun to the right so there is room! ---
         if (Mathf.Abs(baseStartPos.x) < 0.15f)
         {
             originalPosition = baseStartPos + new Vector3(0.4f, 0f, 0f);
@@ -219,8 +225,6 @@ public class SimpleShoot : MonoBehaviour
             leftGunInstance = null;
             leftGunMuzzle = null;
         }
-        
-        // Reset the main gun back to its perfect center position!
         originalPosition = baseStartPos;
     }
 

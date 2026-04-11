@@ -11,13 +11,19 @@ public class WeaponSwitcher : MonoBehaviour
     public float switchDelay = 0.5f; 
 
     [Header("UI Elements")]
-    public GameObject ammoCounterUI; // <-- NEW: Slot for your Canvas Ammo Counter
+    public GameObject ammoCounterUI; // <-- Slot for your Canvas Ammo Counter
     
     private int currentWeaponIndex = 0;
     private bool isSwitching = false;
 
     void Awake()
     {
+        // --- NEW: AUTO-ASSIGN AMMO COUNTER UI ---
+        if (ammoCounterUI == null)
+        {
+            ammoCounterUI = GameObject.Find("AmmoCounter");
+        }
+
         for (int i = 0; i < weapons.Length; i++)
         {
             if (weapons[i] != null)
@@ -98,7 +104,7 @@ public class WeaponSwitcher : MonoBehaviour
         weapons[oldIndex].SetActive(false);
         weapons[newIndex].SetActive(true);
 
-        // --- NEW: Update the Ammo UI Visibility! ---
+        // --- Update the Ammo UI Visibility! ---
         UpdateAmmoUIState(newIndex);
 
         isSwitching = false;

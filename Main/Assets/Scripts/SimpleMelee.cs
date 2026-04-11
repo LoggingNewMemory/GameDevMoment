@@ -50,8 +50,17 @@ public class SimpleMelee : MonoBehaviour
         fpsCamera = GetComponentInParent<Camera>();
         playerMovement = GetComponentInParent<DoomMovement>();
         originalPosition = transform.localPosition;
-    }
 
+        // --- NEW: AUTO-ASSIGN CROSSHAIR ---
+        if (crosshairDisplay == null)
+        {
+            GameObject crosshairObj = GameObject.Find("Crosshair");
+            if (crosshairObj != null) 
+            {
+                crosshairDisplay = crosshairObj.GetComponent<Image>();
+            }
+        }
+    }
     void OnEnable()
     {
         UpdateCrosshairUI();
@@ -93,7 +102,7 @@ public class SimpleMelee : MonoBehaviour
 
         while (elapsed < swingSpeed)
         {
-            elapsed += Time.unscaledDeltaTime; // <-- FIXED
+            elapsed += Time.unscaledDeltaTime; 
             float t = elapsed / swingSpeed;
             float easeT = 1f - Mathf.Pow(1f - t, 3f); 
 
@@ -108,7 +117,7 @@ public class SimpleMelee : MonoBehaviour
 
         while (elapsed < recoveryTime)
         {
-            elapsed += Time.unscaledDeltaTime; // <-- FIXED
+            elapsed += Time.unscaledDeltaTime; 
             float t = elapsed / recoveryTime;
             float easeT = t * t * (3f - 2f * t); 
 
@@ -148,11 +157,10 @@ public class SimpleMelee : MonoBehaviour
 
     IEnumerator HitStopRoutine()
     {
-        // --- FIXED: Save the current time scale so we don't accidentally cancel Sandevistan! ---
         float originalScale = Time.timeScale; 
-        Time.timeScale = 0.05f; // Extra slow for the hit stop
+        Time.timeScale = 0.05f; 
         yield return new WaitForSecondsRealtime(0.04f); 
-        Time.timeScale = originalScale; // Restore to what it was
+        Time.timeScale = originalScale; 
     }
 
     public IEnumerator DrawWeaponRoutine()
@@ -164,7 +172,7 @@ public class SimpleMelee : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < drawTime)
         {
-            elapsed += Time.unscaledDeltaTime; // <-- FIXED
+            elapsed += Time.unscaledDeltaTime; 
             float easeT = elapsed / drawTime;
             transform.localPosition = Vector3.Lerp(originalPosition + drawOffset, originalPosition, easeT);
             yield return null;
@@ -181,7 +189,7 @@ public class SimpleMelee : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < drawTime)
         {
-            elapsed += Time.unscaledDeltaTime; // <-- FIXED
+            elapsed += Time.unscaledDeltaTime; 
             transform.localPosition = Vector3.Lerp(originalPosition, originalPosition + drawOffset, elapsed / drawTime);
             yield return null;
         }
