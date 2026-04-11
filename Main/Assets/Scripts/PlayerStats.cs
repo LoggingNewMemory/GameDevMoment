@@ -34,8 +34,11 @@ public class PlayerStats : MonoBehaviour
     public float maxPulseAlpha = 0.5f;     
 
     [Header("Death UI")]
-    public Image deadScreenImage;          // <-- NEW: Drag your "Dead Screen" image here!
-    public float deadScreenFadeDuration = 2f; // How long it takes to fade in
+    public Image deadScreenImage;          
+    public float deadScreenFadeDuration = 2f; 
+
+    [Header("Flashbang UI")] 
+    public Image flashbangScreenImage;     
 
     private float currentFlashAlpha = 0f;  
 
@@ -71,13 +74,21 @@ public class PlayerStats : MonoBehaviour
             bloodScreen.color = c;
         }
 
-        // --- Make sure the dead screen is invisible when the game starts! ---
         if (deadScreenImage != null)
         {
             Color c = deadScreenImage.color;
             c.a = 0f;
             deadScreenImage.color = c;
             deadScreenImage.gameObject.SetActive(false);
+        }
+
+        // --- Ensure the flashbang screen is invisible when the game starts! ---
+        if (flashbangScreenImage != null)
+        {
+            Color c = flashbangScreenImage.color;
+            c.a = 0f;
+            flashbangScreenImage.color = c;
+            flashbangScreenImage.gameObject.SetActive(false);
         }
     }
 
@@ -169,7 +180,6 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
-        // --- DEATH SEQUENCE TRIGGER ---
         if (currentHealth <= 0 && !isDead)
         {
             currentHealth = 0;
@@ -179,7 +189,6 @@ public class PlayerStats : MonoBehaviour
             
             if (playerMovement != null) playerMovement.TriggerDeath();
 
-            // --- TRIGGER THE DEAD SCREEN FADE IN ---
             if (deadScreenImage != null)
             {
                 deadScreenImage.gameObject.SetActive(true);
@@ -196,7 +205,6 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    // --- NEW: Smoothly fades in the red screen! ---
     private IEnumerator FadeInDeadScreenRoutine()
     {
         float elapsed = 0f;
@@ -212,6 +220,40 @@ public class PlayerStats : MonoBehaviour
         
         c.a = 1f;
         deadScreenImage.color = c;
+    }
+
+    // --- NEW: Kaya's Flashbang Call ---
+    public void TriggerFlashbang(float duration)
+    {
+        if (isDead || flashbangScreenImage == null) return;
+        
+        StopCoroutine("FlashbangRoutine");
+        StartCoroutine(FlashbangRoutine(duration));
+    }
+
+    // --- NEW: Smoothly fades the white screen away ---
+    private IEnumerator FlashbangRoutine(float duration)
+    {
+        // 1. Instantly snap to pure white
+        Color c = flashbangScreenImage.color;
+        c.a = 1f;
+        flashbangScreenImage.color = c;
+        flashbangScreenImage.gameObject.SetActive(true);
+
+        float elapsed = 0f;
+
+        // 2. Smoothly fade the white screen away!
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime; 
+            c.a = Mathf.Lerp(1f, 0f, elapsed / duration);
+            flashbangScreenImage.color = c;
+            yield return null;
+        }
+
+        c.a = 0f;
+        flashbangScreenImage.color = c;
+        flashbangScreenImage.gameObject.SetActive(false);
     }
 
     IEnumerator FlashBloodScreen(float targetAlpha, float duration)
