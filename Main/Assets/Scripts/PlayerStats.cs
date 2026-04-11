@@ -17,10 +17,10 @@ public class PlayerStats : MonoBehaviour
     public AudioClip overhealBreakSound;      
 
     [Header("Player VOs (Voice/SFX)")]
-    public AudioClip playerHitSound;         // <-- NEW: Plays on standard damage
+    public AudioClip playerHitSound;         
     public AudioClip playerKnockoutSound;    
     public AudioClip playerDeathSound;       
-    private bool isDead = false;             
+    public bool isDead { get; private set; } = false;             
 
     [Header("Damage UI (Hits)")]
     public Image bloodScreen;          
@@ -32,6 +32,10 @@ public class PlayerStats : MonoBehaviour
     public float lowHealthThreshold = 30f; 
     public float pulseSpeed = 2f;          
     public float maxPulseAlpha = 0.5f;     
+
+    [Header("Death UI")]
+    public Image deadScreenImage;          // <-- NEW: Drag your "Dead Screen" image here!
+    public float deadScreenFadeDuration = 2f; // How long it takes to fade in
 
     private float currentFlashAlpha = 0f;  
 
@@ -66,25 +70,33 @@ public class PlayerStats : MonoBehaviour
             c.a = 0f;
             bloodScreen.color = c;
         }
+
+        // --- Make sure the dead screen is invisible when the game starts! ---
+        if (deadScreenImage != null)
+        {
+            Color c = deadScreenImage.color;
+            c.a = 0f;
+            deadScreenImage.color = c;
+            deadScreenImage.gameObject.SetActive(false);
+        }
     }
 
     void Update()
     {
         if (isDead) return; 
 
-        if (consecutiveHits > 0 && Time.time > lastHitTime + hitResetTime)
+        if (consecutiveHits > 0 && Time.unscaledTime > lastHitTime + hitResetTime)
         {
             consecutiveHits = 0;
         }
 
         if (dizzyStacks > 0)
         {
-            dizzyDecayTimer -= Time.deltaTime;
+            dizzyDecayTimer -= Time.unscaledDeltaTime;
             if (dizzyDecayTimer <= 0f)
             {
                 dizzyStacks = 0;
                 isDrunk = false; 
-                Debug.Log("Dizzy effect cleared! Player is sober again.");
             }
         }
 
@@ -94,7 +106,7 @@ public class PlayerStats : MonoBehaviour
 
             if (currentHealth <= lowHealthThreshold && currentHealth > 0)
             {
-                float pulse = Mathf.PingPong(Time.time * pulseSpeed, maxPulseAlpha);
+                float pulse = Mathf.PingPong(Time.unscaledTime * pulseSpeed, maxPulseAlpha);
                 finalAlpha = Mathf.Max(currentFlashAlpha, pulse);
             }
 
@@ -108,12 +120,8 @@ public class PlayerStats : MonoBehaviour
     {
         if (isDead) return;
 
-        // --- NEW: CANCEL HALU OF CS IF HIT ---
         PlayerSkills skills = GetComponent<PlayerSkills>();
-        if (skills != null)
-        {
-            skills.CancelHaluOfCS();
-        }
+        if (skills != null) skills.CancelHaluOfCS();
 
         bool hadOverheal = currentHealth > maxHealth;
         currentHealth -= damageAmount;
@@ -161,13 +169,22 @@ public class PlayerStats : MonoBehaviour
             }
         }
 
+        // --- DEATH SEQUENCE TRIGGER ---
         if (currentHealth <= 0 && !isDead)
         {
             currentHealth = 0;
             isDead = true;
-            currentFlashAlpha = 1f; 
+            
             if (sfxSource != null && playerDeathSound != null) sfxSource.PlayOneShot(playerDeathSound);
-            Debug.Log("PLAYER IS DEAD!");
+            
+            if (playerMovement != null) playerMovement.TriggerDeath();
+
+            // --- TRIGGER THE DEAD SCREEN FADE IN ---
+            if (deadScreenImage != null)
+            {
+                deadScreenImage.gameObject.SetActive(true);
+                StartCoroutine(FadeInDeadScreenRoutine());
+            }
         }
         else if (isKnockout)
         {
@@ -179,6 +196,24 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
+    // --- NEW: Smoothly fades in the red screen! ---
+    private IEnumerator FadeInDeadScreenRoutine()
+    {
+        float elapsed = 0f;
+        Color c = deadScreenImage.color;
+        
+        while (elapsed < deadScreenFadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            c.a = Mathf.Lerp(0f, 1f, elapsed / deadScreenFadeDuration);
+            deadScreenImage.color = c;
+            yield return null;
+        }
+        
+        c.a = 1f;
+        deadScreenImage.color = c;
+    }
+
     IEnumerator FlashBloodScreen(float targetAlpha, float duration)
     {
         currentFlashAlpha = targetAlpha;
@@ -186,7 +221,7 @@ public class PlayerStats : MonoBehaviour
 
         while (elapsed < duration)
         {
-            elapsed += Time.unscaledDeltaTime; // <-- Fixed to ignore Sandevistan!
+            elapsed += Time.unscaledDeltaTime; 
             currentFlashAlpha = Mathf.Lerp(targetAlpha, 0f, elapsed / duration);
             yield return null;
         }
@@ -207,10 +242,7 @@ public class PlayerStats : MonoBehaviour
 
         if (!hadOverheal && currentHealth > maxHealth)
         {
-            if (sfxSource != null && overhealGainSound != null)
-            {
-                sfxSource.PlayOneShot(overhealGainSound);
-            }
+            if (sfxSource != null && overhealGainSound != null) sfxSource.PlayOneShot(overhealGainSound);
         }
 
         UpdateHealthUI();
@@ -231,12 +263,7 @@ public class PlayerStats : MonoBehaviour
     public void AddDizzyStack()
     {
         if (isDead) return;
-
-        if (dizzyStacks < maxDizzyStacks) 
-        {
-            dizzyStacks++;
-        }
-        
+        if (dizzyStacks < maxDizzyStacks) dizzyStacks++;
         isDrunk = true; 
         dizzyDecayTimer = 2f; 
     }
@@ -247,7 +274,6 @@ public class PlayerStats : MonoBehaviour
     public void DrinkVodka(AudioClip cheekiBreeki, float duration) 
     { 
         if (isDead) return;
-
         vodkaCount++; 
         if (bgmSource != null && cheekiBreeki != null) 
         { 
@@ -260,7 +286,6 @@ public class PlayerStats : MonoBehaviour
             isDrunk = true; 
             dizzyStacks = maxDizzyStacks;
             dizzyDecayTimer = 2f; 
-            Debug.Log("PLAYER IS DIZZY FROM VODKA! Damage +20%"); 
         } 
     }
     
