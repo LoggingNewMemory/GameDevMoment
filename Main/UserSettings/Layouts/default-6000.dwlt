@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 20
+  controlID: 64
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 112}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 21
+  controlID: 65
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 56}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 22
+  controlID: 66
   draggingID: 0
 --- !u!114 &8
 MonoBehaviour:
@@ -1155,9 +1155,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -17.728367, y: -15.699841, z: 9.546378}
+    m_Target: {x: -6.8844805, y: -20.540762, z: 11.264735}
     speed: 2
-    m_Value: {x: -17.728367, y: -15.699841, z: 9.546378}
+    m_Value: {x: -6.8844805, y: -20.540762, z: 11.264735}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1208,9 +1208,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: -0.42544782, y: 0.37083814, z: -0.19676968, w: -0.8018616}
   m_Size:
-    m_Target: 30.3707
+    m_Target: 27.363997
     speed: 2
-    m_Value: 30.3707
+    m_Value: 27.363997
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1289,7 +1289,12 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
+      - m_Data: -3194
       - m_Data: -1322
+      - m_Data: 50430
+      - m_Data: 50566
+      - m_Data: 50670
+      - m_Data: 50764
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1559,7 +1564,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Scripts
+    - Assets
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1569,28 +1574,20 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Arlan Trindade
   m_LastFoldersGridSize: 16
   m_LastProjectPath: /home/yamada/CODE/GameDevMoment/Main
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 192}
+    scrollPos: {x: 0, y: 0}
     m_SelectedIDs:
-    - m_Data: 56180
+    - m_Data: 55686
     m_LastClickedID:
-      m_Data: 56180
+      m_Data: 55686
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 55682
-    - m_Data: 55684
-    - m_Data: 55686
-    - m_Data: 55688
-    - m_Data: 55690
-    - m_Data: 55692
-    - m_Data: 55694
-    - m_Data: 55696
     - m_Data: 55698
     - m_Data: 55700
     - m_Data: 55702
@@ -1622,6 +1619,13 @@ MonoBehaviour:
     - m_Data: 55754
     - m_Data: 55756
     - m_Data: 55758
+    - m_Data: 55760
+    - m_Data: 55762
+    - m_Data: 55764
+    - m_Data: 55766
+    - m_Data: 55768
+    - m_Data: 55770
+    - m_Data: 55772
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1655,14 +1659,6 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 55682
-    - m_Data: 55684
-    - m_Data: 55686
-    - m_Data: 55688
-    - m_Data: 55690
-    - m_Data: 55692
-    - m_Data: 55694
-    - m_Data: 55696
     - m_Data: 55698
     - m_Data: 55700
     - m_Data: 55702
@@ -1694,6 +1690,13 @@ MonoBehaviour:
     - m_Data: 55754
     - m_Data: 55756
     - m_Data: 55758
+    - m_Data: 55760
+    - m_Data: 55762
+    - m_Data: 55764
+    - m_Data: 55766
+    - m_Data: 55768
+    - m_Data: 55770
+    - m_Data: 55772
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1722,9 +1725,9 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: 50068
+    - m_Data: 50566
     m_LastClickedEntityId:
-      m_Data: 50068
+      m_Data: 50566
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs:
     - m_Data: 48764
