@@ -63,6 +63,9 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
+        // --- NEW: Reset the game clock back to normal just in case you restarted the level! ---
+        Time.timeScale = 1f;
+
         currentHealth = maxHealth;
         playerMovement = GetComponent<DoomMovement>();
         UpdateHealthUI();
@@ -82,7 +85,6 @@ public class PlayerStats : MonoBehaviour
             deadScreenImage.gameObject.SetActive(false);
         }
 
-        // --- Ensure the flashbang screen is invisible when the game starts! ---
         if (flashbangScreenImage != null)
         {
             Color c = flashbangScreenImage.color;
@@ -194,6 +196,9 @@ public class PlayerStats : MonoBehaviour
                 deadScreenImage.gameObject.SetActive(true);
                 StartCoroutine(FadeInDeadScreenRoutine());
             }
+
+            // --- NEW: Freeze the entire game world instantly! ---
+            Time.timeScale = 0f; 
         }
         else if (isKnockout)
         {
@@ -222,7 +227,6 @@ public class PlayerStats : MonoBehaviour
         deadScreenImage.color = c;
     }
 
-    // --- NEW: Kaya's Flashbang Call ---
     public void TriggerFlashbang(float duration)
     {
         if (isDead || flashbangScreenImage == null) return;
@@ -231,10 +235,8 @@ public class PlayerStats : MonoBehaviour
         StartCoroutine(FlashbangRoutine(duration));
     }
 
-    // --- NEW: Smoothly fades the white screen away ---
     private IEnumerator FlashbangRoutine(float duration)
     {
-        // 1. Instantly snap to pure white
         Color c = flashbangScreenImage.color;
         c.a = 1f;
         flashbangScreenImage.color = c;
@@ -242,7 +244,6 @@ public class PlayerStats : MonoBehaviour
 
         float elapsed = 0f;
 
-        // 2. Smoothly fade the white screen away!
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime; 
