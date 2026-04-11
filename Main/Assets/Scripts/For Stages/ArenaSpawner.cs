@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro; 
 using UnityEngine.SceneManagement; 
 
-// --- NEW: This creates a beautiful custom menu in the Unity Inspector! ---
+// --- This creates a beautiful custom menu in the Unity Inspector! ---
 [System.Serializable]
 public class LevelEnemy
 {
@@ -33,6 +33,9 @@ public class ArenaSpawner : MonoBehaviour
     [Header("Spawn Area (Around Player)")]
     public float minSpawnDistance = 12f;   
     public float maxSpawnDistance = 30f;   
+    
+    [Tooltip("Set this to your Floor layer so enemies don't spawn on walls or heads!")]
+    public LayerMask floorLayer; // <-- NEW: Tells the laser to ONLY hit the floor!
 
     [Header("UI & Tracking")]
     public TextMeshProUGUI enemiesLeftText; 
@@ -84,13 +87,14 @@ public class ArenaSpawner : MonoBehaviour
         Vector3 spawnPos = player.position + spawnOffset;
         spawnPos.y += 15f; 
 
-        if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 30f))
+        // --- FIXED: The laser now explicitly looks for the floorLayer ---
+        if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 30f, floorLayer))
         {
             GameObject chosenEnemy = PickRandomEnemyBasedOnWeight();
             
             if (chosenEnemy != null)
             {
-                // --- FIXED: Removed the +0.5f height boost! Now they spawn exactly on the floor! ---
+                // --- FIXED: No more +0.5f height boost! They spawn exactly on the floor! ---
                 Instantiate(chosenEnemy, hit.point, Quaternion.identity);
                 
                 enemiesSpawned++;
@@ -100,7 +104,7 @@ public class ArenaSpawner : MonoBehaviour
     }
 
     // ==========================================
-    // NEW: WEIGHTED RANDOM SPAWN LOGIC
+    // WEIGHTED RANDOM SPAWN LOGIC
     // ==========================================
     GameObject PickRandomEnemyBasedOnWeight()
     {
