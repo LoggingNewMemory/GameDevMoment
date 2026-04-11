@@ -11,7 +11,7 @@ public class UniversalLootDrop : MonoBehaviour
 
     [Header("Settings")]
     [Tooltip("How many seconds until the loot vanishes to save memory?")]
-    public float lootLifetime = 5f; // <-- NEW: Easily adjust the disappear time in the Inspector!
+    public float lootLifetime = 15; // <-- NEW: Easily adjust the disappear time in the Inspector!
 
     public void DropLoot()
     {

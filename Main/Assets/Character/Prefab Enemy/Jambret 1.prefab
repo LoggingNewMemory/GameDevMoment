@@ -2312,6 +2312,7 @@ MonoBehaviour:
   ammoBoxPrefab: {fileID: 6135886786783103493, guid: b7def7e077215b7b1b4793d1c843bacf, type: 3}
   vodkaPrefab: {fileID: 1663480217342578924, guid: 8a406fc1a86d612bd8139299908d1554, type: 3}
   extraJossPrefab: {fileID: 2868457701875626391, guid: 108ac2d6c8099f3c3be2d2236a3d988d, type: 3}
+  lootLifetime: 15
 --- !u!54 &3961780715926090435
 Rigidbody:
   m_ObjectHideFlags: 0
