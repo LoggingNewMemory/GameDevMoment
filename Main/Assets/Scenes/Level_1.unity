@@ -279,6 +279,10 @@ PrefabInstance:
       propertyPath: crosshairDisplay
       value: 
       objectReference: {fileID: 945729140}
+    - target: {fileID: 3580297220566686675, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: screenFlashImage
+      value: 
+      objectReference: {fileID: 1826975746}
     - target: {fileID: 3703222573242375719, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Antialiasing
       value: 1
@@ -693,6 +697,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1826975746 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5051378363107803191, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
+  m_PrefabInstance: {fileID: 945729136}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1001 &758182658057747641
 PrefabInstance:
   m_ObjectHideFlags: 0
