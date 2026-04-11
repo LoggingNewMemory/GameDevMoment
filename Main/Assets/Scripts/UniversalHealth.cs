@@ -50,22 +50,21 @@ public class UniversalHealth : MonoBehaviour, IDamageable
         if (audioScript != null) audioScript.PlayDeathSound();
         if (lootScript != null) lootScript.DropLoot();
 
-        // --- NEW: HALU OF CS KILL BONUS ---
-        // Find the player and extend their dual-wielding timer if the skill is active!
+        // --- HALU OF CS KILL BONUS ---
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             PlayerSkills skills = player.GetComponent<PlayerSkills>();
-            if (skills != null)
-            {
-                skills.AddHaluKillBonus();
-            }
+            if (skills != null) skills.AddHaluKillBonus();
         }
-        // ----------------------------------
+
+        // --- NEW: TELL THE ARENA SPAWNER AN ENEMY DIED! ---
+        ArenaSpawner spawner = FindFirstObjectByType<ArenaSpawner>();
+        if (spawner != null) spawner.EnemyDefeated();
+        // --------------------------------------------------
 
         if (anim != null)
         {
-            // Wipe the Animator's memory so it doesn't twitch!
             anim.ResetTrigger("Hit");
             anim.ResetTrigger("Attack");
             anim.SetBool("isChasing", false);
