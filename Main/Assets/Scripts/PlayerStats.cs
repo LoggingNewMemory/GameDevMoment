@@ -65,29 +65,34 @@ public class PlayerStats : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        // --- AUTO-ASSIGN ALL UI ELEMENTS ---
-        if (healthTextDisplay == null)
-        {
-            GameObject hpObj = GameObject.Find("HealthText");
-            if (hpObj != null) healthTextDisplay = hpObj.GetComponent<TextMeshProUGUI>();
-        }
+        // We find the Canvas first, because it can see ALL its children (even the sleeping ones!)
+        Canvas mainCanvas = FindFirstObjectByType<Canvas>();
         
-        if (bloodScreen == null)
+        if (mainCanvas != null)
         {
-            GameObject bloodObj = GameObject.Find("BloodScreen");
-            if (bloodObj != null) bloodScreen = bloodObj.GetComponent<Image>();
-        }
+            if (healthTextDisplay == null)
+            {
+                Transform hpObj = mainCanvas.transform.Find("HealthText");
+                if (hpObj != null) healthTextDisplay = hpObj.GetComponent<TextMeshProUGUI>();
+            }
+            
+            if (bloodScreen == null)
+            {
+                Transform bloodObj = mainCanvas.transform.Find("BloodScreen");
+                if (bloodObj != null) bloodScreen = bloodObj.GetComponent<Image>();
+            }
 
-        if (deadScreenImage == null)
-        {
-            GameObject deadObj = GameObject.Find("Dead Screen");
-            if (deadObj != null) deadScreenImage = deadObj.GetComponent<Image>();
-        }
+            if (deadScreenImage == null)
+            {
+                Transform deadObj = mainCanvas.transform.Find("Dead Screen");
+                if (deadObj != null) deadScreenImage = deadObj.GetComponent<Image>();
+            }
 
-        if (flashbangScreenImage == null)
-        {
-            GameObject flashObj = GameObject.Find("Flashbang");
-            if (flashObj != null) flashbangScreenImage = flashObj.GetComponent<Image>();
+            if (flashbangScreenImage == null)
+            {
+                Transform flashObj = mainCanvas.transform.Find("Flashbang");
+                if (flashObj != null) flashbangScreenImage = flashObj.GetComponent<Image>();
+            }
         }
 
         currentHealth = maxHealth;
@@ -173,14 +178,25 @@ public class PlayerStats : MonoBehaviour
         lastHitTime = Time.unscaledTime;
         consecutiveHits++;
 
-        bool isKnockout = false; 
+        bool isHeavyHit = false; 
 
         if (playerMovement != null)
         {
+            // --- THE FIX: 3 Hits triggers DIZZY instead of Knockdown ---
             if (consecutiveHits >= 3)
             {
-                isKnockout = true;
-                playerMovement.TriggerKnockdown();
+                isHeavyHit = true;
+                
+                AddDizzyStack(); // Apply the camera sway!
+                
+                // Still give a nice solid knockback so the combo finisher feels impactful
+                if (attacker != null)
+                {
+                    Vector3 pushDirection = (transform.position - attacker.position).normalized;
+                    pushDirection.y = 0; 
+                    playerMovement.ApplyPunchKnockback(pushDirection, 20f); 
+                }
+
                 consecutiveHits = 0; 
                 
                 if (bloodScreen != null)
@@ -223,8 +239,9 @@ public class PlayerStats : MonoBehaviour
 
             Time.timeScale = 0f; 
         }
-        else if (isKnockout)
+        else if (isHeavyHit)
         {
+            // Still plays the heavy grunt/knockout sound to show you took a big hit!
             if (sfxSource != null && playerKnockoutSound != null) sfxSource.PlayOneShot(playerKnockoutSound);
         }
         else if (!isDead)
