@@ -9,12 +9,11 @@ public class BasicChaserAI : MonoBehaviour
     public float attackCooldown = 1.5f;
 
     private Transform playerTarget;
-    private bool isProvoked = false;
     private float lastAttackTime = 0f;
 
     private Animator anim;
     private UniversalMeleeAttack meleeScript;
-    private UniversalHealth healthScript; // <-- Talks to the new Universal script
+    private UniversalHealth healthScript; 
 
     void Start()
     {
@@ -31,14 +30,8 @@ public class BasicChaserAI : MonoBehaviour
         // 1. Stop thinking if we are dead
         if (healthScript != null && healthScript.isDead) return;
 
-        // 2. If we took damage, get mad and start chasing!
-        if (healthScript != null && healthScript.health < healthScript.maxHealth) 
-        {
-            isProvoked = true;
-        }
-
-        // 3. Stand still if unprovoked
-        if (!isProvoked || playerTarget == null) return;
+        // --- THE FIX: Removed the "isProvoked" check! They will now hunt immediately. ---
+        if (playerTarget == null) return;
 
         // --- MOVEMENT & ATTACKING ---
         Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);

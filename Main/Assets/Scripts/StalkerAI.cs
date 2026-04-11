@@ -12,13 +12,12 @@ public class StalkerAI : MonoBehaviour
     public float teleportCooldown = 10f;
 
     private Transform playerTarget;
-    private bool isProvoked = false;
     private float lastAttackTime;
     private float lastTeleportTime;
     
     private Animator anim;
     private UniversalMeleeAttack meleeScript; 
-    private UniversalHealth healthScript; // <-- Talks to the new Universal script
+    private UniversalHealth healthScript; 
 
     void Start()
     {
@@ -36,12 +35,8 @@ public class StalkerAI : MonoBehaviour
     {
         if (healthScript != null && healthScript.isDead) return;
 
-        if (healthScript != null && healthScript.health < healthScript.maxHealth) 
-        {
-            isProvoked = true;
-        }
-
-        if (!isProvoked || playerTarget == null) return;
+        // --- THE FIX: Removed the "isProvoked" wait check entirely! ---
+        if (playerTarget == null) return;
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
 
