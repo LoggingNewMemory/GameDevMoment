@@ -8,8 +8,8 @@ public class SteJewAI : MonoBehaviour
     public float fleeDistance = 15f; 
     
     [Header("Panic Settings (Almost Caught)")]
-    public float panicDistance = 6f;   // If you get closer than this, he panics!
-    public float panicSpeed = 38f;     // His speed massively increases to dodge you
+    public float panicDistance = 6f;   
+    public float panicSpeed = 38f;     
 
     [Header("Wall Bounce Settings")]
     public float wallCheckDistance = 3f; 
@@ -45,19 +45,24 @@ public class SteJewAI : MonoBehaviour
         
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
+        // --- THE TRUTH REVEALER ---
         GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null) playerTarget = p.transform;
+        if (p != null) 
+        {
+            playerTarget = p.transform;
+            Debug.Log("<color=yellow>" + gameObject.name + " is currently avoiding: " + p.name + "</color>");
+        }
 
         lastAttackTime = Time.time; 
     }
 
     void Update()
     {
-        // --- DEATH PHYSICS FIX ---
         if (healthScript != null && healthScript.isDead) 
         {
             if (rb != null && !rb.isKinematic)
             {
+                rb.linearVelocity = Vector3.zero; // Stop moving instantly when dead
                 rb.isKinematic = true; 
                 
                 Collider col = GetComponent<Collider>();
@@ -74,14 +79,12 @@ public class SteJewAI : MonoBehaviour
         // --- 1. FLEE, PANIC & BOUNCE LOGIC ---
         if (distance < fleeDistance)
         {
-            // --- NEW: Calculate if he should be in normal flee or PANIC mode ---
             float currentSpeed = moveSpeed;
             if (distance < panicDistance)
             {
                 currentSpeed = panicSpeed;
             }
 
-            // Determine base direction
             if (bounceTimer > 0)
             {
                 bounceTimer -= Time.deltaTime;
@@ -93,7 +96,6 @@ public class SteJewAI : MonoBehaviour
                 currentMoveDir.y = 0; 
             }
 
-            // WALL DETECTION RAYCAST
             if (Physics.Raycast(transform.position + Vector3.up * 0.5f, currentMoveDir, out RaycastHit hit, wallCheckDistance))
             {
                 if (!hit.transform.CompareTag("Player") && Mathf.Abs(hit.normal.y) < 0.2f)
@@ -106,10 +108,10 @@ public class SteJewAI : MonoBehaviour
                 }
             }
 
-            // Apply the final movement using the dynamic currentSpeed!
+            // --- PHYSICS VELOCITY UPGRADE ---
             if (rb != null)
             {
-                rb.MovePosition(transform.position + currentMoveDir * currentSpeed * Time.deltaTime);
+                rb.linearVelocity = new Vector3(currentMoveDir.x * currentSpeed, rb.linearVelocity.y, currentMoveDir.z * currentSpeed);
             }
             else
             {
@@ -121,6 +123,9 @@ public class SteJewAI : MonoBehaviour
         else
         {
             if (anim != null) anim.SetBool("isChasing", false);
+            
+            // --- NEW: Hit the brakes! ---
+            if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         }
 
         // --- 2. ROTATION LOGIC ---
@@ -136,6 +141,16 @@ public class SteJewAI : MonoBehaviour
         else if (currentMoveDir != Vector3.zero)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(currentMoveDir), Time.deltaTime * 10f);
+        }
+        else 
+        {
+            // --- NEW: Look at the player when standing completely still! ---
+            Vector3 lookDir = (playerTarget.position - transform.position).normalized;
+            lookDir.y = 0;
+            if (lookDir != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
+            }
         }
 
         // --- 3. GLOBAL ATTACK LOGIC ---
