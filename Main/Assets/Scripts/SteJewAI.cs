@@ -45,7 +45,6 @@ public class SteJewAI : MonoBehaviour
         
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
-        // --- THE TRUTH REVEALER ---
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) 
         {
@@ -62,7 +61,7 @@ public class SteJewAI : MonoBehaviour
         {
             if (rb != null && !rb.isKinematic)
             {
-                rb.linearVelocity = Vector3.zero; // Stop moving instantly when dead
+                rb.linearVelocity = Vector3.zero; 
                 rb.isKinematic = true; 
                 
                 Collider col = GetComponent<Collider>();
@@ -108,10 +107,14 @@ public class SteJewAI : MonoBehaviour
                 }
             }
 
-            // --- PHYSICS VELOCITY UPGRADE ---
+            // --- ANTI-SKYROCKET VELOCITY ---
             if (rb != null)
             {
-                rb.linearVelocity = new Vector3(currentMoveDir.x * currentSpeed, rb.linearVelocity.y, currentMoveDir.z * currentSpeed);
+                float safeY = rb.linearVelocity.y;
+                // If Unity tries to launch him upward faster than 2f, instantly kill the upward momentum!
+                if (safeY > 2f) safeY = -2f; 
+
+                rb.linearVelocity = new Vector3(currentMoveDir.x * currentSpeed, safeY, currentMoveDir.z * currentSpeed);
             }
             else
             {
@@ -124,8 +127,13 @@ public class SteJewAI : MonoBehaviour
         {
             if (anim != null) anim.SetBool("isChasing", false);
             
-            // --- NEW: Hit the brakes! ---
-            if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            // --- ANTI-SKYROCKET BRAKES ---
+            if (rb != null) 
+            {
+                float safeY = rb.linearVelocity.y;
+                if (safeY > 2f) safeY = -2f;
+                rb.linearVelocity = new Vector3(0, safeY, 0);
+            }
         }
 
         // --- 2. ROTATION LOGIC ---
@@ -144,7 +152,6 @@ public class SteJewAI : MonoBehaviour
         }
         else 
         {
-            // --- NEW: Look at the player when standing completely still! ---
             Vector3 lookDir = (playerTarget.position - transform.position).normalized;
             lookDir.y = 0;
             if (lookDir != Vector3.zero)
