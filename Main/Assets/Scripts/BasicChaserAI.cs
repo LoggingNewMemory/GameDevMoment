@@ -14,26 +14,25 @@ public class BasicChaserAI : MonoBehaviour
     private Animator anim;
     private UniversalMeleeAttack meleeScript;
     private UniversalHealth healthScript; 
+    private Rigidbody rb; // <-- NEW: Physics body
 
     void Start()
     {
         anim = GetComponent<Animator>();
         meleeScript = GetComponent<UniversalMeleeAttack>();
         healthScript = GetComponent<UniversalHealth>();
+        rb = GetComponent<Rigidbody>(); // <-- NEW: Grab the body
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
     }
 
-    void Update()
+    // <-- FIXED: Must use FixedUpdate for physics!
+    void FixedUpdate() 
     {
-        // 1. Stop thinking if we are dead
         if (healthScript != null && healthScript.isDead) return;
-
-        // --- THE FIX: Removed the "isProvoked" check! They will now hunt immediately. ---
         if (playerTarget == null) return;
 
-        // --- MOVEMENT & ATTACKING ---
         Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
         transform.LookAt(lookPos);
 
@@ -42,7 +41,13 @@ public class BasicChaserAI : MonoBehaviour
         if (distance > attackRange)
         {
             if (anim != null) anim.SetBool("isChasing", true);
-            transform.position = Vector3.MoveTowards(transform.position, lookPos, moveSpeed * Time.deltaTime);
+            
+            // <-- FIXED: Push the Rigidbody instead of teleporting!
+            if (rb != null)
+            {
+                Vector3 targetPos = Vector3.MoveTowards(transform.position, lookPos, moveSpeed * Time.fixedDeltaTime);
+                rb.MovePosition(targetPos);
+            }
         }
         else
         {
