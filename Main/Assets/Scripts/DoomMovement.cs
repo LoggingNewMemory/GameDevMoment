@@ -26,16 +26,11 @@ public class DoomMovement : MonoBehaviour
     public float gravity = -20f; 
     private Vector3 velocity; 
 
-    [Header("Wall Running (Apex / Titanfall)")]
-    public float maxWallRunTime = 3f;
-    public float wallRunSpeed = 20f;
+    [Header("Wall Jumping")]
     public float wallJumpUpForce = 8f;     
     public float wallJumpSideForce = 15f;  
-    public float wallCheckDistance = 1f;   
-    public float wallRunCameraTilt = 15f;  
-    private bool isWallRunning = false;
-    private float wallRunTimer = 0f;
-    private float currentWallTilt = 0f;
+    [Tooltip("Increased distance makes it easier to register a wall near you!")]
+    public float wallCheckDistance = 1.5f;   
     private bool wallLeft = false;
     private bool wallRight = false;
     private RaycastHit leftWallHit;
@@ -45,7 +40,7 @@ public class DoomMovement : MonoBehaviour
     public float knockbackDecay = 10f; 
     private Vector3 knockbackVelocity = Vector3.zero;
     public bool isKnockedDown = false; 
-    public bool isDead = false; // <-- NEW: Death State
+    public bool isDead = false; 
     private float stumbleTimer = 0f; 
     private float currentDizzyRoll = 0f; 
 
@@ -78,17 +73,14 @@ public class DoomMovement : MonoBehaviour
 
     void Update()
     {
-        // --- NEW: Freeze everything if dead ---
         if (isDead || Mouse.current == null || Keyboard.current == null) return;
 
         CheckForWalls();
 
         if (controller.isGrounded && velocity.y < 0) velocity.y = -2f; 
 
-        if (!isWallRunning) 
-        {
-            velocity.y += gravity * Time.unscaledDeltaTime;
-        }
+        // Gravity always applies now!
+        velocity.y += gravity * Time.unscaledDeltaTime;
 
         Vector3 move = Vector3.zero;
 
@@ -114,11 +106,7 @@ public class DoomMovement : MonoBehaviour
                 currentDizzyRoll = Mathf.Lerp(currentDizzyRoll, 0f, Time.unscaledDeltaTime * 5f);
             }
 
-            float targetTilt = 0f;
-            if (isWallRunning) targetTilt = wallLeft ? -wallRunCameraTilt : wallRunCameraTilt;
-            currentWallTilt = Mathf.Lerp(currentWallTilt, targetTilt, Time.unscaledDeltaTime * 10f);
-
-            playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, currentDizzyRoll + currentWallTilt);
+            playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, currentDizzyRoll);
             transform.Rotate(Vector3.up * (mouseDelta.x * mouseSensitivity));
 
             float x = 0f; float z = 0f;
@@ -130,27 +118,10 @@ public class DoomMovement : MonoBehaviour
             Vector3 inputDirection = transform.right * x + transform.forward * z;
             if (inputDirection.magnitude > 1f) inputDirection.Normalize();
 
-            bool isMovingForward = z > 0;
-            if ((wallLeft || wallRight) && isMovingForward && !controller.isGrounded && !isSliding)
-            {
-                if (!isWallRunning) StartWallRun();
-            }
-            else
-            {
-                if (isWallRunning) StopWallRun();
-            }
-
-            if (isWallRunning)
-            {
-                wallRunTimer -= Time.unscaledDeltaTime;
-                if (wallRunTimer <= 0f) StopWallRun();
-            }
-
             float currentSpeed = walkSpeed;
             bool isRunning = Keyboard.current.leftShiftKey.isPressed && z > 0;
             
-            if (isWallRunning) currentSpeed = wallRunSpeed;
-            else if (isRunning && !isSliding && !isDashing) currentSpeed = runSpeed;
+            if (isRunning && !isSliding && !isDashing) currentSpeed = runSpeed;
 
             currentSpeed *= speedMultiplier;
 
@@ -176,11 +147,13 @@ public class DoomMovement : MonoBehaviour
             {
                 if (controller.isGrounded && !isSliding && !isDashing)
                 {
+                    // NORMAL JUMP
                     velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                     if (playerAudio != null && jumpSound != null) playerAudio.PlayOneShot(jumpSound);
                 }
-                else if (isWallRunning)
+                else if (!controller.isGrounded && (wallLeft || wallRight))
                 {
+                    // SENSITIVE WALL BOUNCE (Can trigger anytime in the air near a wall!)
                     WallBounceJump();
                 }
             }
@@ -189,7 +162,7 @@ public class DoomMovement : MonoBehaviour
             else if (isSliding) move = slideDirection * slideSpeed * speedMultiplier;
             else move = inputDirection * currentSpeed;
 
-            if (controller.isGrounded && controller.velocity.magnitude > 0.1f && !isSliding && !isDashing && !isWallRunning)
+            if (controller.isGrounded && controller.velocity.magnitude > 0.1f && !isSliding && !isDashing)
             {
                 stepTimer -= Time.unscaledDeltaTime;
                 if (stepTimer <= 0f) { PlayFootstepSound(); stepTimer = isRunning ? stepInterval * 0.7f : stepInterval; }
@@ -202,7 +175,7 @@ public class DoomMovement : MonoBehaviour
     }
 
     // ==========================================
-    // WALL RUN LOGIC
+    // SENSITIVE WALL JUMP LOGIC
     // ==========================================
     private void CheckForWalls()
     {
@@ -210,26 +183,16 @@ public class DoomMovement : MonoBehaviour
         wallLeft = Physics.Raycast(transform.position, -transform.right, out leftWallHit, wallCheckDistance);
     }
 
-    private void StartWallRun()
-    {
-        isWallRunning = true;
-        wallRunTimer = maxWallRunTime; 
-        velocity.y = 0f;               
-    }
-
-    private void StopWallRun()
-    {
-        isWallRunning = false;
-    }
-
     private void WallBounceJump()
     {
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
+        
         velocity.y = wallJumpUpForce;
-        knockbackVelocity += wallNormal * wallJumpSideForce; 
+        
+        // We override the knockback velocity so the bounce completely changes your momentum!
+        knockbackVelocity = wallNormal * wallJumpSideForce; 
 
         if (playerAudio != null && jumpSound != null) playerAudio.PlayOneShot(jumpSound);
-        StopWallRun();
     }
 
     // ==========================================
@@ -289,7 +252,7 @@ public class DoomMovement : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(1.5f); 
 
-        if (isDead) yield break; // Don't get back up if you died while knocked down!
+        if (isDead) yield break; 
 
         elapsed = 0f;
         float riseDuration = 0.5f; 
@@ -310,7 +273,6 @@ public class DoomMovement : MonoBehaviour
         if (activeMelee != null) StartCoroutine(activeMelee.DrawWeaponRoutine());
     }
 
-    // --- NEW: Trigger Death permanently collapses the player ---
     public void TriggerDeath()
     {
         if (!isDead) StartCoroutine(DeathRoutine());
@@ -319,7 +281,7 @@ public class DoomMovement : MonoBehaviour
     IEnumerator DeathRoutine()
     {
         isDead = true;
-        isKnockedDown = true; // Setting this hides the weapons cleanly!
+        isKnockedDown = true; 
 
         SimpleShoot activeGun = GetComponentInChildren<SimpleShoot>();
         SimpleMelee activeMelee = GetComponentInChildren<SimpleMelee>();
@@ -327,7 +289,6 @@ public class DoomMovement : MonoBehaviour
         if (activeGun != null) activeGun.InstantHide();
         if (activeMelee != null) activeMelee.InstantHide();
 
-        // Drop the camera to the floor permanently
         float fallDuration = 0.5f; 
         float elapsed = 0f;
         Vector3 normalCamPos = playerCamera.localPosition;
@@ -342,7 +303,6 @@ public class DoomMovement : MonoBehaviour
             playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, Mathf.Lerp(0f, 65f, elapsed / fallDuration)); 
             yield return null;
         }
-        // It stays here forever until the scene reloads!
     }
 
     public void AddRecoil(float pushBackForce, float cameraKickUp) { if (isKnockedDown || isDead) return; knockbackVelocity -= playerCamera.forward * pushBackForce; xRotation -= cameraKickUp; xRotation = Mathf.Clamp(xRotation, -90f, 90f); }
