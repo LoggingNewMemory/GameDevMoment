@@ -719,6 +719,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 2387894166266533501, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: bobAmountX
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2387894166266533501, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: bobAmountY
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 2416438192587772647, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1146,8 +1154,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 5040810398171321406, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      insertIndex: 0
+    - targetCorrespondingSourceObject: {fileID: 618465635789198105, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1939257920}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
@@ -1430,6 +1438,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1954709115183033765, guid: 83b081522f15df64cb4f8b5416eccdec, type: 3}
   m_PrefabInstance: {fileID: 792117770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &930058188 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 618465635789198105, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+  m_PrefabInstance: {fileID: 284795396}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &945729136
 PrefabInstance:
@@ -1829,11 +1842,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8582451509887590953, guid: f8c0297a8d99e2747baeb5697c8ecb66, type: 3}
   m_PrefabInstance: {fileID: 1095192389}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1218267249 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5040810398171321406, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-  m_PrefabInstance: {fileID: 284795396}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1383280189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2222,7 +2230,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1218267249}
+  m_Father: {fileID: 930058188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1939257921
 MonoBehaviour:
