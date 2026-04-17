@@ -651,6 +651,10 @@ PrefabInstance:
       propertyPath: ammoCounterUI
       value: 
       objectReference: {fileID: 99187413}
+    - target: {fileID: 6436643029745982069, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
@@ -673,7 +677,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.76
+      value: 1.62
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalPosition.z
