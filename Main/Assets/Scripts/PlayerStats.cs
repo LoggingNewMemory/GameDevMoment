@@ -162,9 +162,8 @@ public class PlayerStats : MonoBehaviour
     {
         if (isDead) return;
 
-        PlayerSkills skills = GetComponent<PlayerSkills>();
-        if (skills != null) skills.CancelHaluOfCS();
-
+        // --- THE FIX: Removed the line that was cancelling the Halu of CS buff! ---
+        
         bool hadOverheal = currentHealth > maxHealth;
         currentHealth -= damageAmount;
 
@@ -182,14 +181,12 @@ public class PlayerStats : MonoBehaviour
 
         if (playerMovement != null)
         {
-            // --- THE FIX: 3 Hits triggers DIZZY instead of Knockdown ---
             if (consecutiveHits >= 3)
             {
                 isHeavyHit = true;
                 
-                AddDizzyStack(); // Apply the camera sway!
+                AddDizzyStack(); 
                 
-                // Still give a nice solid knockback so the combo finisher feels impactful
                 if (attacker != null)
                 {
                     Vector3 pushDirection = (transform.position - attacker.position).normalized;
@@ -241,7 +238,6 @@ public class PlayerStats : MonoBehaviour
         }
         else if (isHeavyHit)
         {
-            // Still plays the heavy grunt/knockout sound to show you took a big hit!
             if (sfxSource != null && playerKnockoutSound != null) sfxSource.PlayOneShot(playerKnockoutSound);
         }
         else if (!isDead)
