@@ -654,6 +654,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AmericaWoke
       objectReference: {fileID: 0}
+    - target: {fileID: 3125103903867278189, guid: c7da841298e73a554b159279b435d6d1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4795859047759460047, guid: c7da841298e73a554b159279b435d6d1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.9437447
@@ -791,6 +795,10 @@ PrefabInstance:
     - target: {fileID: 1978879434711127254, guid: f0bae35bdd4322814811dc2a0220ad86, type: 3}
       propertyPath: m_Name
       value: Kaya
+      objectReference: {fileID: 0}
+    - target: {fileID: 1978879434711127254, guid: f0bae35bdd4322814811dc2a0220ad86, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5388778961028259678, guid: f0bae35bdd4322814811dc2a0220ad86, type: 3}
       propertyPath: m_LocalPosition.x
@@ -935,9 +943,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 455410650}
     - target: {fileID: 484571870588314302, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useHitStop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 484571870588314302, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: crosshairDisplay
       value: 
       objectReference: {fileID: 455410650}
+    - target: {fileID: 484571870588314302, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: restingRotation.x
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 484571870588314302, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: restingRotation.y
+      value: -20
+      objectReference: {fileID: 0}
     - target: {fileID: 2669124890678278977, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
@@ -1146,6 +1166,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SteJew
       objectReference: {fileID: 0}
+    - target: {fileID: 4014714322278504851, guid: d4dfae223ab7bd8649fb75ee2261b1d6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7842647189751654602, guid: d4dfae223ab7bd8649fb75ee2261b1d6, type: 3}
       propertyPath: audioSource
       value: 
@@ -1295,6 +1319,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: The Black
       objectReference: {fileID: 0}
+    - target: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1335,6 +1363,10 @@ PrefabInstance:
     - target: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
       propertyPath: m_Name
       value: Jambret 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7103069476687870811, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
       propertyPath: m_LocalPosition.x

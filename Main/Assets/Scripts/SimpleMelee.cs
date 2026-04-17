@@ -3,26 +3,48 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class MeleeSwingData
+{
+    public string swingName = "Swing";
+    public float damage = 40f;          
+    public float swingSpeed = 0.1f;     
+    public float swingCooldown = 0.3f;  
+    
+    [Header("Procedural Animation")]
+    public Vector3 targetRotation; 
+    public Vector3 positionalOffset;
+    
+    [Header("Camera Kick")]
+    public float cameraKickDown = -3f; 
+    public float cameraKickLeft = -1f;
+}
+
 public class SimpleMelee : MonoBehaviour
 {
-    [Header("Melee Stats")]
-    public float damage = 40f;          
-    public float range = 2.5f;          
-    public float swingSpeed = 0.1f;     // Ultra fast snap!
-    public float swingCooldown = 0.4f;  
-
-    [Header("Procedural Animation (Angles & Position)")]
-    public Vector3 restingRotation = new Vector3(15, -20, 10);       
-    public Vector3 swingTargetRotation = new Vector3(65, -85, -40); 
+    [Header("Combo System")]
+    [Tooltip("How many seconds without clicking before the combo resets to Swing 1?")]
+    public float comboResetTime = 1.0f; 
     
-    [Tooltip("How far the sword lunges forward and down during the swing")]
-    public Vector3 swingPositionalOffset = new Vector3(-0.3f, -0.5f, 0.6f);
+    // --- REDUCED TO 2-HIT COMBO ---
+    public MeleeSwingData[] comboSwings = new MeleeSwingData[]
+    {
+        // Swing 1: Slash Right to Left
+        new MeleeSwingData { swingName = "Slash Right to Left", targetRotation = new Vector3(65, -85, -40), positionalOffset = new Vector3(-0.3f, -0.5f, 0.6f), cameraKickLeft = -1f },
+        
+        // Swing 2: Slash Left to Right
+        new MeleeSwingData { swingName = "Slash Left to Right", targetRotation = new Vector3(65, 45, 40), positionalOffset = new Vector3(0.3f, -0.5f, 0.6f), cameraKickLeft = 1f }
+    };
 
-    [Header("Camera & Juice (The AAA Feel)")]
-    [Tooltip("Violently yanks the camera down/left to match the swing momentum")]
-    public float cameraSwingKickDown = -3f; 
-    public float cameraSwingKickLeft = -1f;
-    [Tooltip("Freezes the game for a microsecond on flesh impacts!")]
+    private int currentComboStep = 0;
+    private float lastSwingEndTime = 0f;
+    
+    // Tracks the running combo so we can safely stop it!
+    private Coroutine activeSwingCoroutine; 
+
+    [Header("Weapon Base Stats")]
+    public float range = 2.5f;          
+    public Vector3 restingRotation = new Vector3(15, -20, 10);       
     public bool useHitStop = true;
 
     [Header("Weapon Sway/Drawing")]
@@ -51,7 +73,6 @@ public class SimpleMelee : MonoBehaviour
         playerMovement = GetComponentInParent<DoomMovement>();
         originalPosition = transform.localPosition;
 
-        // --- NEW: AUTO-ASSIGN CROSSHAIR ---
         if (crosshairDisplay == null)
         {
             GameObject crosshairObj = GameObject.Find("Crosshair");
@@ -61,10 +82,12 @@ public class SimpleMelee : MonoBehaviour
             }
         }
     }
+    
     void OnEnable()
     {
         UpdateCrosshairUI();
         StartCoroutine(DrawWeaponRoutine());
+        currentComboStep = 0; 
     }
 
     void Update()
@@ -72,9 +95,17 @@ public class SimpleMelee : MonoBehaviour
         if (Mouse.current == null || isDrawing || isSwinging) return;
         if (playerMovement != null && playerMovement.isKnockedDown) return;
 
+        if (Time.unscaledTime - lastSwingEndTime > comboResetTime && currentComboStep > 0)
+        {
+            currentComboStep = 0;
+        }
+
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            StartCoroutine(SwingRoutine());
+            if (comboSwings == null || comboSwings.Length == 0) return;
+            
+            if (activeSwingCoroutine != null) StopCoroutine(activeSwingCoroutine);
+            activeSwingCoroutine = StartCoroutine(SwingRoutine(comboSwings[currentComboStep]));
         }
     }
 
@@ -84,35 +115,39 @@ public class SimpleMelee : MonoBehaviour
             crosshairDisplay.sprite = weaponCrosshair; 
     }
 
-    IEnumerator SwingRoutine()
+    IEnumerator SwingRoutine(MeleeSwingData currentSwing)
     {
         isSwinging = true;
 
         if (weaponAudio != null && swingSound != null) weaponAudio.PlayOneShot(swingSound);
 
         if (playerMovement != null) 
-            playerMovement.AddRecoil(0f, cameraSwingKickDown);
+            playerMovement.AddRecoil(0f, currentSwing.cameraKickDown); 
 
         float elapsed = 0f;
         Quaternion startRot = Quaternion.Euler(restingRotation);
-        Quaternion targetRot = Quaternion.Euler(swingTargetRotation);
-        Vector3 targetPos = originalPosition + swingPositionalOffset;
+        Quaternion targetRot = Quaternion.Euler(currentSwing.targetRotation);
+        Vector3 targetPos = originalPosition + currentSwing.positionalOffset;
 
-        bool hitConnected = DetectHit();
+        bool hitConnected = DetectHit(currentSwing.damage); 
 
-        while (elapsed < swingSpeed)
+        // Safety check in case the Unity Inspector wiped the speed values to 0
+        if (currentSwing.swingSpeed > 0f) 
         {
-            elapsed += Time.unscaledDeltaTime; 
-            float t = elapsed / swingSpeed;
-            float easeT = 1f - Mathf.Pow(1f - t, 3f); 
+            while (elapsed < currentSwing.swingSpeed)
+            {
+                elapsed += Time.unscaledDeltaTime; 
+                float t = elapsed / currentSwing.swingSpeed;
+                float easeT = 1f - Mathf.Pow(1f - t, 3f); 
 
-            transform.localRotation = Quaternion.Slerp(startRot, targetRot, easeT);
-            transform.localPosition = Vector3.Lerp(originalPosition, targetPos, easeT);
-            yield return null;
+                transform.localRotation = Quaternion.Slerp(startRot, targetRot, easeT);
+                transform.localPosition = Vector3.Lerp(originalPosition, targetPos, easeT);
+                yield return null;
+            }
         }
 
         elapsed = 0f;
-        float recoveryTime = swingCooldown - swingSpeed; 
+        float recoveryTime = currentSwing.swingCooldown - currentSwing.swingSpeed; 
         if (recoveryTime <= 0) recoveryTime = 0.1f;
 
         while (elapsed < recoveryTime)
@@ -128,10 +163,18 @@ public class SimpleMelee : MonoBehaviour
 
         transform.localRotation = startRot;
         transform.localPosition = originalPosition;
+        
         isSwinging = false;
+        lastSwingEndTime = Time.unscaledTime; 
+
+        currentComboStep++;
+        if (currentComboStep >= comboSwings.Length) 
+        {
+            currentComboStep = 0; 
+        }
     }
 
-    bool DetectHit()
+    bool DetectHit(float currentSwingDamage)
     {
         RaycastHit hit;
         float hitRadius = 0.5f; 
@@ -143,7 +186,7 @@ public class SimpleMelee : MonoBehaviour
             
             if (target != null)
             {
-                target.TakeDamage(damage);
+                target.TakeDamage(currentSwingDamage); 
                 hitFlesh = true;
                 
                 if (weaponAudio != null && hitSound != null) weaponAudio.PlayOneShot(hitSound);
@@ -184,7 +227,9 @@ public class SimpleMelee : MonoBehaviour
     public IEnumerator HolsterWeaponRoutine()
     {
         isDrawing = true;
-        StopCoroutine("SwingRoutine");
+        
+        if (activeSwingCoroutine != null) StopCoroutine(activeSwingCoroutine);
+        
         transform.localRotation = Quaternion.Euler(restingRotation);
         float elapsed = 0f;
         while (elapsed < drawTime)
