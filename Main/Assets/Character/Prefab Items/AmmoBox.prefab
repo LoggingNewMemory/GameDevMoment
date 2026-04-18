@@ -167,4 +167,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RandomAmmoBox
   myAmmoType: 0
   ammoInside: 0
-  pickupSound: {fileID: 0}
+  pickupSound: {fileID: 8300000, guid: 83e09c56afc21ff26a1fbd8355cc4aca, type: 3}

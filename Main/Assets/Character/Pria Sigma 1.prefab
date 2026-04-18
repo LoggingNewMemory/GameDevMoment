@@ -4320,12 +4320,9 @@ MonoBehaviour:
   dashCooldown: 1
   jumpHeight: 2
   gravity: -20
-  maxWallRunTime: 3
-  wallRunSpeed: 20
   wallJumpUpForce: 8
   wallJumpSideForce: 15
   wallCheckDistance: 1
-  wallRunCameraTilt: 15
   knockbackDecay: 10
   isKnockedDown: 0
   isDead: 0
@@ -6485,16 +6482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67714dbb07c62c029b60d106fa99c1f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSwitcher
-  weapons:
-  - {fileID: 3413463683475452845}
-  - {fileID: 3003148060420198016}
-  - {fileID: 2023751434998875312}
-  - {fileID: 8344382870461524797}
-  - {fileID: 7870470160750590261}
-  - {fileID: 6848414041877650751}
-  - {fileID: 653750215657493666}
-  - {fileID: 74048201841894066}
-  - {fileID: 4517953738026592834}
+  equippedWeapons: []
   switchDelay: 0.5
   ammoCounterUI: {fileID: 0}
 --- !u!1 &7596284117919422635
@@ -6739,7 +6727,6 @@ GameObject:
   - component: {fileID: 8812380224241752565}
   - component: {fileID: 1943014366544914841}
   - component: {fileID: 3703222573242375719}
-  - component: {fileID: 9169392587095095465}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -6866,21 +6853,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &9169392587095095465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8210213678877000361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67714dbb07c62c029b60d106fa99c1f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WeaponSwitcher
-  weapons: []
-  switchDelay: 0.5
-  ammoCounterUI: {fileID: 0}
 --- !u!1 &8210748146320894748
 GameObject:
   m_ObjectHideFlags: 0
@@ -8082,15 +8054,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7c3357bbbc2551689d124682f4b9e43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleMelee
-  damage: 100
+  comboResetTime: 1
+  comboSwings:
+  - swingName: Slash Right to Left
+    damage: 40
+    swingSpeed: 0.1
+    swingCooldown: 0.3
+    targetRotation: {x: 65, y: -85, z: -40}
+    positionalOffset: {x: -0.3, y: -0.5, z: 0.6}
+    cameraKickDown: -3
+    cameraKickLeft: -1
+  - swingName: Slash Left to Right
+    damage: 40
+    swingSpeed: 0.1
+    swingCooldown: 0.3
+    targetRotation: {x: 65, y: 45, z: 40}
+    positionalOffset: {x: 0.3, y: -0.5, z: 0.6}
+    cameraKickDown: -3
+    cameraKickLeft: 1
   range: 2.5
-  swingSpeed: 0.15
-  swingCooldown: 0.6
   restingRotation: {x: 10, y: -10, z: 10}
-  swingTargetRotation: {x: 65, y: -85, z: -40}
-  swingPositionalOffset: {x: -0.3, y: -0.5, z: 0.6}
-  cameraSwingKickDown: -3
-  cameraSwingKickLeft: -1
   useHitStop: 1
   drawOffset: {x: 0, y: -1, z: 0}
   drawTime: 0.5

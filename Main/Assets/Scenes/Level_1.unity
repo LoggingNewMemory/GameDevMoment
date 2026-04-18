@@ -864,6 +864,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 74048201841894066, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 75137208667138966, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -907,6 +911,10 @@ PrefabInstance:
     - target: {fileID: 653750215657493666, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 653750215657493666, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 711230632262114004, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
@@ -979,6 +987,10 @@ PrefabInstance:
     - target: {fileID: 2023751434998875312, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2023751434998875312, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2175506966535216504, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
@@ -1156,6 +1168,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 4517953738026592834, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4633475471387495653, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1176,6 +1192,10 @@ PrefabInstance:
       propertyPath: deadScreenImage
       value: 
       objectReference: {fileID: 945729138}
+    - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: playerDeathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 8721b22059bc8bfd7851f5aa0375e729, type: 3}
     - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: healthTextDisplay
       value: 
@@ -1244,6 +1264,22 @@ PrefabInstance:
       propertyPath: ammoCounterUI
       value: 
       objectReference: {fileID: 99187413}
+    - target: {fileID: 6119407637837125460, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: weapons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6119407637837125460, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: equippedWeapons.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6119407637837125460, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: 'equippedWeapons.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1819150749}
+    - target: {fileID: 6119407637837125460, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: 'equippedWeapons.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1378508000}
     - target: {fileID: 6157384373531528904, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1276,6 +1312,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 6848414041877650751, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6893072125238436809, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1287,6 +1327,10 @@ PrefabInstance:
     - target: {fileID: 7456181007734404913, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456181007734404913, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7773299748424671751, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
@@ -1303,6 +1347,10 @@ PrefabInstance:
     - target: {fileID: 7870470160750590261, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7870470160750590261, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8088790363241201118, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
@@ -1327,6 +1375,10 @@ PrefabInstance:
     - target: {fileID: 8344382870461524797, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8344382870461524797, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8345476384034986551, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
@@ -1605,10 +1657,7 @@ MonoBehaviour:
   enemiesToSpawn:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 80
-  - editorNote: The Black
-    enemyPrefab: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
-    spawnWeight: 20
+    spawnWeight: 100
   totalEnemiesToSpawn: 100
   maxAliveAtOnce: 25
   spawnDelay: 1
@@ -2158,6 +2207,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7608256, y: 4.7429495, z: 1.7608258}
   m_Center: {x: 0.0000009536743, y: 2.3722968, z: 0.0000008940697}
+--- !u!1 &1378508000 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3003148060420198016, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+  m_PrefabInstance: {fileID: 284795396}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1383280189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2357,13 +2411,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd7629d92490000b3920fad31ebc1b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAmmoStore
+  hasPistol: 1
+  hasShotgun: 0
+  hasSMG: 0
+  hasAssaultRifle: 0
+  hasSniperOrLMG: 0
+  hasRailgun: 0
   pistolAmmo: 60
   shotgunAmmo: 16
   smgAmmo: 120
   arAmmo: 90
   sniperOrLmgAmmo: 30
   railgunAmmo: 5
-  notificationText: {fileID: 0}
+  notificationText: {fileID: 2054299097}
   showDuration: 2
   fadeDuration: 1
 --- !u!1 &1702841296
@@ -2553,6 +2613,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7608256, y: 4.7429495, z: 1.7608258}
   m_Center: {x: -0.0000009536743, y: 2.3722968, z: 0.0000008940697}
+--- !u!1 &1819150749 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3413463683475452845, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+  m_PrefabInstance: {fileID: 284795396}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1826975746 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5051378363107803191, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}

@@ -4,38 +4,49 @@ using System.Collections;
 
 public class WeaponSwitcher : MonoBehaviour
 {
-    [Header("Your Weapons")]
-    public GameObject[] weapons; 
+    [Header("Currently Equipped Loadout")]
+    public GameObject[] equippedWeapons; 
     
     [Header("Settings")]
     public float switchDelay = 0.5f; 
 
     [Header("UI Elements")]
-    public GameObject ammoCounterUI; // <-- Slot for your Canvas Ammo Counter
+    public GameObject ammoCounterUI; 
     
     private int currentWeaponIndex = 0;
     private bool isSwitching = false;
 
     void Awake()
     {
-        // --- NEW: AUTO-ASSIGN AMMO COUNTER UI ---
         if (ammoCounterUI == null)
         {
             ammoCounterUI = GameObject.Find("AmmoCounter");
-        }
-
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            if (weapons[i] != null)
-            {
-                weapons[i].SetActive(i == currentWeaponIndex);
-            }
         }
     }
 
     void Start()
     {
-        // Make sure the UI is correct the exact second the game starts!
+        // --- THE LIFECYCLE FIX ---
+        // By moving this to Start(), we guarantee every gun has already run its Awake() 
+        // and perfectly memorized its position before we start turning them invisible!
+        
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(false);
+        }
+
+        // Now, safely turn on ONLY the weapons in our chosen loadout
+        if (equippedWeapons != null)
+        {
+            for (int i = 0; i < equippedWeapons.Length; i++)
+            {
+                if (equippedWeapons[i] != null)
+                {
+                    equippedWeapons[i].SetActive(i == currentWeaponIndex);
+                }
+            }
+        }
+
         UpdateAmmoUIState(currentWeaponIndex);
     }
 
@@ -43,7 +54,7 @@ public class WeaponSwitcher : MonoBehaviour
     {
         if (Mouse.current == null || Keyboard.current == null) return;
         
-        if (isSwitching || weapons.Length <= 1) return;
+        if (isSwitching || equippedWeapons == null || equippedWeapons.Length <= 1) return;
 
         int previousWeapon = currentWeaponIndex;
 
@@ -52,24 +63,24 @@ public class WeaponSwitcher : MonoBehaviour
         if (scroll > 0f)
         {
             currentWeaponIndex++;
-            if (currentWeaponIndex >= weapons.Length) currentWeaponIndex = 0;
+            if (currentWeaponIndex >= equippedWeapons.Length) currentWeaponIndex = 0;
         }
         else if (scroll < 0f)
         {
             currentWeaponIndex--;
-            if (currentWeaponIndex < 0) currentWeaponIndex = weapons.Length - 1;
+            if (currentWeaponIndex < 0) currentWeaponIndex = equippedWeapons.Length - 1;
         }
 
-        // --- NUMBER KEY SWITCHING (1-9) ---
-        if (Keyboard.current.digit1Key.wasPressedThisFrame) currentWeaponIndex = 0;
-        if (Keyboard.current.digit2Key.wasPressedThisFrame && weapons.Length > 1) currentWeaponIndex = 1;
-        if (Keyboard.current.digit3Key.wasPressedThisFrame && weapons.Length > 2) currentWeaponIndex = 2;
-        if (Keyboard.current.digit4Key.wasPressedThisFrame && weapons.Length > 3) currentWeaponIndex = 3;
-        if (Keyboard.current.digit5Key.wasPressedThisFrame && weapons.Length > 4) currentWeaponIndex = 4;
-        if (Keyboard.current.digit6Key.wasPressedThisFrame && weapons.Length > 5) currentWeaponIndex = 5;
-        if (Keyboard.current.digit7Key.wasPressedThisFrame && weapons.Length > 6) currentWeaponIndex = 6;
-        if (Keyboard.current.digit8Key.wasPressedThisFrame && weapons.Length > 7) currentWeaponIndex = 7;
-        if (Keyboard.current.digit9Key.wasPressedThisFrame && weapons.Length > 8) currentWeaponIndex = 8;
+        // --- NUMBER KEY SWITCHING ---
+        if (Keyboard.current.digit1Key.wasPressedThisFrame && equippedWeapons.Length > 0) currentWeaponIndex = 0;
+        if (Keyboard.current.digit2Key.wasPressedThisFrame && equippedWeapons.Length > 1) currentWeaponIndex = 1;
+        if (Keyboard.current.digit3Key.wasPressedThisFrame && equippedWeapons.Length > 2) currentWeaponIndex = 2;
+        if (Keyboard.current.digit4Key.wasPressedThisFrame && equippedWeapons.Length > 3) currentWeaponIndex = 3;
+        if (Keyboard.current.digit5Key.wasPressedThisFrame && equippedWeapons.Length > 4) currentWeaponIndex = 4;
+        if (Keyboard.current.digit6Key.wasPressedThisFrame && equippedWeapons.Length > 5) currentWeaponIndex = 5;
+        if (Keyboard.current.digit7Key.wasPressedThisFrame && equippedWeapons.Length > 6) currentWeaponIndex = 6;
+        if (Keyboard.current.digit8Key.wasPressedThisFrame && equippedWeapons.Length > 7) currentWeaponIndex = 7;
+        if (Keyboard.current.digit9Key.wasPressedThisFrame && equippedWeapons.Length > 8) currentWeaponIndex = 8;
 
         if (previousWeapon != currentWeaponIndex)
         {
@@ -81,43 +92,51 @@ public class WeaponSwitcher : MonoBehaviour
     {
         isSwitching = true;
 
-        // 1. Check if the old weapon was a GUN
-        SimpleShoot oldGun = weapons[oldIndex].GetComponent<SimpleShoot>();
-        if (oldGun != null)
+        if (equippedWeapons[oldIndex] != null)
         {
-            yield return StartCoroutine(oldGun.HolsterWeaponRoutine());
+            SimpleShoot oldGun = equippedWeapons[oldIndex].GetComponent<SimpleShoot>();
+            if (oldGun != null) yield return StartCoroutine(oldGun.HolsterWeaponRoutine());
+
+            SimpleMelee oldMelee = equippedWeapons[oldIndex].GetComponent<SimpleMelee>();
+            if (oldMelee != null) yield return StartCoroutine(oldMelee.HolsterWeaponRoutine());
+
+            if (oldGun == null && oldMelee == null) yield return new WaitForSeconds(switchDelay);
+
+            equippedWeapons[oldIndex].SetActive(false);
         }
 
-        // 2. Check if the old weapon was the SWORD
-        SimpleMelee oldMelee = weapons[oldIndex].GetComponent<SimpleMelee>();
-        if (oldMelee != null)
+        if (equippedWeapons[newIndex] != null)
         {
-            yield return StartCoroutine(oldMelee.HolsterWeaponRoutine());
+            equippedWeapons[newIndex].SetActive(true);
         }
 
-        // 3. Fallback wait if it has neither script
-        if (oldGun == null && oldMelee == null)
-        {
-            yield return new WaitForSeconds(switchDelay);
-        }
-
-        weapons[oldIndex].SetActive(false);
-        weapons[newIndex].SetActive(true);
-
-        // --- Update the Ammo UI Visibility! ---
         UpdateAmmoUIState(newIndex);
-
         isSwitching = false;
     }
 
     void UpdateAmmoUIState(int index)
     {
-        if (ammoCounterUI != null && weapons[index] != null)
+        if (ammoCounterUI != null && equippedWeapons != null && equippedWeapons.Length > index && equippedWeapons[index] != null)
         {
-            // If the active weapon has a SimpleShoot script, it's a gun! Turn UI ON.
-            // If it doesn't (like the Sword), turn UI OFF.
-            bool isGun = weapons[index].GetComponent<SimpleShoot>() != null;
+            bool isGun = equippedWeapons[index].GetComponent<SimpleShoot>() != null;
             ammoCounterUI.SetActive(isGun);
+        }
+    }
+
+    public void SetNewLoadout(GameObject[] newWeapons)
+    {
+        if (equippedWeapons != null && equippedWeapons.Length > 0 && equippedWeapons[currentWeaponIndex] != null)
+        {
+            equippedWeapons[currentWeaponIndex].SetActive(false);
+        }
+
+        equippedWeapons = newWeapons;
+        currentWeaponIndex = 0;
+
+        if (equippedWeapons != null && equippedWeapons.Length > 0 && equippedWeapons[0] != null)
+        {
+            equippedWeapons[0].SetActive(true);
+            UpdateAmmoUIState(0);
         }
     }
 }
