@@ -15,7 +15,6 @@ public enum AmmoType
 public class PlayerAmmoStore : MonoBehaviour
 {
     [Header("Owned Weapons (Check what player has!)")]
-    [Tooltip("If unchecked, the player will ignore ammo boxes for this weapon type!")]
     public bool hasPistol = true;
     public bool hasShotgun = false;
     public bool hasSMG = false;
@@ -40,13 +39,10 @@ public class PlayerAmmoStore : MonoBehaviour
 
     void Start()
     {
-        // --- THE BULLETPROOF UI FIX ---
-        // 1. If the slot is empty, OR if a blue Prefab file was accidentally dragged in:
         if (notificationText == null || !notificationText.gameObject.scene.IsValid())
         {
-            notificationText = null; // Erase the bad file link!
+            notificationText = null; 
             
-            // Search the physical screen for the real text
             Canvas mainCanvas = FindFirstObjectByType<Canvas>();
             if (mainCanvas != null)
             {
@@ -58,55 +54,65 @@ public class PlayerAmmoStore : MonoBehaviour
             }
         }
 
-        // 2. Safely and completely turn off the real screen text when the game starts
         if (notificationText != null)
         {
             Color c = notificationText.color;
             c.a = 0f;
             notificationText.color = c;
-            notificationText.gameObject.SetActive(false); // Physically turn the object off!
+            notificationText.gameObject.SetActive(false); 
         }
     }
 
-    public bool AddAmmo(AmmoType type, int amount)
+    // --- CHANGED: Added 'forcePickup' parameter ---
+    public bool AddAmmo(AmmoType type, int amount, bool forcePickup = false)
     {
         string ammoName = "";
 
         switch (type)
         {
             case AmmoType.Pistol:
-                if (!hasPistol) return false; 
+                if (!hasPistol && !forcePickup) return false; 
                 pistolAmmo += amount;
                 ammoName = "Pistol Bullets";
                 break;
             case AmmoType.Shotgun:
-                if (!hasShotgun) return false; 
+                if (!hasShotgun && !forcePickup) return false; 
                 shotgunAmmo += amount;
                 ammoName = "Shotgun Shells";
                 break;
             case AmmoType.SMG:
-                if (!hasSMG) return false; 
+                if (!hasSMG && !forcePickup) return false; 
                 smgAmmo += amount;
                 ammoName = "SMG Bullets";
                 break;
             case AmmoType.AssaultRifle:
-                if (!hasAssaultRifle) return false; 
+                if (!hasAssaultRifle && !forcePickup) return false; 
                 arAmmo += amount;
                 ammoName = "AR Bullets";
                 break;
             case AmmoType.SniperOrLMG:
-                if (!hasSniperOrLMG) return false; 
+                if (!hasSniperOrLMG && !forcePickup) return false; 
                 sniperOrLmgAmmo += amount;
                 ammoName = "Heavy Ammo";
                 break;
             case AmmoType.Railgun:
-                if (!hasRailgun) return false; 
+                if (!hasRailgun && !forcePickup) return false; 
                 railgunAmmo += amount;
                 ammoName = "Railgun Batteries";
                 break;
         }
 
         TriggerNotification($"You Got: {amount} {ammoName}");
+
+        // --- THE UI SYNC FIX ---
+        // Find whatever gun is currently active in your hands
+        SimpleShoot activeGun = GetComponentInChildren<SimpleShoot>();
+        if (activeGun != null)
+        {
+            // Instantly push the bullets into the gun so the UI updates!
+            activeGun.AddAmmo(amount);
+        }
+
         return true; 
     }
 
@@ -119,7 +125,6 @@ public class PlayerAmmoStore : MonoBehaviour
 
     private IEnumerator NotificationRoutine(string message)
     {
-        // 1. Wake the UI up!
         notificationText.gameObject.SetActive(true);
         notificationText.text = message;
         
@@ -127,10 +132,8 @@ public class PlayerAmmoStore : MonoBehaviour
         c.a = 1f;
         notificationText.color = c;
 
-        // 2. Wait so the player can read it
         yield return new WaitForSeconds(showDuration);
 
-        // 3. Smooth fade out
         float elapsed = 0f;
         while (elapsed < fadeDuration)
         {
@@ -140,7 +143,6 @@ public class PlayerAmmoStore : MonoBehaviour
             yield return null;
         }
         
-        // 4. Clean up and put it completely to sleep
         c.a = 0f;
         notificationText.color = c;
         notificationText.gameObject.SetActive(false); 
