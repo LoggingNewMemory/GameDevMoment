@@ -1,20 +1,9 @@
 using UnityEngine;
 
-// --- NEW: The Dropdown Menu Options! ---
-public enum PickupRequirement
-{
-    OnlyIfWeaponOwned,
-    AlwaysAllowPickup
-}
-
 public class RandomAmmoBox : MonoBehaviour
 {
     [Header("Loot Settings")]
     public bool isCompletelyRandom = true;
-    
-    [Tooltip("Choose if the player can pick this up even if they don't own the gun!")]
-    public PickupRequirement pickupRule = PickupRequirement.OnlyIfWeaponOwned;
-    
     public AmmoType myAmmoType;
     public int ammoInside = 0;
 
@@ -57,20 +46,13 @@ public class RandomAmmoBox : MonoBehaviour
             
             if (ammoStore != null)
             {
-                // Convert the dropdown choice into a true/false for the Backpack
-                bool force = (pickupRule == PickupRequirement.AlwaysAllowPickup);
-                
-                // Ask the backpack if it wants the ammo, and pass our force override!
-                bool wasPickedUp = ammoStore.AddAmmo(myAmmoType, ammoInside, force);
+                // Backpack firmly decides if we pick it up based on ownership
+                bool wasPickedUp = ammoStore.AddAmmo(myAmmoType, ammoInside);
                 
                 if (wasPickedUp)
                 {
                     if (pickupSound != null) AudioSource.PlayClipAtPoint(pickupSound, transform.position);
                     Destroy(gameObject);
-                }
-                else
-                {
-                    Debug.Log($"<color=yellow>Ammo Box Ignored:</color> You stepped on {ammoInside} {myAmmoType} bullets, but your rule is set to OnlyIfWeaponOwned!");
                 }
             }
         }

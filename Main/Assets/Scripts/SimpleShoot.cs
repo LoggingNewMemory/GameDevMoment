@@ -9,6 +9,10 @@ public class SimpleShoot : MonoBehaviour
     public Camera fpsCamera;
     public float range = 100f;
     public float damage = 20f;
+
+    [Header("Weapon Ammo Type")]
+    [Tooltip("Select the matching ammo type so the gun can grab bullets from the backpack!")]
+    public AmmoType weaponAmmoType;
     
     [Header("Weapon Settings")]
     public bool isAutomatic = false; 
@@ -42,7 +46,6 @@ public class SimpleShoot : MonoBehaviour
 
     [Header("Reload & Reserve")]
     public int magSize = 30;          
-    public int reserveAmmo = 90;       
     public int maxReserveAmmo = 180;   
     private int currentAmmo;          
     private bool isReloading = false; 
@@ -86,8 +89,19 @@ public class SimpleShoot : MonoBehaviour
     private Transform leftGunMuzzle;
     private BeamFader leftSpawnedBeamFader; 
 
+    // --- THE FIX: The gun now strictly uses the Backpack for its ammo math! ---
+    private PlayerAmmoStore ammoStore; 
+    public int reserveAmmo
+    {
+        get { return ammoStore != null ? ammoStore.GetAmmoCount(weaponAmmoType) : 0; }
+        set { if (ammoStore != null) ammoStore.SetAmmoCount(weaponAmmoType, value); }
+    }
+
     void Awake()
     {
+        // Find the backpack exactly once when the gun wakes up
+        ammoStore = GetComponentInParent<PlayerAmmoStore>();
+        
         baseStartPos = transform.localPosition; 
         originalPosition = baseStartPos;        
         
@@ -100,21 +114,18 @@ public class SimpleShoot : MonoBehaviour
 
     void Start()
     {
-        // --- AUTO-ASSIGN AMMO COUNTER ---
         if (ammoTextDisplay == null)
         {
             GameObject ammoObj = GameObject.Find("AmmoCounter");
             if (ammoObj != null) ammoTextDisplay = ammoObj.GetComponent<TextMeshProUGUI>();
         }
 
-        // --- AUTO-ASSIGN CROSSHAIR ---
         if (crosshairDisplay == null)
         {
             GameObject crosshairObj = GameObject.Find("Crosshair");
             if (crosshairObj != null) crosshairDisplay = crosshairObj.GetComponent<Image>();
         }
 
-        // --- NEW: BULLETPROOF AUTO-ASSIGN RAILGUN FLASH ---
         if (isRailgun && useScreenFlash && screenFlashImage == null)
         {
             Canvas mainCanvas = FindFirstObjectByType<Canvas>();
@@ -239,7 +250,7 @@ public class SimpleShoot : MonoBehaviour
         originalPosition = baseStartPos;
     }
 
-    void UpdateAmmoUI() { if (ammoTextDisplay != null) ammoTextDisplay.text = currentAmmo + " / " + reserveAmmo; }
+    public void UpdateAmmoUI() { if (ammoTextDisplay != null) ammoTextDisplay.text = currentAmmo + " / " + reserveAmmo; }
     void UpdateCrosshairUI() { if (crosshairDisplay != null && weaponCrosshair != null) crosshairDisplay.sprite = weaponCrosshair; }
 
     public IEnumerator DrawWeaponRoutine()
@@ -433,7 +444,7 @@ public class SimpleShoot : MonoBehaviour
 
     IEnumerator ScreenFlashRoutine()
     {
-        screenFlashImage.gameObject.SetActive(true); // Wake it up just in case!
+        screenFlashImage.gameObject.SetActive(true);
         screenFlashImage.color = flashColor;
         float elapsed = 0f;
         while(elapsed < flashFadeDuration)
@@ -444,7 +455,7 @@ public class SimpleShoot : MonoBehaviour
             yield return null;
         }
         screenFlashImage.color = new Color(flashColor.r, flashColor.g, flashColor.b, 0f);
-        screenFlashImage.gameObject.SetActive(false); // Put it back to sleep!
+        screenFlashImage.gameObject.SetActive(false); 
     }
 
     IEnumerator ChamberRoundRoutine()

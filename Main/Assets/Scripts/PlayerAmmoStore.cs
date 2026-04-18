@@ -2,19 +2,11 @@ using UnityEngine;
 using TMPro; 
 using System.Collections;
 
-public enum AmmoType
-{
-    Pistol,
-    Shotgun,
-    SMG,
-    AssaultRifle,
-    SniperOrLMG,
-    Railgun
-}
+public enum AmmoType { Pistol, Shotgun, SMG, AssaultRifle, SniperOrLMG, Railgun }
 
 public class PlayerAmmoStore : MonoBehaviour
 {
-    [Header("Owned Weapons (Check what player has!)")]
+    [Header("Owned Weapons")]
     public bool hasPistol = true;
     public bool hasShotgun = false;
     public bool hasSMG = false;
@@ -42,15 +34,11 @@ public class PlayerAmmoStore : MonoBehaviour
         if (notificationText == null || !notificationText.gameObject.scene.IsValid())
         {
             notificationText = null; 
-            
             Canvas mainCanvas = FindFirstObjectByType<Canvas>();
             if (mainCanvas != null)
             {
                 Transform notifObj = mainCanvas.transform.Find("NotificationAmmo");
-                if (notifObj != null) 
-                {
-                    notificationText = notifObj.GetComponent<TextMeshProUGUI>();
-                }
+                if (notifObj != null) notificationText = notifObj.GetComponent<TextMeshProUGUI>();
             }
         }
 
@@ -63,57 +51,70 @@ public class PlayerAmmoStore : MonoBehaviour
         }
     }
 
-    // --- CHANGED: Added 'forcePickup' parameter ---
-    public bool AddAmmo(AmmoType type, int amount, bool forcePickup = false)
+    public bool AddAmmo(AmmoType type, int amount)
     {
         string ammoName = "";
 
         switch (type)
         {
             case AmmoType.Pistol:
-                if (!hasPistol && !forcePickup) return false; 
-                pistolAmmo += amount;
-                ammoName = "Pistol Bullets";
-                break;
+                if (!hasPistol) return false; 
+                pistolAmmo += amount; ammoName = "Pistol Bullets"; break;
             case AmmoType.Shotgun:
-                if (!hasShotgun && !forcePickup) return false; 
-                shotgunAmmo += amount;
-                ammoName = "Shotgun Shells";
-                break;
+                if (!hasShotgun) return false; 
+                shotgunAmmo += amount; ammoName = "Shotgun Shells"; break;
             case AmmoType.SMG:
-                if (!hasSMG && !forcePickup) return false; 
-                smgAmmo += amount;
-                ammoName = "SMG Bullets";
-                break;
+                if (!hasSMG) return false; 
+                smgAmmo += amount; ammoName = "SMG Bullets"; break;
             case AmmoType.AssaultRifle:
-                if (!hasAssaultRifle && !forcePickup) return false; 
-                arAmmo += amount;
-                ammoName = "AR Bullets";
-                break;
+                if (!hasAssaultRifle) return false; 
+                arAmmo += amount; ammoName = "AR Bullets"; break;
             case AmmoType.SniperOrLMG:
-                if (!hasSniperOrLMG && !forcePickup) return false; 
-                sniperOrLmgAmmo += amount;
-                ammoName = "Heavy Ammo";
-                break;
+                if (!hasSniperOrLMG) return false; 
+                sniperOrLmgAmmo += amount; ammoName = "Heavy Ammo"; break;
             case AmmoType.Railgun:
-                if (!hasRailgun && !forcePickup) return false; 
-                railgunAmmo += amount;
-                ammoName = "Railgun Batteries";
-                break;
+                if (!hasRailgun) return false; 
+                railgunAmmo += amount; ammoName = "Railgun Batteries"; break;
         }
 
         TriggerNotification($"You Got: {amount} {ammoName}");
 
-        // --- THE UI SYNC FIX ---
-        // Find whatever gun is currently active in your hands
+        // Instantly force the active gun to refresh its UI!
         SimpleShoot activeGun = GetComponentInChildren<SimpleShoot>();
-        if (activeGun != null)
+        if (activeGun != null && activeGun.weaponAmmoType == type)
         {
-            // Instantly push the bullets into the gun so the UI updates!
-            activeGun.AddAmmo(amount);
+            activeGun.UpdateAmmoUI();
         }
 
         return true; 
+    }
+
+    // --- NEW: Helper functions for the Guns to pull data! ---
+    public int GetAmmoCount(AmmoType type)
+    {
+        switch (type)
+        {
+            case AmmoType.Pistol: return pistolAmmo;
+            case AmmoType.Shotgun: return shotgunAmmo;
+            case AmmoType.SMG: return smgAmmo;
+            case AmmoType.AssaultRifle: return arAmmo;
+            case AmmoType.SniperOrLMG: return sniperOrLmgAmmo;
+            case AmmoType.Railgun: return railgunAmmo;
+            default: return 0;
+        }
+    }
+
+    public void SetAmmoCount(AmmoType type, int amount)
+    {
+        switch (type)
+        {
+            case AmmoType.Pistol: pistolAmmo = amount; break;
+            case AmmoType.Shotgun: shotgunAmmo = amount; break;
+            case AmmoType.SMG: smgAmmo = amount; break;
+            case AmmoType.AssaultRifle: arAmmo = amount; break;
+            case AmmoType.SniperOrLMG: sniperOrLmgAmmo = amount; break;
+            case AmmoType.Railgun: railgunAmmo = amount; break;
+        }
     }
 
     private void TriggerNotification(string message)
@@ -127,7 +128,6 @@ public class PlayerAmmoStore : MonoBehaviour
     {
         notificationText.gameObject.SetActive(true);
         notificationText.text = message;
-        
         Color c = notificationText.color;
         c.a = 1f;
         notificationText.color = c;
@@ -146,19 +146,5 @@ public class PlayerAmmoStore : MonoBehaviour
         c.a = 0f;
         notificationText.color = c;
         notificationText.gameObject.SetActive(false); 
-    }
-
-    public bool TryConsumeAmmo(AmmoType type, int amountNeeded)
-    {
-        switch (type)
-        {
-            case AmmoType.Pistol: if (pistolAmmo >= amountNeeded) { pistolAmmo -= amountNeeded; return true; } break;
-            case AmmoType.Shotgun: if (shotgunAmmo >= amountNeeded) { shotgunAmmo -= amountNeeded; return true; } break;
-            case AmmoType.SMG: if (smgAmmo >= amountNeeded) { smgAmmo -= amountNeeded; return true; } break;
-            case AmmoType.AssaultRifle: if (arAmmo >= amountNeeded) { arAmmo -= amountNeeded; return true; } break;
-            case AmmoType.SniperOrLMG: if (sniperOrLmgAmmo >= amountNeeded) { sniperOrLmgAmmo -= amountNeeded; return true; } break;
-            case AmmoType.Railgun: if (railgunAmmo >= amountNeeded) { railgunAmmo -= amountNeeded; return true; } break;
-        }
-        return false; 
     }
 }
