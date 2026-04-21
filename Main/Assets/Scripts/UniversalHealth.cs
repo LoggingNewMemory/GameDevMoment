@@ -71,8 +71,13 @@ public class UniversalHealth : MonoBehaviour, IDamageable
             anim.SetTrigger("Die");
         }
 
+        // 1. Turn off the collider so the player doesn't trip over the body
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
+
+        // 2. THIS IS THE MISSING LINE! Turn off physics so they don't slide or fall through the floor!
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
 
         Destroy(gameObject, 3f);
     }
