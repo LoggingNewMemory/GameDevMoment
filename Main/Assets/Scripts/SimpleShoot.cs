@@ -46,7 +46,6 @@ public class SimpleShoot : MonoBehaviour
 
     [Header("Reload & Reserve")]
     public int magSize = 30;          
-    public int maxReserveAmmo = 180;   
     private int currentAmmo;          
     private bool isReloading = false; 
     private bool isChambering = false; 
@@ -89,7 +88,7 @@ public class SimpleShoot : MonoBehaviour
     private Transform leftGunMuzzle;
     private BeamFader leftSpawnedBeamFader; 
 
-    // --- THE FIX: The gun now strictly uses the Backpack for its ammo math! ---
+    // --- THE BACKPACK SYNC ---
     private PlayerAmmoStore ammoStore; 
     public int reserveAmmo
     {
@@ -99,9 +98,7 @@ public class SimpleShoot : MonoBehaviour
 
     void Awake()
     {
-        // Find the backpack exactly once when the gun wakes up
         ammoStore = GetComponentInParent<PlayerAmmoStore>();
-        
         baseStartPos = transform.localPosition; 
         originalPosition = baseStartPos;        
         
@@ -237,6 +234,11 @@ public class SimpleShoot : MonoBehaviour
                 }
             }
         }
+
+        // --- NEW: DOUBLE THE MAGAZINE! ---
+        magSize *= 2;
+        currentAmmo *= 2;
+        UpdateAmmoUI();
     }
 
     void DisableDualWield()
@@ -248,6 +250,11 @@ public class SimpleShoot : MonoBehaviour
             leftGunMuzzle = null;
         }
         originalPosition = baseStartPos;
+
+        // --- NEW: HALVE THE MAGAZINE BACK TO NORMAL! ---
+        magSize /= 2;
+        currentAmmo /= 2;
+        UpdateAmmoUI();
     }
 
     public void UpdateAmmoUI() { if (ammoTextDisplay != null) ammoTextDisplay.text = currentAmmo + " / " + reserveAmmo; }
@@ -321,9 +328,14 @@ public class SimpleShoot : MonoBehaviour
         transform.localPosition = targetHiddenPosition;
         
         int shellsNeeded = magSize - currentAmmo;
-        for (int i = 0; i < shellsNeeded; i++)
+        
+        // --- NEW: LOAD 2 SHELLS AT A TIME IF DUAL WIELDING! ---
+        for (int i = 0; i < shellsNeeded; i += (wasHaluActive ? 2 : 1))
         {
             if (reserveAmmo <= 0) break;
+            
+            int reloadAmount = wasHaluActive ? 2 : 1;
+            if (reserveAmmo < reloadAmount) reloadAmount = reserveAmmo;
             
             if (weaponAudio != null && insertShellSound != null) 
             { 
@@ -332,7 +344,9 @@ public class SimpleShoot : MonoBehaviour
             }
             else yield return new WaitForSecondsRealtime(0.4f / speedMod); 
             
-            currentAmmo++; reserveAmmo--; UpdateAmmoUI(); 
+            currentAmmo += reloadAmount; 
+            reserveAmmo -= reloadAmount; 
+            UpdateAmmoUI(); 
         }
         
         if (weaponAudio != null && pumpSound != null) 
@@ -352,7 +366,12 @@ public class SimpleShoot : MonoBehaviour
 
     void Shoot()
     {
-        currentAmmo--; UpdateAmmoUI(); 
+        // --- NEW: CONSUME 2 BULLETS IF DUAL WIELDING! ---
+        int bulletCost = wasHaluActive ? 2 : 1;
+        currentAmmo -= bulletCost;
+        if (currentAmmo < 0) currentAmmo = 0; // Prevents UI from ever showing negative numbers
+
+        UpdateAmmoUI(); 
         if (weaponAudio != null && fireSound != null) weaponAudio.PlayOneShot(fireSound);
 
         if (playerMovement != null) playerMovement.AddRecoil(playerKnockbackForce, cameraKickForce);
@@ -444,7 +463,7 @@ public class SimpleShoot : MonoBehaviour
 
     IEnumerator ScreenFlashRoutine()
     {
-        screenFlashImage.gameObject.SetActive(true);
+        screenFlashImage.gameObject.SetActive(true); 
         screenFlashImage.color = flashColor;
         float elapsed = 0f;
         while(elapsed < flashFadeDuration)
@@ -513,8 +532,8 @@ public class SimpleShoot : MonoBehaviour
 
     public void AddAmmo(int amount)
     {
+        // Now redirects to the Backpack!
         reserveAmmo += amount;
-        if (reserveAmmo > maxReserveAmmo) reserveAmmo = maxReserveAmmo;
         UpdateAmmoUI();
     }
 
