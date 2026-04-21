@@ -129,7 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItem
   typeOfItem: 2
   pickupSound: {fileID: 8300000, guid: 395afc27730f765e4b9a05e48a1fa270, type: 3}
-  cheekiBreeki: {fileID: 8300000, guid: 56bb193cb77fa2a21866b12ba5215a11, type: 3}
+  cheekiBreeki: {fileID: 8300000, guid: ded56749360791aaea4959a37882f027, type: 3}
 --- !u!82 &6964162003596320735
 AudioSource:
   m_ObjectHideFlags: 0
