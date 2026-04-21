@@ -22,6 +22,15 @@ public class PlayerAmmoStore : MonoBehaviour
     public int sniperOrLmgAmmo = 30;
     public int railgunAmmo = 5;
 
+    // --- NEW: MAX CAPACITY LIMITS ---
+    [Header("Max Ammo Capacity")]
+    public int maxPistolAmmo = 120;
+    public int maxShotgunAmmo = 32;
+    public int maxSmgAmmo = 240;
+    public int maxArAmmo = 180;
+    public int maxSniperOrLmgAmmo = 60;
+    public int maxRailgunAmmo = 10;
+
     [Header("UI Notification Settings")]
     public TextMeshProUGUI notificationText;
     public float showDuration = 2f; 
@@ -58,28 +67,51 @@ public class PlayerAmmoStore : MonoBehaviour
         switch (type)
         {
             case AmmoType.Pistol:
-                if (!hasPistol) return false; 
-                pistolAmmo += amount; ammoName = "Pistol Bullets"; break;
+                // Check if we own it AND if we actually have room for more!
+                if (!hasPistol || pistolAmmo >= maxPistolAmmo) return false; 
+                pistolAmmo += amount; 
+                if (pistolAmmo > maxPistolAmmo) pistolAmmo = maxPistolAmmo; // Cap it!
+                ammoName = "Pistol Bullets"; 
+                break;
+
             case AmmoType.Shotgun:
-                if (!hasShotgun) return false; 
-                shotgunAmmo += amount; ammoName = "Shotgun Shells"; break;
+                if (!hasShotgun || shotgunAmmo >= maxShotgunAmmo) return false; 
+                shotgunAmmo += amount; 
+                if (shotgunAmmo > maxShotgunAmmo) shotgunAmmo = maxShotgunAmmo;
+                ammoName = "Shotgun Shells"; 
+                break;
+
             case AmmoType.SMG:
-                if (!hasSMG) return false; 
-                smgAmmo += amount; ammoName = "SMG Bullets"; break;
+                if (!hasSMG || smgAmmo >= maxSmgAmmo) return false; 
+                smgAmmo += amount; 
+                if (smgAmmo > maxSmgAmmo) smgAmmo = maxSmgAmmo;
+                ammoName = "SMG Bullets"; 
+                break;
+
             case AmmoType.AssaultRifle:
-                if (!hasAssaultRifle) return false; 
-                arAmmo += amount; ammoName = "AR Bullets"; break;
+                if (!hasAssaultRifle || arAmmo >= maxArAmmo) return false; 
+                arAmmo += amount; 
+                if (arAmmo > maxArAmmo) arAmmo = maxArAmmo;
+                ammoName = "AR Bullets"; 
+                break;
+
             case AmmoType.SniperOrLMG:
-                if (!hasSniperOrLMG) return false; 
-                sniperOrLmgAmmo += amount; ammoName = "Heavy Ammo"; break;
+                if (!hasSniperOrLMG || sniperOrLmgAmmo >= maxSniperOrLmgAmmo) return false; 
+                sniperOrLmgAmmo += amount; 
+                if (sniperOrLmgAmmo > maxSniperOrLmgAmmo) sniperOrLmgAmmo = maxSniperOrLmgAmmo;
+                ammoName = "Heavy Ammo"; 
+                break;
+
             case AmmoType.Railgun:
-                if (!hasRailgun) return false; 
-                railgunAmmo += amount; ammoName = "Railgun Batteries"; break;
+                if (!hasRailgun || railgunAmmo >= maxRailgunAmmo) return false; 
+                railgunAmmo += amount; 
+                if (railgunAmmo > maxRailgunAmmo) railgunAmmo = maxRailgunAmmo;
+                ammoName = "Railgun Batteries"; 
+                break;
         }
 
         TriggerNotification($"You Got: {amount} {ammoName}");
 
-        // Instantly force the active gun to refresh its UI!
         SimpleShoot activeGun = GetComponentInChildren<SimpleShoot>();
         if (activeGun != null && activeGun.weaponAmmoType == type)
         {
@@ -89,7 +121,6 @@ public class PlayerAmmoStore : MonoBehaviour
         return true; 
     }
 
-    // --- NEW: Helper functions for the Guns to pull data! ---
     public int GetAmmoCount(AmmoType type)
     {
         switch (type)
