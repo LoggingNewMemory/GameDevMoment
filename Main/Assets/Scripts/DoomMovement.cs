@@ -64,11 +64,23 @@ public class DoomMovement : MonoBehaviour
     public AudioClip slideSound; 
     public AudioClip dashSound; 
 
+    // --- NEW: HEAD BOBBING MERGED IN! ---
+    [Header("Head Bobbing")]
+    public float walkBobSpeed = 14f;
+    public float runBobSpeed = 18f;
+    public float bobAmountX = 0.04f;
+    public float bobAmountY = 0.04f;
+    private float bobTimer = 0f;
+    private Vector3 defaultCameraPos;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         originalHeight = controller.height; 
+        
+        // Memorize the exact resting spot of the camera!
+        defaultCameraPos = playerCamera.localPosition;
     }
 
     void Update()
@@ -79,7 +91,6 @@ public class DoomMovement : MonoBehaviour
 
         if (controller.isGrounded && velocity.y < 0) velocity.y = -2f; 
 
-        // Gravity always applies now!
         velocity.y += gravity * Time.unscaledDeltaTime;
 
         Vector3 move = Vector3.zero;
@@ -131,6 +142,29 @@ public class DoomMovement : MonoBehaviour
                 currentSpeed *= 0.1f; 
             }
 
+            // --- THE MERGED BOB LOGIC! ---
+            // Only bob the head if we are safely on the ground and not dodging or sliding!
+            if (controller.isGrounded && !isSliding && !isDashing)
+            {
+                if (inputDirection.magnitude > 0.1f)
+                {
+                    float currentBobSpeed = isRunning ? runBobSpeed : walkBobSpeed;
+                    bobTimer += Time.unscaledDeltaTime * currentBobSpeed;
+
+                    float bobX = Mathf.Cos(bobTimer / 2f) * bobAmountX; 
+                    float bobY = Mathf.Sin(bobTimer) * bobAmountY;
+
+                    Vector3 targetPos = defaultCameraPos + new Vector3(bobX, bobY, 0f);
+                    playerCamera.localPosition = Vector3.Lerp(playerCamera.localPosition, targetPos, 10f * Time.unscaledDeltaTime);
+                }
+                else
+                {
+                    // Smoothly recenter when we stop!
+                    bobTimer = 0f;
+                    playerCamera.localPosition = Vector3.Lerp(playerCamera.localPosition, defaultCameraPos, 10f * Time.unscaledDeltaTime);
+                }
+            }
+
             if (Keyboard.current.cKey.wasPressedThisFrame && isRunning && !isSliding && !isDashing && controller.isGrounded)
             {
                 if (playerAudio != null && slideSound != null) playerAudio.PlayOneShot(slideSound);
@@ -147,13 +181,11 @@ public class DoomMovement : MonoBehaviour
             {
                 if (controller.isGrounded && !isSliding && !isDashing)
                 {
-                    // NORMAL JUMP
                     velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                     if (playerAudio != null && jumpSound != null) playerAudio.PlayOneShot(jumpSound);
                 }
                 else if (!controller.isGrounded && (wallLeft || wallRight))
                 {
-                    // SENSITIVE WALL BOUNCE (Can trigger anytime in the air near a wall!)
                     WallBounceJump();
                 }
             }
@@ -174,9 +206,6 @@ public class DoomMovement : MonoBehaviour
         knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackDecay * Time.unscaledDeltaTime);
     }
 
-    // ==========================================
-    // SENSITIVE WALL JUMP LOGIC
-    // ==========================================
     private void CheckForWalls()
     {
         wallRight = Physics.Raycast(transform.position, transform.right, out rightWallHit, wallCheckDistance);
@@ -186,18 +215,11 @@ public class DoomMovement : MonoBehaviour
     private void WallBounceJump()
     {
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
-        
         velocity.y = wallJumpUpForce;
-        
-        // We override the knockback velocity so the bounce completely changes your momentum!
         knockbackVelocity = wallNormal * wallJumpSideForce; 
-
         if (playerAudio != null && jumpSound != null) playerAudio.PlayOneShot(jumpSound);
     }
 
-    // ==========================================
-    // COMBAT AND DAMAGE REACTIONS
-    // ==========================================
     public void ApplyPunchKnockback(Vector3 direction, float force)
     {
         if (!isKnockedDown && !isDead)
@@ -237,7 +259,9 @@ public class DoomMovement : MonoBehaviour
 
         float fallDuration = 0.15f; 
         float elapsed = 0f;
-        Vector3 normalCamPos = playerCamera.localPosition;
+        
+        // Use our default camera pos so it doesn't get messed up!
+        Vector3 normalCamPos = defaultCameraPos;
         Vector3 fallenCamPos = new Vector3(normalCamPos.x, -0.8f, normalCamPos.z); 
         float startXRot = xRotation;
 
@@ -291,7 +315,7 @@ public class DoomMovement : MonoBehaviour
 
         float fallDuration = 0.5f; 
         float elapsed = 0f;
-        Vector3 normalCamPos = playerCamera.localPosition;
+        Vector3 normalCamPos = defaultCameraPos;
         Vector3 fallenCamPos = new Vector3(normalCamPos.x, -0.8f, normalCamPos.z); 
         float startXRot = xRotation;
 
@@ -306,7 +330,19 @@ public class DoomMovement : MonoBehaviour
     }
 
     public void AddRecoil(float pushBackForce, float cameraKickUp) { if (isKnockedDown || isDead) return; knockbackVelocity -= playerCamera.forward * pushBackForce; xRotation -= cameraKickUp; xRotation = Mathf.Clamp(xRotation, -90f, 90f); }
-    IEnumerator SlideRoutine(Vector3 startDirection) { isSliding = true; slideDirection = startDirection; controller.height = slideHeight; Vector3 originalCamPos = playerCamera.localPosition; playerCamera.localPosition = new Vector3(originalCamPos.x, originalCamPos.y - (originalHeight - slideHeight) / 2f, originalCamPos.z); yield return new WaitForSecondsRealtime(slideDuration); controller.height = originalHeight; playerCamera.localPosition = originalCamPos; isSliding = false; }
+    
+    IEnumerator SlideRoutine(Vector3 startDirection) 
+    { 
+        isSliding = true; 
+        slideDirection = startDirection; 
+        controller.height = slideHeight; 
+        playerCamera.localPosition = new Vector3(defaultCameraPos.x, defaultCameraPos.y - (originalHeight - slideHeight) / 2f, defaultCameraPos.z); 
+        yield return new WaitForSecondsRealtime(slideDuration); 
+        controller.height = originalHeight; 
+        playerCamera.localPosition = defaultCameraPos; 
+        isSliding = false; 
+    }
+    
     IEnumerator DashRoutine(Vector3 currentInputDirection) { isDashing = true; lastDashTime = Time.unscaledTime; if (playerAudio != null && dashSound != null) playerAudio.PlayOneShot(dashSound); if (currentInputDirection.magnitude == 0) dashDirection = transform.forward; else dashDirection = currentInputDirection; yield return new WaitForSecondsRealtime(dashDuration); isDashing = false; }
     void PlayFootstepSound() { if (footstepSounds != null && footstepSounds.Length > 0 && playerAudio != null) { int randomIndex = Random.Range(0, footstepSounds.Length); playerAudio.PlayOneShot(footstepSounds[randomIndex]); } }
 }
