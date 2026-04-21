@@ -5914,7 +5914,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 116
+  m_Constraints: 126
   m_CollisionDetection: 1
 --- !u!114 &5091088674175920141
 MonoBehaviour:
@@ -5928,7 +5928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2898ad50274204da38f77dbe386324e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UniversalHealth
-  maxHealth: 350
+  maxHealth: 70
   health: 0
 --- !u!82 &3078228940128709277
 AudioSource:
