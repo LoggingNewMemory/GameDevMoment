@@ -372,7 +372,20 @@ public class SimpleShoot : MonoBehaviour
         if (currentAmmo < 0) currentAmmo = 0; // Prevents UI from ever showing negative numbers
 
         UpdateAmmoUI(); 
-        if (weaponAudio != null && fireSound != null) weaponAudio.PlayOneShot(fireSound);
+
+        // --- THE NEW DUAL WIELD AUDIO LOGIC ---
+        if (weaponAudio != null && fireSound != null) 
+        {
+            // 1. Play the right hand gun normally
+            weaponAudio.PlayOneShot(fireSound);
+            
+            // 2. If dual wielding, trigger the left hand gun with a tiny delay!
+            if (wasHaluActive)
+            {
+                StartCoroutine(PlayDelayedFireSound(0.06f)); 
+            }
+        }
+        // --------------------------------------
 
         if (playerMovement != null) playerMovement.AddRecoil(playerKnockbackForce, cameraKickForce);
         transform.localPosition = originalPosition - new Vector3(0f, 0f, weaponVisualKick);
@@ -548,5 +561,26 @@ public class SimpleShoot : MonoBehaviour
         reserveAmmo -= amount;
         if (reserveAmmo < 0) reserveAmmo = 0;
         UpdateAmmoUI();
+    }
+
+    // --- THE NEW DUAL WIELD AUDIO DELAY ---
+    IEnumerator PlayDelayedFireSound(float delay)
+    {
+        // Use Realtime so the delay doesn't take forever if Sandevistan (Time for Coding) is active!
+        yield return new WaitForSecondsRealtime(delay);
+        
+        if (weaponAudio != null && fireSound != null)
+        {
+            float originalPitch = weaponAudio.pitch;
+            
+            // Randomize the pitch slightly so it doesn't sound like a robotic echo
+            weaponAudio.pitch = originalPitch + Random.Range(-0.08f, 0.08f);
+            
+            // Play it at 80% volume (0.8f) to simulate it being the off-hand weapon
+            weaponAudio.PlayOneShot(fireSound, 0.8f); 
+            
+            // Reset the pitch for the next time you fire normally
+            weaponAudio.pitch = originalPitch; 
+        }
     }
 }
