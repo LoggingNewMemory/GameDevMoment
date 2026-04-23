@@ -3,16 +3,15 @@ using System.Collections;
 using TMPro; 
 using UnityEngine.SceneManagement; 
 
-// --- This creates a beautiful custom menu in the Unity Inspector! ---
 [System.Serializable]
 public class LevelEnemy
 {
-    public string editorNote = "Enemy Name"; // Just for your GDD organization!
-    public GameObject enemyPrefab;           // Drag the enemy here
+    public string editorNote = "Enemy Name"; 
+    public GameObject enemyPrefab;           
     
     [Tooltip("Higher number = spawns more often! (e.g., 80 Jambret, 20 Kaya)")]
     [Range(1, 100)] 
-    public int spawnWeight = 50;             // The chance of this enemy spawning
+    public int spawnWeight = 50;             
 }
 
 public class ArenaSpawner : MonoBehaviour
@@ -24,7 +23,12 @@ public class ArenaSpawner : MonoBehaviour
     [Header("Wave Settings")]
     public int totalEnemiesToSpawn = 250;  
     public int maxAliveAtOnce = 20;        
-    public float spawnDelay = 0.5f;        
+    
+    // --- NEW: BURST SPAWNING SETTINGS ---
+    [Header("Burst Settings")]
+    public int minSpawnAtOnce = 2;         
+    public int maxSpawnAtOnce = 10;        
+    public float timeBetweenBursts = 3f; // Replaced spawnDelay to act as a wave delay!
 
     [Header("Level Transition")]
     public string nextLevelName = "Level_2"; 
@@ -34,8 +38,7 @@ public class ArenaSpawner : MonoBehaviour
     public float minSpawnDistance = 12f;   
     public float maxSpawnDistance = 30f;   
     
-    [Tooltip("Set this to your Floor layer so enemies don't spawn on walls or heads!")]
-    public LayerMask floorLayer; // <-- NEW: Tells the laser to ONLY hit the floor!
+    public LayerMask floorLayer; 
 
     [Header("UI & Tracking")]
     public TextMeshProUGUI enemiesLeftText; 
@@ -67,12 +70,30 @@ public class ArenaSpawner : MonoBehaviour
         {
             if (enemiesAlive < maxAliveAtOnce)
             {
-                SpawnEnemy();
-                yield return new WaitForSeconds(spawnDelay);
+                // 1. How many enemies are we ALLOWED to spawn right now?
+                int spaceLeftOnMap = maxAliveAtOnce - enemiesAlive;
+                int enemiesLeftInTotal = totalEnemiesToSpawn - enemiesSpawned;
+
+                // 2. Pick a random burst amount (e.g., between 2 and 10)
+                int burstAmount = Random.Range(minSpawnAtOnce, maxSpawnAtOnce + 1);
+
+                // 3. Make sure the burst doesn't exceed the map limits or the total wave limits!
+                burstAmount = Mathf.Min(burstAmount, spaceLeftOnMap);
+                burstAmount = Mathf.Min(burstAmount, enemiesLeftInTotal);
+
+                // 4. Spawn the burst!
+                for (int i = 0; i < burstAmount; i++)
+                {
+                    SpawnEnemy();
+                }
+
+                // Wait a few seconds before the next mini-wave
+                yield return new WaitForSeconds(timeBetweenBursts);
             }
             else
             {
-                yield return new WaitForSeconds(0.5f); 
+                // Map is completely full! Wait a short moment and check again.
+                yield return new WaitForSeconds(1f); 
             }
         }
     }
@@ -87,14 +108,12 @@ public class ArenaSpawner : MonoBehaviour
         Vector3 spawnPos = player.position + spawnOffset;
         spawnPos.y += 15f; 
 
-        // --- FIXED: The laser now explicitly looks for the floorLayer ---
         if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 30f, floorLayer))
         {
             GameObject chosenEnemy = PickRandomEnemyBasedOnWeight();
             
             if (chosenEnemy != null)
             {
-                // --- FIXED: No more +0.5f height boost! They spawn exactly on the floor! ---
                 Instantiate(chosenEnemy, hit.point, Quaternion.identity);
                 
                 enemiesSpawned++;
@@ -109,16 +128,13 @@ public class ArenaSpawner : MonoBehaviour
     GameObject PickRandomEnemyBasedOnWeight()
     {
         int totalWeight = 0;
-        // 1. Calculate the total "tickets" in the lottery
         foreach (var enemy in enemiesToSpawn)
         {
             totalWeight += enemy.spawnWeight;
         }
 
-        // 2. Spin the wheel!
         int randomValue = Random.Range(0, totalWeight);
 
-        // 3. See who won the spawn lottery
         foreach (var enemy in enemiesToSpawn)
         {
             if (randomValue < enemy.spawnWeight)
@@ -128,7 +144,6 @@ public class ArenaSpawner : MonoBehaviour
             randomValue -= enemy.spawnWeight;
         }
 
-        // Fallback just in case
         return enemiesToSpawn[0].enemyPrefab;
     }
 
