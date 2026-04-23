@@ -7,6 +7,12 @@ public class PlayerSkills : MonoBehaviour
     private DoomMovement movement;
     private PlayerStats stats;
 
+    // --- NEW: SKILL UNLOCK SYSTEM ---
+    [Header("Unlocked Skills (Progression)")]
+    public bool hasRageOfCS = false;
+    public bool hasHaluOfCS = false;
+    public bool hasTimeForCoding = false;
+
     [Header("Rage of CS (Q)")]
     public float rageDuration = 15f;
     public float rageSpeedMultiplier = 1.5f;
@@ -33,16 +39,18 @@ public class PlayerSkills : MonoBehaviour
     {
         if (Keyboard.current == null) return;
 
-        // --- SKILL ACTIVATIONS ---
-        if (Keyboard.current.qKey.wasPressedThisFrame && !isRageActive)
+        // --- SKILL ACTIVATIONS (Now checks if you actually own them!) ---
+        if (hasRageOfCS && Keyboard.current.qKey.wasPressedThisFrame && !isRageActive)
         {
             StartCoroutine(RageOfCSRoutine());
         }
-        if (Keyboard.current.eKey.wasPressedThisFrame && !isHaluActive)
+        
+        if (hasHaluOfCS && Keyboard.current.eKey.wasPressedThisFrame && !isHaluActive)
         {
             StartHaluOfCS();
         }
-        if (Keyboard.current.fKey.wasPressedThisFrame && !isTimeCodingActive)
+        
+        if (hasTimeForCoding && Keyboard.current.fKey.wasPressedThisFrame && !isTimeCodingActive)
         {
             StartCoroutine(TimeForCodingRoutine());
         }
@@ -68,9 +76,6 @@ public class PlayerSkills : MonoBehaviour
         Debug.Log("RAGE OF CS ACTIVATED! Speed & Reload Increased!");
 
         if (movement != null) movement.speedMultiplier = rageSpeedMultiplier;
-
-        // NOTE: You will need to add a "reloadMultiplier" float to your SimpleShoot script 
-        // to make the reload faster while isRageActive is true!
         
         yield return new WaitForSecondsRealtime(rageDuration);
 
@@ -88,9 +93,6 @@ public class PlayerSkills : MonoBehaviour
         isHaluActive = true;
         haluTimer = haluBaseDuration;
         Debug.Log("HALU OF CS ACTIVATED! Dual Wielding!");
-        
-        // NOTE: Inside your SimpleShoot script, you can check `if(player.GetComponent<PlayerSkills>().isHaluActive)`
-        // to shoot two bullets at once, or cut the time between shots in half!
     }
 
     public void AddHaluKillBonus()
@@ -117,18 +119,36 @@ public class PlayerSkills : MonoBehaviour
         isTimeCodingActive = true;
         Debug.Log("TIME FOR CODING ACTIVATED! The world slows down...");
 
-        // Slow down the game engine, and adjust physics fixed time so collisions don't stutter
         Time.timeScale = slowMotionScale;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
 
-        // Use Realtime so the player doesn't have to wait 5x longer for the skill to end!
         yield return new WaitForSecondsRealtime(timeForCodingDuration);
 
-        // Return engine to normal speed
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
 
         isTimeCodingActive = false;
         Debug.Log("TIME FOR CODING ENDED!");
+    }
+
+    // ==========================================
+    // PUBLIC UNLOCK FUNCTIONS (Call these from items or level managers!)
+    // ==========================================
+    public void UnlockRageOfCS()
+    {
+        hasRageOfCS = true;
+        Debug.Log("Player unlocked: RAGE OF CS!");
+    }
+
+    public void UnlockHaluOfCS()
+    {
+        hasHaluOfCS = true;
+        Debug.Log("Player unlocked: HALU OF CS!");
+    }
+
+    public void UnlockTimeForCoding()
+    {
+        hasTimeForCoding = true;
+        Debug.Log("Player unlocked: TIME FOR CODING!");
     }
 }
