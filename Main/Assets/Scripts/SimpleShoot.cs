@@ -230,12 +230,18 @@ public class SimpleShoot : MonoBehaviour
                 if (child.name == muzzlePoint.name)
                 {
                     leftGunMuzzle = child;
+                    
+                    // --- NEW FIX: Destroy any stuck flashes that accidentally got cloned! ---
+                    foreach (Transform stuckFlash in leftGunMuzzle)
+                    {
+                        Destroy(stuckFlash.gameObject);
+                    }
+                    
                     break;
                 }
             }
         }
 
-        // --- NEW: DOUBLE THE MAGAZINE! ---
         magSize *= 2;
         currentAmmo *= 2;
         UpdateAmmoUI();
@@ -251,7 +257,6 @@ public class SimpleShoot : MonoBehaviour
         }
         originalPosition = baseStartPos;
 
-        // --- NEW: HALVE THE MAGAZINE BACK TO NORMAL! ---
         magSize /= 2;
         currentAmmo /= 2;
         UpdateAmmoUI();
@@ -329,7 +334,6 @@ public class SimpleShoot : MonoBehaviour
         
         int shellsNeeded = magSize - currentAmmo;
         
-        // --- NEW: LOAD 2 SHELLS AT A TIME IF DUAL WIELDING! ---
         for (int i = 0; i < shellsNeeded; i += (wasHaluActive ? 2 : 1))
         {
             if (reserveAmmo <= 0) break;
@@ -337,12 +341,17 @@ public class SimpleShoot : MonoBehaviour
             int reloadAmount = wasHaluActive ? 2 : 1;
             if (reserveAmmo < reloadAmount) reloadAmount = reserveAmmo;
             
+            // --- NEW FIX: Hardcoded 0.25s fast shell insert! Audio will overlap! ---
             if (weaponAudio != null && insertShellSound != null) 
             { 
                 weaponAudio.PlayOneShot(insertShellSound); 
-                yield return new WaitForSecondsRealtime(insertShellSound.length / speedMod); 
+                yield return new WaitForSecondsRealtime(0.25f / speedMod); 
             }
-            else yield return new WaitForSecondsRealtime(0.4f / speedMod); 
+            else 
+            {
+                yield return new WaitForSecondsRealtime(0.25f / speedMod); 
+            }
+            // ---------------------------------------------------------------------
             
             currentAmmo += reloadAmount; 
             reserveAmmo -= reloadAmount; 
@@ -352,7 +361,11 @@ public class SimpleShoot : MonoBehaviour
         if (weaponAudio != null && pumpSound != null) 
         { 
             weaponAudio.PlayOneShot(pumpSound); 
-            yield return new WaitForSecondsRealtime(pumpSound.length / speedMod); 
+            yield return new WaitForSecondsRealtime(0.5f / speedMod); 
+        }
+        else
+        {
+            yield return new WaitForSecondsRealtime(0.5f / speedMod); 
         }
         
         elapsedTime = 0f;
@@ -366,26 +379,21 @@ public class SimpleShoot : MonoBehaviour
 
     void Shoot()
     {
-        // --- NEW: CONSUME 2 BULLETS IF DUAL WIELDING! ---
         int bulletCost = wasHaluActive ? 2 : 1;
         currentAmmo -= bulletCost;
-        if (currentAmmo < 0) currentAmmo = 0; // Prevents UI from ever showing negative numbers
+        if (currentAmmo < 0) currentAmmo = 0; 
 
         UpdateAmmoUI(); 
 
-        // --- THE NEW DUAL WIELD AUDIO LOGIC ---
         if (weaponAudio != null && fireSound != null) 
         {
-            // 1. Play the right hand gun normally
             weaponAudio.PlayOneShot(fireSound);
             
-            // 2. If dual wielding, trigger the left hand gun with a tiny delay!
             if (wasHaluActive)
             {
                 StartCoroutine(PlayDelayedFireSound(0.06f)); 
             }
         }
-        // --------------------------------------
 
         if (playerMovement != null) playerMovement.AddRecoil(playerKnockbackForce, cameraKickForce);
         transform.localPosition = originalPosition - new Vector3(0f, 0f, weaponVisualKick);
@@ -395,13 +403,6 @@ public class SimpleShoot : MonoBehaviour
             GameObject flash = Instantiate(muzzleFlashPrefab, muzzlePoint.position, muzzlePoint.rotation);
             flash.transform.SetParent(muzzlePoint);
             Destroy(flash, 0.05f); 
-        }
-
-        if (wasHaluActive && muzzleFlashPrefab != null && leftGunMuzzle != null)
-        {
-            GameObject flashL = Instantiate(muzzleFlashPrefab, leftGunMuzzle.position, leftGunMuzzle.rotation);
-            flashL.transform.SetParent(leftGunMuzzle);
-            Destroy(flashL, 0.05f); 
         }
 
         if (isRailgun && useScreenFlash && screenFlashImage != null)
@@ -545,7 +546,6 @@ public class SimpleShoot : MonoBehaviour
 
     public void AddAmmo(int amount)
     {
-        // Now redirects to the Backpack!
         reserveAmmo += amount;
         UpdateAmmoUI();
     }
@@ -563,24 +563,25 @@ public class SimpleShoot : MonoBehaviour
         UpdateAmmoUI();
     }
 
-    // --- THE NEW DUAL WIELD AUDIO DELAY ---
+    // --- THE NEW DUAL WIELD AUDIO & VISUAL DELAY ---
     IEnumerator PlayDelayedFireSound(float delay)
     {
-        // Use Realtime so the delay doesn't take forever if Sandevistan (Time for Coding) is active!
         yield return new WaitForSecondsRealtime(delay);
         
         if (weaponAudio != null && fireSound != null)
         {
             float originalPitch = weaponAudio.pitch;
-            
-            // Randomize the pitch slightly so it doesn't sound like a robotic echo
             weaponAudio.pitch = originalPitch + Random.Range(-0.08f, 0.08f);
-            
-            // Play it at 80% volume (0.8f) to simulate it being the off-hand weapon
             weaponAudio.PlayOneShot(fireSound, 0.8f); 
-            
-            // Reset the pitch for the next time you fire normally
             weaponAudio.pitch = originalPitch; 
+        }
+
+        // --- NEW FIX: Pop the left flash here so it perfectly matches the delayed sound! ---
+        if (muzzleFlashPrefab != null && leftGunMuzzle != null)
+        {
+            GameObject flashL = Instantiate(muzzleFlashPrefab, leftGunMuzzle.position, leftGunMuzzle.rotation);
+            flashL.transform.SetParent(leftGunMuzzle);
+            Destroy(flashL, 0.05f); 
         }
     }
 }

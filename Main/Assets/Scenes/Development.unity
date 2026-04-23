@@ -1292,6 +1292,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 455410650}
     - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: fireRate
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
       value: 1
       objectReference: {fileID: 0}
@@ -1299,6 +1303,10 @@ PrefabInstance:
       propertyPath: ammoTextDisplay
       value: 
       objectReference: {fileID: 122824187}
+    - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: chamberDuration
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: crosshairDisplay
       value: 
@@ -1606,6 +1614,18 @@ PrefabInstance:
     - target: {fileID: 6919757866599632029, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasHaluOfCS
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasRageOfCS
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasTimeForCoding
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7773299748424671751, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
