@@ -3,10 +3,11 @@ using UnityEngine;
 public class BasicChaserAI : MonoBehaviour
 {
     [Header("AI & Combat")]
-    public float moveSpeed = 5f;
-    public float attackRange = 2f;
-    public float attackDamage = 15f;
-    public float attackCooldown = 1.5f;
+    // --- FIXED: Default values matched to your perfect Inspector settings! ---
+    public float moveSpeed = 8f;
+    public float attackRange = 2.5f;
+    public float attackDamage = 10f;
+    public float attackCooldown = 1.2f;
 
     private Transform playerTarget;
     private float lastAttackTime = 0f;
@@ -14,20 +15,19 @@ public class BasicChaserAI : MonoBehaviour
     private Animator anim;
     private UniversalMeleeAttack meleeScript;
     private UniversalHealth healthScript; 
-    private Rigidbody rb; // <-- NEW: Physics body
+    private Rigidbody rb; 
 
     void Start()
     {
         anim = GetComponent<Animator>();
         meleeScript = GetComponent<UniversalMeleeAttack>();
         healthScript = GetComponent<UniversalHealth>();
-        rb = GetComponent<Rigidbody>(); // <-- NEW: Grab the body
+        rb = GetComponent<Rigidbody>(); 
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
     }
 
-    // <-- FIXED: Must use FixedUpdate for physics!
     void FixedUpdate() 
     {
         if (healthScript != null && healthScript.isDead) return;
@@ -42,17 +42,26 @@ public class BasicChaserAI : MonoBehaviour
         {
             if (anim != null) anim.SetBool("isChasing", true);
             
-            // <-- FIXED: Push the Rigidbody instead of teleporting!
+            // --- FIXED: Using Velocity instead of MovePosition stops the "running away" bounce-back glitch! ---
             if (rb != null)
             {
-                Vector3 targetPos = Vector3.MoveTowards(transform.position, lookPos, moveSpeed * Time.fixedDeltaTime);
-                rb.MovePosition(targetPos);
+                // Find the exact direction to the player
+                Vector3 direction = (lookPos - transform.position).normalized;
+                
+                // Set the speed in that direction, but KEEP the current Y velocity so gravity still works!
+                rb.linearVelocity = new Vector3(direction.x * moveSpeed, rb.linearVelocity.y, direction.z * moveSpeed);
             }
         }
         else
         {
             if (anim != null) anim.SetBool("isChasing", false);
             
+            // --- FIXED: Slam the brakes so they don't slide around like they are on ice! ---
+            if (rb != null)
+            {
+                rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+            }
+
             if (Time.time >= lastAttackTime + attackCooldown)
             {
                 lastAttackTime = Time.time;
