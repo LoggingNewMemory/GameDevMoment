@@ -1716,7 +1716,9 @@ MonoBehaviour:
     spawnWeight: 100
   totalEnemiesToSpawn: 50
   maxAliveAtOnce: 30
-  spawnDelay: 0.7
+  minSpawnAtOnce: 5
+  maxSpawnAtOnce: 15
+  timeBetweenBursts: 3
   nextLevelName: Level_2
   timeBeforeNextLevel: 3
   minSpawnDistance: 12
