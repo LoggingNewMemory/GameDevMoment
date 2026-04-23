@@ -14,7 +14,8 @@ public class RandomAmmoBox : MonoBehaviour
     {
         if (isCompletelyRandom)
         {
-            myAmmoType = (AmmoType)Random.Range(0, 6);
+            // CHANGED: Random.Range max is exclusive. We changed 6 to 7 to include Railgun!
+            myAmmoType = (AmmoType)Random.Range(0, 7);
         }
 
         switch (myAmmoType)
@@ -23,7 +24,11 @@ public class RandomAmmoBox : MonoBehaviour
             case AmmoType.Shotgun: ammoInside = Random.Range(4, 9); break;
             case AmmoType.SMG: ammoInside = Random.Range(30, 50); break;
             case AmmoType.AssaultRifle: ammoInside = Random.Range(20, 31); break;
-            case AmmoType.SniperOrLMG: ammoInside = Random.Range(10, 20); break;
+            
+            // --- FIXED: Split into Sniper and LMG with proper amounts! ---
+            case AmmoType.Sniper: ammoInside = Random.Range(5, 10); break; 
+            case AmmoType.LMG: ammoInside = Random.Range(40, 80); break;   
+            
             case AmmoType.Railgun: ammoInside = Random.Range(1, 4); break;
         }
 

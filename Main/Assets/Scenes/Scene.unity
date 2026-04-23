@@ -1136,6 +1136,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 454758429910345799, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: weaponAmmoType
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 454758429910345799, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
       objectReference: {fileID: 122824187}
@@ -1276,6 +1280,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2669124890678278977, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: weaponAmmoType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2669124890678278977, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
       objectReference: {fileID: 122824187}
@@ -1283,6 +1291,10 @@ PrefabInstance:
       propertyPath: crosshairDisplay
       value: 
       objectReference: {fileID: 455410650}
+    - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: weaponAmmoType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
@@ -1334,6 +1346,10 @@ PrefabInstance:
     - target: {fileID: 3531493688526920783, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580297220566686675, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: weaponAmmoType
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3580297220566686675, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
@@ -1548,6 +1564,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6161236861588191660, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: weaponAmmoType
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6161236861588191660, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
       objectReference: {fileID: 122824187}
@@ -1608,6 +1628,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8093123419379736228, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: weaponAmmoType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8093123419379736228, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
       objectReference: {fileID: 122824187}
@@ -1615,6 +1639,10 @@ PrefabInstance:
       propertyPath: crosshairDisplay
       value: 
       objectReference: {fileID: 455410650}
+    - target: {fileID: 8114743893565785527, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: weaponAmmoType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8114743893565785527, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
@@ -1764,19 +1792,22 @@ MonoBehaviour:
   hasShotgun: 0
   hasSMG: 0
   hasAssaultRifle: 0
-  hasSniperOrLMG: 0
+  hasSniper: 0
+  hasLMG: 0
   hasRailgun: 0
   pistolAmmo: 30
   shotgunAmmo: 8
   smgAmmo: 60
   arAmmo: 45
-  sniperOrLmgAmmo: 15
+  sniperAmmo: 15
+  lmgAmmo: 150
   railgunAmmo: 2
   maxPistolAmmo: 60
   maxShotgunAmmo: 16
   maxSmgAmmo: 120
   maxArAmmo: 90
-  maxSniperOrLmgAmmo: 30
+  maxSniperAmmo: 30
+  maxLmgAmmo: 300
   maxRailgunAmmo: 5
   notificationText: {fileID: 0}
   showDuration: 2

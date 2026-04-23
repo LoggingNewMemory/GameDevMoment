@@ -2,7 +2,8 @@ using UnityEngine;
 using TMPro; 
 using System.Collections;
 
-public enum AmmoType { Pistol, Shotgun, SMG, AssaultRifle, SniperOrLMG, Railgun }
+// --- FIXED: Sniper and LMG are now completely separate! ---
+public enum AmmoType { Pistol, Shotgun, SMG, AssaultRifle, Sniper, LMG, Railgun }
 
 public class PlayerAmmoStore : MonoBehaviour
 {
@@ -11,24 +12,26 @@ public class PlayerAmmoStore : MonoBehaviour
     public bool hasShotgun = false;
     public bool hasSMG = false;
     public bool hasAssaultRifle = false;
-    public bool hasSniperOrLMG = false;
+    public bool hasSniper = false;
+    public bool hasLMG = false;
     public bool hasRailgun = false;
 
     [Header("Ammo Backpack (Current Reserve)")]
-    public int pistolAmmo = 30;    // Starting ammo
-    public int shotgunAmmo = 8;    // Starting ammo
-    public int smgAmmo = 60;       // Starting ammo
-    public int arAmmo = 45;        // Starting ammo
-    public int sniperOrLmgAmmo = 15; // Starting ammo
-    public int railgunAmmo = 2;    // Starting ammo
+    public int pistolAmmo = 30;    
+    public int shotgunAmmo = 8;    
+    public int smgAmmo = 60;       
+    public int arAmmo = 45;        
+    public int sniperAmmo = 15;    // Sniper starts low
+    public int lmgAmmo = 150;      // LMG starts massive!
+    public int railgunAmmo = 2;    
 
-    // --- ADJUSTED: SURVIVAL MAX CAPACITY LIMITS ---
     [Header("Max Ammo Capacity")]
     public int maxPistolAmmo = 60;
     public int maxShotgunAmmo = 16;
     public int maxSmgAmmo = 120;
     public int maxArAmmo = 90;
-    public int maxSniperOrLmgAmmo = 30;
+    public int maxSniperAmmo = 30; // Snipers need to make every shot count
+    public int maxLmgAmmo = 300;   // LMGs need massive reserves to lay down fire
     public int maxRailgunAmmo = 5;
 
     [Header("UI Notification Settings")]
@@ -94,11 +97,18 @@ public class PlayerAmmoStore : MonoBehaviour
                 ammoName = "AR Bullets"; 
                 break;
 
-            case AmmoType.SniperOrLMG:
-                if (!hasSniperOrLMG || sniperOrLmgAmmo >= maxSniperOrLmgAmmo) return false; 
-                sniperOrLmgAmmo += amount; 
-                if (sniperOrLmgAmmo > maxSniperOrLmgAmmo) sniperOrLmgAmmo = maxSniperOrLmgAmmo;
-                ammoName = "Heavy Ammo"; 
+            case AmmoType.Sniper:
+                if (!hasSniper || sniperAmmo >= maxSniperAmmo) return false; 
+                sniperAmmo += amount; 
+                if (sniperAmmo > maxSniperAmmo) sniperAmmo = maxSniperAmmo;
+                ammoName = "Sniper Rounds"; 
+                break;
+
+            case AmmoType.LMG:
+                if (!hasLMG || lmgAmmo >= maxLmgAmmo) return false; 
+                lmgAmmo += amount; 
+                if (lmgAmmo > maxLmgAmmo) lmgAmmo = maxLmgAmmo;
+                ammoName = "LMG Belt"; 
                 break;
 
             case AmmoType.Railgun:
@@ -128,7 +138,8 @@ public class PlayerAmmoStore : MonoBehaviour
             case AmmoType.Shotgun: return shotgunAmmo;
             case AmmoType.SMG: return smgAmmo;
             case AmmoType.AssaultRifle: return arAmmo;
-            case AmmoType.SniperOrLMG: return sniperOrLmgAmmo;
+            case AmmoType.Sniper: return sniperAmmo;
+            case AmmoType.LMG: return lmgAmmo;
             case AmmoType.Railgun: return railgunAmmo;
             default: return 0;
         }
@@ -142,7 +153,8 @@ public class PlayerAmmoStore : MonoBehaviour
             case AmmoType.Shotgun: shotgunAmmo = amount; break;
             case AmmoType.SMG: smgAmmo = amount; break;
             case AmmoType.AssaultRifle: arAmmo = amount; break;
-            case AmmoType.SniperOrLMG: sniperOrLmgAmmo = amount; break;
+            case AmmoType.Sniper: sniperAmmo = amount; break;
+            case AmmoType.LMG: lmgAmmo = amount; break;
             case AmmoType.Railgun: railgunAmmo = amount; break;
         }
     }
