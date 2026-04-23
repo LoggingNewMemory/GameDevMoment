@@ -2636,12 +2636,12 @@ MonoBehaviour:
   arAmmo: 90
   sniperOrLmgAmmo: 30
   railgunAmmo: 5
-  maxPistolAmmo: 120
-  maxShotgunAmmo: 32
-  maxSmgAmmo: 240
-  maxArAmmo: 180
-  maxSniperOrLmgAmmo: 60
-  maxRailgunAmmo: 10
+  maxPistolAmmo: 60
+  maxShotgunAmmo: 16
+  maxSmgAmmo: 120
+  maxArAmmo: 90
+  maxSniperOrLmgAmmo: 30
+  maxRailgunAmmo: 5
   notificationText: {fileID: 2054299097}
   showDuration: 2
   fadeDuration: 1
