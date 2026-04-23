@@ -15,21 +15,21 @@ public class PlayerAmmoStore : MonoBehaviour
     public bool hasRailgun = false;
 
     [Header("Ammo Backpack (Current Reserve)")]
-    public int pistolAmmo = 60;
-    public int shotgunAmmo = 16;
-    public int smgAmmo = 120;
-    public int arAmmo = 90;
-    public int sniperOrLmgAmmo = 30;
-    public int railgunAmmo = 5;
+    public int pistolAmmo = 30;    // Starting ammo
+    public int shotgunAmmo = 8;    // Starting ammo
+    public int smgAmmo = 60;       // Starting ammo
+    public int arAmmo = 45;        // Starting ammo
+    public int sniperOrLmgAmmo = 15; // Starting ammo
+    public int railgunAmmo = 2;    // Starting ammo
 
-    // --- NEW: MAX CAPACITY LIMITS ---
+    // --- ADJUSTED: SURVIVAL MAX CAPACITY LIMITS ---
     [Header("Max Ammo Capacity")]
-    public int maxPistolAmmo = 120;
-    public int maxShotgunAmmo = 32;
-    public int maxSmgAmmo = 240;
-    public int maxArAmmo = 180;
-    public int maxSniperOrLmgAmmo = 60;
-    public int maxRailgunAmmo = 10;
+    public int maxPistolAmmo = 60;
+    public int maxShotgunAmmo = 16;
+    public int maxSmgAmmo = 120;
+    public int maxArAmmo = 90;
+    public int maxSniperOrLmgAmmo = 30;
+    public int maxRailgunAmmo = 5;
 
     [Header("UI Notification Settings")]
     public TextMeshProUGUI notificationText;
@@ -67,10 +67,9 @@ public class PlayerAmmoStore : MonoBehaviour
         switch (type)
         {
             case AmmoType.Pistol:
-                // Check if we own it AND if we actually have room for more!
                 if (!hasPistol || pistolAmmo >= maxPistolAmmo) return false; 
                 pistolAmmo += amount; 
-                if (pistolAmmo > maxPistolAmmo) pistolAmmo = maxPistolAmmo; // Cap it!
+                if (pistolAmmo > maxPistolAmmo) pistolAmmo = maxPistolAmmo; 
                 ammoName = "Pistol Bullets"; 
                 break;
 
