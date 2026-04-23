@@ -55,20 +55,25 @@ public class ConsumableItem : MonoBehaviour
                     return; 
                 }
 
+                // --- SUPER NERFED HEALING VALUES ---
                 switch (typeOfItem)
                 {
                     case ItemType.IndomieUdon:
-                        stats.HealPercentage(10f, false); 
+                        // Heavy nerf: 25% heal
+                        stats.HealPercentage(25f, false); 
                         break;
                     case ItemType.MacNCheese:
-                        stats.HealPercentage(20f, false);
+                        // Heavy nerf: 15% heal
+                        stats.HealPercentage(15f, false);
                         break;
                     case ItemType.Extrajoss:
-                        stats.HealPercentage(25f, true); 
+                        // Heavy nerf: 10% overheal + 10s unlimited energy
+                        stats.HealPercentage(10f, true); 
                         stats.TriggerUnlimitedEnergy(10f);
                         break;
                     case ItemType.VodkaRey:
-                        stats.HealPercentage(15f, true); 
+                        // Heavy nerf: 20% overheal + dizzy mechanic
+                        stats.HealPercentage(20f, true); 
                         stats.TriggerUnlimitedEnergy(7f);
                         stats.DrinkVodka(cheekiBreeki, 7f);
                         break;

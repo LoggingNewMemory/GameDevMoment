@@ -1352,6 +1352,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: rageDuration
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: haluBaseDuration
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: timeForCodingDuration
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7773299748424671751, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
