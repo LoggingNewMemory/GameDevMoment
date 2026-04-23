@@ -708,11 +708,50 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -2112
-      - m_Data: -2104
-      - m_Data: -2098
+      - m_Data: -313220
+      - m_Data: -306880
+      - m_Data: -306874
+      - m_Data: -306870
+      - m_Data: -306446
+      - m_Data: -306442
+      - m_Data: -306436
+      - m_Data: -306336
+      - m_Data: -306332
+      - m_Data: -306314
+      - m_Data: -300960
+      - m_Data: -248156
+      - m_Data: -212932
+      - m_Data: -212924
+      - m_Data: -212918
+      - m_Data: -210044
+      - m_Data: -114998
+      - m_Data: -114990
+      - m_Data: -114984
+      - m_Data: -114306
+      - m_Data: -83820
+      - m_Data: -83812
+      - m_Data: -83806
+      - m_Data: -83162
+      - m_Data: -83076
+      - m_Data: -81142
+      - m_Data: -67084
+      - m_Data: -66202
+      - m_Data: -66192
+      - m_Data: -66186
+      - m_Data: -65542
+      - m_Data: -62544
+      - m_Data: -61074
+      - m_Data: -61068
+      - m_Data: -60392
+      - m_Data: -53652
+      - m_Data: -53642
+      - m_Data: -53636
+      - m_Data: -52992
+      - m_Data: -51440
       - m_Data: -1322
-      - m_Data: 50602
+      - m_Data: 70168
+      - m_Data: 126980
+      - m_Data: 143668
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -730,7 +769,7 @@ MonoBehaviour:
         m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
-        m_ClientGUIView: {fileID: 0}
+        m_ClientGUIView: {fileID: 8}
       m_SearchString: 
     m_ExpandedScenes: []
     m_CurrenRootEntityId:
@@ -1334,9 +1373,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 174.55312, y: 91.9826, z: 63.952477}
+    m_Target: {x: 0.30101776, y: 1.075139, z: 3.6123002}
     speed: 2
-    m_Value: {x: 174.55312, y: 91.9826, z: 63.952477}
+    m_Value: {x: 0.30101776, y: 1.075139, z: 3.6123002}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1383,13 +1422,13 @@ MonoBehaviour:
     m_gridOpacity: 0.5
     m_NearestPlaneToHandleMode: 0
   m_Rotation:
-    m_Target: {x: 0.0011834628, y: -0.043234527, z: -0.0001482502, w: -0.9992471}
+    m_Target: {x: -0.03138333, y: 0.9679286, z: -0.15553379, w: -0.19575346}
     speed: 2
-    m_Value: {x: 0.0011834629, y: -0.043234527, z: -0.0001482502, w: -0.99924713}
+    m_Value: {x: -0.031377353, y: 0.96774435, z: -0.15550418, w: -0.1957162}
   m_Size:
-    m_Target: 133.32433
+    m_Target: 0.46607786
     speed: 2
-    m_Value: 133.32433
+    m_Value: 0.46607786
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1563,7 +1602,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Scripts
+    - Assets/Low Poly Stylized Knife Pack/Prefabs/3mat
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1573,60 +1612,58 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Low Poly Stylized Knife Pack/Prefabs/3mat
   m_LastFoldersGridSize: 16
   m_LastProjectPath: /home/yamada/CODE/GameDevMoment/Main
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 272}
+    scrollPos: {x: 0, y: 16}
     m_SelectedIDs:
-    - m_Data: 54662
+    - m_Data: 217242
     m_LastClickedID:
-      m_Data: 54662
+      m_Data: 217242
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 54584
-    - m_Data: 54586
-    - m_Data: 54588
-    - m_Data: 54590
-    - m_Data: 54592
-    - m_Data: 54594
-    - m_Data: 54596
-    - m_Data: 54598
-    - m_Data: 54600
-    - m_Data: 54602
-    - m_Data: 54604
-    - m_Data: 54606
-    - m_Data: 54608
-    - m_Data: 54610
-    - m_Data: 54612
-    - m_Data: 54614
-    - m_Data: 54616
-    - m_Data: 54618
-    - m_Data: 54620
-    - m_Data: 54622
-    - m_Data: 54624
-    - m_Data: 54626
-    - m_Data: 54628
-    - m_Data: 54630
-    - m_Data: 54632
-    - m_Data: 54634
-    - m_Data: 54636
-    - m_Data: 54638
-    - m_Data: 54640
-    - m_Data: 54642
-    - m_Data: 54644
-    - m_Data: 54646
-    - m_Data: 54648
-    - m_Data: 54650
-    - m_Data: 54652
-    - m_Data: 54654
-    - m_Data: 54656
-    - m_Data: 54658
-    - m_Data: 54660
-    - m_Data: 54662
+    - m_Data: 54670
+    - m_Data: 54672
+    - m_Data: 54674
+    - m_Data: 54676
+    - m_Data: 54678
+    - m_Data: 54680
+    - m_Data: 54682
+    - m_Data: 54684
+    - m_Data: 54686
+    - m_Data: 54688
+    - m_Data: 54690
+    - m_Data: 54692
+    - m_Data: 54694
+    - m_Data: 54696
+    - m_Data: 54698
+    - m_Data: 54700
+    - m_Data: 54702
+    - m_Data: 54704
+    - m_Data: 54706
+    - m_Data: 54708
+    - m_Data: 54710
+    - m_Data: 54712
+    - m_Data: 54714
+    - m_Data: 54716
+    - m_Data: 54718
+    - m_Data: 54720
+    - m_Data: 54722
+    - m_Data: 54724
+    - m_Data: 54726
+    - m_Data: 54728
+    - m_Data: 54730
+    - m_Data: 54732
+    - m_Data: 54734
+    - m_Data: 54736
+    - m_Data: 54738
+    - m_Data: 54740
+    - m_Data: 54742
+    - m_Data: 54744
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1660,46 +1697,44 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 54584
-    - m_Data: 54586
-    - m_Data: 54588
-    - m_Data: 54590
-    - m_Data: 54592
-    - m_Data: 54594
-    - m_Data: 54596
-    - m_Data: 54598
-    - m_Data: 54600
-    - m_Data: 54602
-    - m_Data: 54604
-    - m_Data: 54606
-    - m_Data: 54608
-    - m_Data: 54610
-    - m_Data: 54612
-    - m_Data: 54614
-    - m_Data: 54616
-    - m_Data: 54618
-    - m_Data: 54620
-    - m_Data: 54622
-    - m_Data: 54624
-    - m_Data: 54626
-    - m_Data: 54628
-    - m_Data: 54630
-    - m_Data: 54632
-    - m_Data: 54634
-    - m_Data: 54636
-    - m_Data: 54638
-    - m_Data: 54640
-    - m_Data: 54642
-    - m_Data: 54644
-    - m_Data: 54646
-    - m_Data: 54648
-    - m_Data: 54650
-    - m_Data: 54652
-    - m_Data: 54654
-    - m_Data: 54656
-    - m_Data: 54658
-    - m_Data: 54660
-    - m_Data: 54662
+    - m_Data: 54670
+    - m_Data: 54672
+    - m_Data: 54674
+    - m_Data: 54676
+    - m_Data: 54678
+    - m_Data: 54680
+    - m_Data: 54682
+    - m_Data: 54684
+    - m_Data: 54686
+    - m_Data: 54688
+    - m_Data: 54690
+    - m_Data: 54692
+    - m_Data: 54694
+    - m_Data: 54696
+    - m_Data: 54698
+    - m_Data: 54700
+    - m_Data: 54702
+    - m_Data: 54704
+    - m_Data: 54706
+    - m_Data: 54708
+    - m_Data: 54710
+    - m_Data: 54712
+    - m_Data: 54714
+    - m_Data: 54716
+    - m_Data: 54718
+    - m_Data: 54720
+    - m_Data: 54722
+    - m_Data: 54724
+    - m_Data: 54726
+    - m_Data: 54728
+    - m_Data: 54730
+    - m_Data: 54732
+    - m_Data: 54734
+    - m_Data: 54736
+    - m_Data: 54738
+    - m_Data: 54740
+    - m_Data: 54742
+    - m_Data: 54744
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1728,10 +1763,10 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: -2112
+    - m_Data: 220580
     m_LastClickedEntityId:
-      m_Data: -2112
-    m_HadKeyboardFocusLastEvent: 0
+      m_Data: 220580
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 48764
     - m_Data: 57862
@@ -1812,7 +1847,7 @@ MonoBehaviour:
       m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_TrimLeadingAndTrailingWhitespace: 0
-      m_ClientGUIView: {fileID: 0}
+      m_ClientGUIView: {fileID: 10}
     m_CreateAssetUtility:
       m_EndAction: {fileID: 0}
       m_EntityId:
@@ -1847,9 +1882,9 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 545
-    width: 1455
-    height: 609
+    y: 766
+    width: 1456
+    height: 388
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1904,7 +1939,7 @@ MonoBehaviour:
   m_ObjectsLockedBeforeSerialization: []
   m_EntityIdsLockedBeforeSerialization: []
   m_PreviewResizer:
-    m_CachedPref: -505
+    m_CachedPref: 388
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectEntityId:

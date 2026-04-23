@@ -70,24 +70,33 @@ public class ArenaSpawner : MonoBehaviour
         {
             if (enemiesAlive < maxAliveAtOnce)
             {
-                // 1. How many enemies are we ALLOWED to spawn right now?
-                int spaceLeftOnMap = maxAliveAtOnce - enemiesAlive;
                 int enemiesLeftInTotal = totalEnemiesToSpawn - enemiesSpawned;
+                int burstAmount = 0;
 
-                // 2. Pick a random burst amount (e.g., between 2 and 10)
-                int burstAmount = Random.Range(minSpawnAtOnce, maxSpawnAtOnce + 1);
+                // --- THE ULTIMATE FIX: Summon all remaining! ---
+                if (enemiesLeftInTotal <= minSpawnAtOnce)
+                {
+                    // Ignore the map limits and just dump the rest of the wave!
+                    burstAmount = enemiesLeftInTotal;
+                }
+                else
+                {
+                    // Otherwise, calculate a normal wave
+                    int spaceLeftOnMap = maxAliveAtOnce - enemiesAlive;
+                    int currentMaxSpawn = Mathf.Min(maxSpawnAtOnce, enemiesLeftInTotal);
+                    burstAmount = Random.Range(minSpawnAtOnce, currentMaxSpawn + 1);
+                    
+                    // Only apply map limits to standard waves
+                    burstAmount = Mathf.Min(burstAmount, spaceLeftOnMap);
+                }
 
-                // 3. Make sure the burst doesn't exceed the map limits or the total wave limits!
-                burstAmount = Mathf.Min(burstAmount, spaceLeftOnMap);
-                burstAmount = Mathf.Min(burstAmount, enemiesLeftInTotal);
-
-                // 4. Spawn the burst!
+                // Spawn the burst!
                 for (int i = 0; i < burstAmount; i++)
                 {
                     SpawnEnemy();
                 }
 
-                // Wait a few seconds before the next mini-wave
+                // Wait before the next wave
                 yield return new WaitForSeconds(timeBetweenBursts);
             }
             else
@@ -102,24 +111,48 @@ public class ArenaSpawner : MonoBehaviour
     {
         if (player == null || enemiesToSpawn.Length == 0) return;
 
-        Vector2 randomDir = Random.insideUnitCircle.normalized;
-        float distance = Random.Range(minSpawnDistance, maxSpawnDistance);
-        Vector3 spawnOffset = new Vector3(randomDir.x, 0, randomDir.y) * distance;
-        Vector3 spawnPos = player.position + spawnOffset;
-        spawnPos.y += 15f; 
-
-        if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 30f, floorLayer))
+        // --- NEW FIX: Try up to 10 times to find a safe spot! ---
+        for (int attempts = 0; attempts < 10; attempts++)
         {
-            GameObject chosenEnemy = PickRandomEnemyBasedOnWeight();
-            
-            if (chosenEnemy != null)
+            Vector2 randomDir = Random.insideUnitCircle.normalized;
+            float distance = Random.Range(minSpawnDistance, maxSpawnDistance);
+            Vector3 spawnOffset = new Vector3(randomDir.x, 0, randomDir.y) * distance;
+
+            // 1. Raycast horizontally from the player's chest to check for walls
+            Vector3 rayStart = player.position + Vector3.up * 1f; 
+            Vector3 rayDir = spawnOffset.normalized;
+
+            // Check if there is a wall blocking the path
+            if (Physics.Raycast(rayStart, rayDir, out RaycastHit wallHit, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
             {
-                Instantiate(chosenEnemy, hit.point, Quaternion.identity);
+                // We hit a wall! Pull the spawn distance back by 1.5 meters (enemy thickness)
+                distance = wallHit.distance - 1.5f;
                 
-                enemiesSpawned++;
-                enemiesAlive++;
+                // If pulling it back puts them too close to the player, cancel and try a new random spot
+                if (distance < minSpawnDistance) continue; 
+                
+                spawnOffset = rayDir * distance;
+            }
+
+            // 2. Now that we know the X/Z position is safely inside the room, cast DOWN to find the floor
+            Vector3 spawnPos = player.position + spawnOffset;
+            spawnPos.y += 15f; 
+
+            if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 30f, floorLayer))
+            {
+                GameObject chosenEnemy = PickRandomEnemyBasedOnWeight();
+                
+                if (chosenEnemy != null)
+                {
+                    Instantiate(chosenEnemy, hit.point, Quaternion.identity);
+                    enemiesSpawned++;
+                    enemiesAlive++;
+                    return; // Success! Exit the function.
+                }
             }
         }
+        
+        Debug.LogWarning("Spawner couldn't find a safe spot after 10 tries. Room might be too crowded!");
     }
 
     // ==========================================
