@@ -1020,6 +1020,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 2463887187246242070, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2506992407033395473, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1846,7 +1850,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f4535ae2434e5c3b58a3847eaacfee66, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.9
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2628,19 +2632,22 @@ MonoBehaviour:
   hasShotgun: 0
   hasSMG: 0
   hasAssaultRifle: 0
-  hasSniperOrLMG: 0
+  hasSniper: 0
+  hasLMG: 0
   hasRailgun: 0
   pistolAmmo: 60
   shotgunAmmo: 16
   smgAmmo: 120
   arAmmo: 90
-  sniperOrLmgAmmo: 30
+  sniperAmmo: 15
+  lmgAmmo: 150
   railgunAmmo: 5
   maxPistolAmmo: 60
   maxShotgunAmmo: 16
   maxSmgAmmo: 120
   maxArAmmo: 90
-  maxSniperOrLmgAmmo: 30
+  maxSniperAmmo: 30
+  maxLmgAmmo: 300
   maxRailgunAmmo: 5
   notificationText: {fileID: 2054299097}
   showDuration: 2
