@@ -1714,7 +1714,7 @@ MonoBehaviour:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
     spawnWeight: 100
-  totalEnemiesToSpawn: 20
+  totalEnemiesToSpawn: 50
   maxAliveAtOnce: 30
   minSpawnAtOnce: 5
   maxSpawnAtOnce: 15
