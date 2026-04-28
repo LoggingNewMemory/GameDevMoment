@@ -971,6 +971,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 114b0e4d396e409a7b5335d3a5f6804b, type: 3}
+--- !u!95 &443660107 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3334741647399107534, guid: 114b0e4d396e409a7b5335d3a5f6804b, type: 3}
+  m_PrefabInstance: {fileID: 443660106}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &615863241
 GameObject:
   m_ObjectHideFlags: 0
@@ -1630,10 +1635,11 @@ MonoBehaviour:
   stressMusic: {fileID: 8300000, guid: 63ebbbccd755d7620af3898b701f9713, type: 3}
   loginMusic: {fileID: 8300000, guid: d682e646ed468ff818011246fe6e4362, type: 3}
   mainMenuMusic: {fileID: 8300000, guid: 40f8c033f23ce9f758771531e98e3d29, type: 3}
-  crossfadeDuration: 2
-  firstGameScene: Level_1
+  crossfadeDuration: 3
+  firstGameScene: Level_0
   loadingBar: {fileID: 0}
   finalMenuUI: {fileID: 0}
+  characterAnimator: {fileID: 443660107}
 --- !u!1 &1997965264
 GameObject:
   m_ObjectHideFlags: 0
