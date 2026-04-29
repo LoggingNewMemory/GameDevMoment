@@ -34,6 +34,7 @@ public class WeaponSway : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0f) return;
         if (Mouse.current == null || Keyboard.current == null) return;
 
         // ==========================================
