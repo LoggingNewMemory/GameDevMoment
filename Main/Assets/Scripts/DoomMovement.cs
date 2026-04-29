@@ -327,6 +327,12 @@ public class DoomMovement : MonoBehaviour
             playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, Mathf.Lerp(0f, 65f, elapsed / fallDuration)); 
             yield return null;
         }
+
+        PauseMenuManager pauseManager = FindObjectOfType<PauseMenuManager>();
+        if (pauseManager != null)
+        {
+            pauseManager.TriggerGameOver();
+        }
     }
 
     public void AddRecoil(float pushBackForce, float cameraKickUp) { if (isKnockedDown || isDead) return; knockbackVelocity -= playerCamera.forward * pushBackForce; xRotation -= cameraKickUp; xRotation = Mathf.Clamp(xRotation, -90f, 90f); }

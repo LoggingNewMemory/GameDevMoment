@@ -8,29 +8,32 @@ public class PauseMenuManager : MonoBehaviour
 
     [Header("UI Elements")]
     public GameObject pauseMenuUI;
+    
+    [Header("Menu Buttons")]
+    public GameObject resumeButton;   // Drag normal Resume button here
+    public GameObject restartButton;  // Drag new Restart button here
+    public GameObject saveButton;     // Drag Save button here
 
     [Header("Settings")]
     public string mainMenuSceneName = "Special_Main_Menu";
 
     [Header("Player Reference")]
-    [Tooltip("Drag Pria Sigma 1 here exactly ONCE.")]
     public GameObject playerRoot; 
 
-    // Hidden lists that the code will fill up automatically!
     private DoomMovement playerMovement;
     private SimpleShoot[] allGuns;
     private SimpleMelee[] allSwords;
+    
+    // NEW: Track if the player is dead so they can't unpause with Escape!
+    private bool isPlayerDead = false;
 
     void Start()
     {
         if (pauseMenuUI != null) pauseMenuUI.SetActive(false);
 
-        // THE MAGIC TRICK: Find the components automatically!
         if (playerRoot != null)
         {
             playerMovement = playerRoot.GetComponentInChildren<DoomMovement>(true);
-            
-            // "true" tells it to find weapons even if they are currently hidden/holstered!
             allGuns = playerRoot.GetComponentsInChildren<SimpleShoot>(true);
             allSwords = playerRoot.GetComponentsInChildren<SimpleMelee>(true);
         }
@@ -38,17 +41,13 @@ public class PauseMenuManager : MonoBehaviour
 
     void Update()
     {
-        // Directly reading the hardware
+        // If the player is dead, completely ignore the Escape key!
+        if (isPlayerDead) return;
+
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            if (GameIsPaused)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
+            if (GameIsPaused) Resume();
+            else Pause();
         }
     }
 
@@ -59,11 +58,9 @@ public class PauseMenuManager : MonoBehaviour
         AudioListener.pause = false;  
         GameIsPaused = false;
 
-        // Re-lock and hide the cursor so the player can look around again
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Turn everything back on!
         if (playerMovement != null) playerMovement.enabled = true;
         foreach (var gun in allGuns) { if (gun != null) gun.enabled = true; }
         foreach (var sword in allSwords) { if (sword != null) sword.enabled = true; }
@@ -76,16 +73,57 @@ public class PauseMenuManager : MonoBehaviour
         AudioListener.pause = true;   
         GameIsPaused = true;
 
-        // Unlock and show the cursor so the player can actually click the UI buttons!
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        
+        // Ensure normal pause menu layout
+        if (resumeButton != null) resumeButton.SetActive(true);
+        if (restartButton != null) restartButton.SetActive(false);
+        if (saveButton != null) saveButton.SetActive(true);
 
-        // Turn everything off!
         if (playerMovement != null) playerMovement.enabled = false;
         foreach (var gun in allGuns) { if (gun != null) gun.enabled = false; }
         foreach (var sword in allSwords) { if (sword != null) sword.enabled = false; }
     }
 
+    // ==========================================
+    // NEW: GAME OVER LOGIC
+    // ==========================================
+    public void TriggerGameOver()
+    {
+        isPlayerDead = true;
+        GameIsPaused = true;
+        
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f;           
+        AudioListener.pause = true;   
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Swap the buttons! Hide Resume/Save, Show Restart
+        if (resumeButton != null) resumeButton.SetActive(false);
+        if (restartButton != null) restartButton.SetActive(true);
+        if (saveButton != null) saveButton.SetActive(false); // No saving while dead!
+
+        // Freeze the player
+        if (playerMovement != null) playerMovement.enabled = false;
+        foreach (var gun in allGuns) { if (gun != null) gun.enabled = false; }
+        foreach (var sword in allSwords) { if (sword != null) sword.enabled = false; }
+    }
+
+    public void RestartLevel()
+    {
+        // Unfreeze time and reload the exact scene we are currently in
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+        GameIsPaused = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    // ==========================================
+    // EXISTING BUTTONS
+    // ==========================================
     public void SaveProgress()
     {
         string currentScene = SceneManager.GetActiveScene().name;
@@ -99,15 +137,12 @@ public class PauseMenuManager : MonoBehaviour
         Time.timeScale = 1f;
         AudioListener.pause = false;
         GameIsPaused = false;
-        
         SceneManager.LoadScene(mainMenuSceneName);
     }
 
     public void QuitGame()
     {
-        Debug.Log("Quitting game...");
         Application.Quit();
-
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #endif
