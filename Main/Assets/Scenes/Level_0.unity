@@ -1627,7 +1627,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1513904083}
         m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
-        m_MethodName: Resume
+        m_MethodName: RestartLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2894,7 +2894,7 @@ MonoBehaviour:
   resumeButton: {fileID: 1970003173}
   restartButton: {fileID: 378466262}
   saveButton: {fileID: 1534815282}
-  mainMenuSceneName: Special_Main_Menu
+  mainMenuSceneName: Main_Menu
   playerRoot: {fileID: 1684611648}
 --- !u!4 &1513904084
 Transform:
@@ -3334,7 +3334,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -1.9000244, y: 0}
   m_SizeDelta: {x: 670, y: 700}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1768034107
