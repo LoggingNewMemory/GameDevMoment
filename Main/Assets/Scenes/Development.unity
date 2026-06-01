@@ -871,6 +871,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shanna
       objectReference: {fileID: 0}
+    - target: {fileID: 4848084319948957851, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1032,7 +1036,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1978879434711127254, guid: f0bae35bdd4322814811dc2a0220ad86, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5388778961028259678, guid: f0bae35bdd4322814811dc2a0220ad86, type: 3}
       propertyPath: m_LocalPosition.x
