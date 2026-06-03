@@ -1,13 +1,16 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using TMPro; // REQUIRED FOR TEXTMESHPRO! ✨
 
 public class PlayerSkills : MonoBehaviour
 {
     private DoomMovement movement;
     private PlayerStats stats;
 
-    // --- NEW: SKILL UNLOCK SYSTEM ---
+    [Header("UI Reference")]
+    public TextMeshProUGUI powerStatusText; // Drag "Power Status" text here!
+
     [Header("Unlocked Skills (Progression)")]
     public bool hasRageOfCS = false;
     public bool hasHaluOfCS = false;
@@ -16,18 +19,26 @@ public class PlayerSkills : MonoBehaviour
     [Header("Rage of CS (Q)")]
     public float rageDuration = 15f;
     public float rageSpeedMultiplier = 1.5f;
-    public bool isRageActive = false;
+    public float rageCooldownMax = 30f;
+    [HideInInspector] public bool isRageActive = false;
+    private float rageCDTimer = 0f;
+    private float rageActiveTimer = 0f;
 
     [Header("Halu of CS (E)")]
     public float haluBaseDuration = 10f;
     public float haluKillBonus = 0.2f;
+    public float haluCooldownMax = 25f;
+    [HideInInspector] public bool isHaluActive = false;
+    private float haluCDTimer = 0f;
     private float haluTimer = 0f;
-    public bool isHaluActive = false;
 
     [Header("Time for Coding (F)")]
-    public float timeForCodingDuration = 5f; // How long real-time the slow motion lasts
-    public float slowMotionScale = 0.2f;     // 0.2 means the world runs at 20% speed
-    public bool isTimeCodingActive = false;
+    public float timeForCodingDuration = 5f; 
+    public float slowMotionScale = 0.2f;     
+    public float timeCodingCooldownMax = 20f;
+    [HideInInspector] public bool isTimeCodingActive = false;
+    private float timeCodingCDTimer = 0f;
+    private float timeCodingActiveTimer = 0f;
 
     void Start()
     {
@@ -37,62 +48,87 @@ public class PlayerSkills : MonoBehaviour
 
     void Update()
     {
+        HandleCooldownTimers();
+        HandleSkillInputs();
+        UpdateUIIndicator();
+    }
+
+    // --- COOLDOWN & DURATION MANAGEMENT ---
+    void HandleCooldownTimers()
+    {
+        // Reductions use unscaledTime so they don't lag during slow-mo!
+        if (rageCDTimer > 0) rageCDTimer -= Time.unscaledDeltaTime;
+        if (haluCDTimer > 0) haluCDTimer -= Time.unscaledDeltaTime;
+        if (timeCodingCDTimer > 0) timeCodingCDTimer -= Time.unscaledDeltaTime;
+
+        // Active countdowns
+        if (isRageActive)
+        {
+            rageActiveTimer -= Time.unscaledDeltaTime;
+            if (rageActiveTimer <= 0) EndRageOfCS();
+        }
+
+        if (isHaluActive)
+        {
+            haluTimer -= Time.unscaledDeltaTime;
+            if (haluTimer <= 0) CancelHaluOfCS();
+        }
+
+        if (isTimeCodingActive)
+        {
+            timeCodingActiveTimer -= Time.unscaledDeltaTime;
+            if (timeCodingActiveTimer <= 0) EndTimeForCoding();
+        }
+    }
+
+    // --- INPUT ROUTER ---
+    void HandleSkillInputs()
+    {
         if (Keyboard.current == null) return;
 
-        // --- SKILL ACTIVATIONS (Now checks if you actually own them!) ---
-        if (hasRageOfCS && Keyboard.current.qKey.wasPressedThisFrame && !isRageActive)
+        if (hasRageOfCS && Keyboard.current.qKey.wasPressedThisFrame && !isRageActive && rageCDTimer <= 0)
         {
-            StartCoroutine(RageOfCSRoutine());
+            StartRageOfCS();
         }
         
-        if (hasHaluOfCS && Keyboard.current.eKey.wasPressedThisFrame && !isHaluActive)
+        if (hasHaluOfCS && Keyboard.current.eKey.wasPressedThisFrame && !isHaluActive && haluCDTimer <= 0)
         {
             StartHaluOfCS();
         }
         
-        if (hasTimeForCoding && Keyboard.current.fKey.wasPressedThisFrame && !isTimeCodingActive)
+        if (hasTimeForCoding && Keyboard.current.fKey.wasPressedThisFrame && !isTimeCodingActive && timeCodingCDTimer <= 0)
         {
-            StartCoroutine(TimeForCodingRoutine());
-        }
-
-        // --- HALU OF CS DRAIN ---
-        // Uses unscaled time so it drains correctly even during Sandevistan!
-        if (isHaluActive)
-        {
-            haluTimer -= Time.unscaledDeltaTime;
-            if (haluTimer <= 0)
-            {
-                CancelHaluOfCS();
-            }
+            StartTimeForCoding();
         }
     }
 
     // ==========================================
-    // SKILL 1: RAGE OF CS (SPEED & RELOAD)
+    // SKILL 1: RAGE OF CS
     // ==========================================
-    IEnumerator RageOfCSRoutine()
+    void StartRageOfCS()
     {
         isRageActive = true;
-        Debug.Log("RAGE OF CS ACTIVATED! Speed & Reload Increased!");
-
+        rageActiveTimer = rageDuration;
+        rageCDTimer = rageCooldownMax; // Cooldown starts instantly upon cast
         if (movement != null) movement.speedMultiplier = rageSpeedMultiplier;
-        
-        yield return new WaitForSecondsRealtime(rageDuration);
+        Debug.Log("RAGE OF CS ACTIVATED!");
+    }
 
-        if (movement != null) movement.speedMultiplier = 1f;
+    void EndRageOfCS()
+    {
         isRageActive = false;
-        
+        if (movement != null) movement.speedMultiplier = 1f;
         Debug.Log("RAGE OF CS ENDED!");
     }
 
     // ==========================================
-    // SKILL 2: HALU OF CS (DUAL WIELD)
+    // SKILL 2: HALU OF CS
     // ==========================================
     public void StartHaluOfCS()
     {
         isHaluActive = true;
         haluTimer = haluBaseDuration;
-        Debug.Log("HALU OF CS ACTIVATED! Dual Wielding!");
+        Debug.Log("HALU OF CS ACTIVATED!");
     }
 
     public void AddHaluKillBonus()
@@ -100,7 +136,6 @@ public class PlayerSkills : MonoBehaviour
         if (isHaluActive)
         {
             haluTimer += haluKillBonus;
-            Debug.Log("Halu extended! Time left: " + haluTimer);
         }
     }
 
@@ -108,47 +143,73 @@ public class PlayerSkills : MonoBehaviour
     {
         if (!isHaluActive) return;
         isHaluActive = false;
-        Debug.Log("HALU OF CS ENDED/CANCELED!");
+        haluCDTimer = haluCooldownMax; // Cooldown starts after usage ends
+        Debug.Log("HALU OF CS ENDED!");
     }
 
     // ==========================================
-    // SKILL 3: TIME FOR CODING (SANDEVISTAN)
+    // SKILL 3: TIME FOR CODING
     // ==========================================
-    IEnumerator TimeForCodingRoutine()
+    void StartTimeForCoding()
     {
         isTimeCodingActive = true;
-        Debug.Log("TIME FOR CODING ACTIVATED! The world slows down...");
+        timeCodingActiveTimer = timeForCodingDuration;
+        timeCodingCDTimer = timeCodingCooldownMax;
 
         Time.timeScale = slowMotionScale;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        Debug.Log("TIME FOR CODING ACTIVATED!");
+    }
 
-        yield return new WaitForSecondsRealtime(timeForCodingDuration);
-
+    void EndTimeForCoding()
+    {
+        isTimeCodingActive = false;
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
-
-        isTimeCodingActive = false;
         Debug.Log("TIME FOR CODING ENDED!");
     }
 
     // ==========================================
-    // PUBLIC UNLOCK FUNCTIONS (Call these from items or level managers!)
+    // DYNAMIC UI OVERLAY GENERATOR
     // ==========================================
-    public void UnlockRageOfCS()
+    void UpdateUIIndicator()
     {
-        hasRageOfCS = true;
-        Debug.Log("Player unlocked: RAGE OF CS!");
+        if (powerStatusText == null) return;
+
+        string uiOutput = "";
+
+        // Skill 1 Status Builder
+        if (hasRageOfCS)
+        {
+            uiOutput += "[Q] RAGE OF CS: ";
+            if (isRageActive) uiOutput += $"<color=orange>ACTIVE ({rageActiveTimer:F1}s)</color>\n";
+            else if (rageCDTimer > 0) uiOutput += $"<color=red>CD ({rageCDTimer:F1}s)</color>\n";
+            else uiOutput += "<color=green>READY</color>\n";
+        }
+
+        // Skill 2 Status Builder
+        if (hasHaluOfCS)
+        {
+            uiOutput += "[E] HALU OF CS: ";
+            if (isHaluActive) uiOutput += $"<color=cyan>ACTIVE ({haluTimer:F1}s)</color>\n";
+            else if (haluCDTimer > 0) uiOutput += $"<color=red>CD ({haluCDTimer:F1}s)</color>\n";
+            else uiOutput += "<color=green>READY</color>\n";
+        }
+
+        // Skill 3 Status Builder
+        if (hasTimeForCoding)
+        {
+            uiOutput += "[F] TIME FOR CODING: ";
+            if (isTimeCodingActive) uiOutput += $"<color=yellow>SLOW-MO ({timeCodingActiveTimer:F1}s)</color>\n";
+            else if (timeCodingCDTimer > 0) uiOutput += $"<color=red>CD ({timeCodingCDTimer:F1}s)</color>\n";
+            else uiOutput += "<color=green>READY</color>\n";
+        }
+
+        powerStatusText.text = uiOutput;
     }
 
-    public void UnlockHaluOfCS()
-    {
-        hasHaluOfCS = true;
-        Debug.Log("Player unlocked: HALU OF CS!");
-    }
-
-    public void UnlockTimeForCoding()
-    {
-        hasTimeForCoding = true;
-        Debug.Log("Player unlocked: TIME FOR CODING!");
-    }
+    // Unlock logic overrides remain intact...
+    public void UnlockRageOfCS() { hasRageOfCS = true; }
+    public void UnlockHaluOfCS() { hasHaluOfCS = true; }
+    public void UnlockTimeForCoding() { hasTimeForCoding = true; }
 }

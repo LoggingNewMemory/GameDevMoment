@@ -8,11 +8,12 @@ public class PauseMenuManager : MonoBehaviour
 
     [Header("UI Elements")]
     public GameObject pauseMenuUI;
+    public GameObject gameHUD; // <-- KOBO ADDED THIS: Reference to your new HUD folder!
     
     [Header("Menu Buttons")]
-    public GameObject resumeButton;   // Drag normal Resume button here
-    public GameObject restartButton;  // Drag new Restart button here
-    public GameObject saveButton;     // Drag Save button here
+    public GameObject resumeButton;   
+    public GameObject restartButton;  
+    public GameObject saveButton;     
 
     [Header("Settings")]
     public string mainMenuSceneName = "Special_Main_Menu";
@@ -24,12 +25,13 @@ public class PauseMenuManager : MonoBehaviour
     private SimpleShoot[] allGuns;
     private SimpleMelee[] allSwords;
     
-    // NEW: Track if the player is dead so they can't unpause with Escape!
     private bool isPlayerDead = false;
 
     void Start()
     {
         if (pauseMenuUI != null) pauseMenuUI.SetActive(false);
+        // Ensure HUD is ON when the game starts!
+        if (gameHUD != null) gameHUD.SetActive(true); 
 
         if (playerRoot != null)
         {
@@ -41,7 +43,6 @@ public class PauseMenuManager : MonoBehaviour
 
     void Update()
     {
-        // If the player is dead, completely ignore the Escape key!
         if (isPlayerDead) return;
 
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
@@ -54,6 +55,8 @@ public class PauseMenuManager : MonoBehaviour
     public void Resume()
     {
         pauseMenuUI.SetActive(false);
+        if (gameHUD != null) gameHUD.SetActive(true); // <-- HUD COMES BACK!
+
         Time.timeScale = 1f;          
         AudioListener.pause = false;  
         GameIsPaused = false;
@@ -69,6 +72,8 @@ public class PauseMenuManager : MonoBehaviour
     void Pause()
     {
         pauseMenuUI.SetActive(true);
+        if (gameHUD != null) gameHUD.SetActive(false); // <-- HUD DISAPPEARS!
+
         Time.timeScale = 0f;           
         AudioListener.pause = true;   
         GameIsPaused = true;
@@ -76,7 +81,6 @@ public class PauseMenuManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         
-        // Ensure normal pause menu layout
         if (resumeButton != null) resumeButton.SetActive(true);
         if (restartButton != null) restartButton.SetActive(false);
         if (saveButton != null) saveButton.SetActive(true);
@@ -86,27 +90,24 @@ public class PauseMenuManager : MonoBehaviour
         foreach (var sword in allSwords) { if (sword != null) sword.enabled = false; }
     }
 
-    // ==========================================
-    // NEW: GAME OVER LOGIC
-    // ==========================================
     public void TriggerGameOver()
     {
         isPlayerDead = true;
         GameIsPaused = true;
         
         pauseMenuUI.SetActive(true);
+        if (gameHUD != null) gameHUD.SetActive(false); // <-- HUD DISAPPEARS ON DEATH TOO!
+
         Time.timeScale = 0f;           
         AudioListener.pause = true;   
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Swap the buttons! Hide Resume/Save, Show Restart
         if (resumeButton != null) resumeButton.SetActive(false);
         if (restartButton != null) restartButton.SetActive(true);
-        if (saveButton != null) saveButton.SetActive(false); // No saving while dead!
+        if (saveButton != null) saveButton.SetActive(false); 
 
-        // Freeze the player
         if (playerMovement != null) playerMovement.enabled = false;
         foreach (var gun in allGuns) { if (gun != null) gun.enabled = false; }
         foreach (var sword in allSwords) { if (sword != null) sword.enabled = false; }
@@ -114,16 +115,12 @@ public class PauseMenuManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        // Unfreeze time and reload the exact scene we are currently in
         Time.timeScale = 1f;
         AudioListener.pause = false;
         GameIsPaused = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // ==========================================
-    // EXISTING BUTTONS
-    // ==========================================
     public void SaveProgress()
     {
         string currentScene = SceneManager.GetActiveScene().name;
