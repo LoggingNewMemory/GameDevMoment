@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using TMPro; // <-- KOBO ADDED THIS! Required for TextMeshPro magic! ✨
 
 public class SpecialMainMenu : MonoBehaviour
 {
@@ -23,14 +24,29 @@ public class SpecialMainMenu : MonoBehaviour
     public CanvasGroup finalMenuUI; 
     public Animator characterAnimator; 
     public float uiFadeDuration = 1.5f; 
-    public GameObject resumeButton; // NEW: Drag your Resume Button here!
+    public GameObject resumeButton; 
+    
+    public TextMeshProUGUI graphicsText; // <-- Drag your Graphics Text here!
 
-    // NEW: We store the background load here so the "Start" button can trigger it instantly!
+    // We store the background load here so the "Start" button can trigger it instantly!
     private AsyncOperation pendingLoad; 
 
     private void Start()
     {
         Time.timeScale = 1f;
+
+        // --- NEW: LOAD SAVED GRAPHICS FROM HARD DRIVE ---
+        if (PlayerPrefs.HasKey("SavedGraphics"))
+        {
+            int savedLevel = PlayerPrefs.GetInt("SavedGraphics");
+            QualitySettings.SetQualityLevel(savedLevel);
+        }
+
+        // --- INITIALIZE GRAPHICS TEXT ON BOOTUP ---
+        if (graphicsText != null)
+        {
+            graphicsText.text = "Graphics: " + QualitySettings.names[QualitySettings.GetQualityLevel()];
+        }
 
         // --- SAVE SYSTEM CHECK ---
         // Check the hard drive to see if a save file called "SavedLevel" exists
@@ -175,5 +191,30 @@ public class SpecialMainMenu : MonoBehaviour
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #endif
+    }
+
+    // --- NEW: GRAPHICS SETTINGS CYCLER ---
+    public void ClickGraphicsSettings()
+    {
+        // Get the current graphics level (0 = Lowest, 1 = Medium, 2 = High, etc.)
+        int currentLevel = QualitySettings.GetQualityLevel();
+        
+        // Calculate the next level. The '%' makes it loop back to 0 if it hits the maximum!
+        int nextLevel = (currentLevel + 1) % QualitySettings.names.Length;
+        
+        // Apply the new graphics setting
+        QualitySettings.SetQualityLevel(nextLevel);
+        
+        // --- NEW: SAVE IT TO THE HARD DRIVE! ---
+        PlayerPrefs.SetInt("SavedGraphics", nextLevel);
+        PlayerPrefs.Save();
+        
+        // --- UPDATE THE VISIBLE TEXT! ---
+        if (graphicsText != null)
+        {
+            graphicsText.text = "Graphics: " + QualitySettings.names[nextLevel];
+        }
+        
+        Debug.Log("Graphics saved and changed to: " + QualitySettings.names[nextLevel]);
     }
 }

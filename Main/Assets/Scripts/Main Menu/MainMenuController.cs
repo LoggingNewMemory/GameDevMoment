@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.InputSystem;
+using TMPro; // <-- KOBO ADDED THIS! For TextMeshPro UI ✨
 
 public class MainMenuController : MonoBehaviour
 {
@@ -17,10 +18,11 @@ public class MainMenuController : MonoBehaviour
 
     [Header("Level & Save Settings")]
     public string firstLevelName = "Level_0"; 
-    public GameObject resumeButton; // Drag your Resume Button object here!
+    public GameObject resumeButton; 
 
-    [Header("Tutorial Settings")]
-    public GameObject howToPlayPanel; // Drag the HowToPlayPanel UI here!
+    [Header("Tutorial & Graphics Settings")]
+    public GameObject howToPlayPanel; 
+    public TextMeshProUGUI graphicsText; // <-- KOBO ADDED THIS! Drag your Graphics Text here!
 
     private int currentIndex = 0;
     private Image currentBg;
@@ -30,6 +32,19 @@ public class MainMenuController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        // --- NEW: LOAD SAVED GRAPHICS FROM HARD DRIVE ---
+        if (PlayerPrefs.HasKey("SavedGraphics"))
+        {
+            int savedLevel = PlayerPrefs.GetInt("SavedGraphics");
+            QualitySettings.SetQualityLevel(savedLevel);
+        }
+
+        // --- NEW: INITIALIZE GRAPHICS TEXT ON BOOTUP ---
+        if (graphicsText != null)
+        {
+            graphicsText.text = "Graphics: " + QualitySettings.names[QualitySettings.GetQualityLevel()];
+        }
 
         // --- Save System Check ---
         if (PlayerPrefs.HasKey("SavedLevel"))
@@ -72,13 +87,12 @@ public class MainMenuController : MonoBehaviour
             nextBg.rectTransform.localScale += Vector3.one * (zoomSpeed * Time.unscaledDeltaTime);
         }
 
-        // --- NEW: How to Play ESC listener (NEW INPUT SYSTEM FIX) ---
+        // --- How to Play ESC listener (NEW INPUT SYSTEM FIX) ---
         if (howToPlayPanel != null && howToPlayPanel.activeSelf)
         {
-            // If the panel is ON, check the new keyboard system for the Escape key!
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {
-                howToPlayPanel.SetActive(false); // Turn it OFF!
+                howToPlayPanel.SetActive(false);
             }
         }
     }
@@ -124,16 +138,13 @@ public class MainMenuController : MonoBehaviour
     
     public void ClickStartGame()
     {
-        // If they click "Start" (New Game), we delete the old save so they start fresh!
         PlayerPrefs.DeleteKey("SavedLevel");
         PlayerPrefs.Save();
-        
         SceneManager.LoadScene(firstLevelName);
     }
 
     public void ClickResumeGame()
     {
-        // Check the hard drive for the saved level name, and load it instantly
         if (PlayerPrefs.HasKey("SavedLevel"))
         {
             string levelToLoad = PlayerPrefs.GetString("SavedLevel");
@@ -141,25 +152,42 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    // --- NEW: Open How To Play Menu ---
     public void ClickHowToPlay()
     {
         if (howToPlayPanel != null)
         {
-            howToPlayPanel.SetActive(true); // Turn it ON!
+            howToPlayPanel.SetActive(true);
         }
     }
 
     public void ClickExitGame()
     {
         Debug.Log("Exiting Game...");
-        
-        // This actually closes the game when you build it into a real application
         Application.Quit();
 
-        // This magically stops the play button while you are testing inside the Unity Editor!
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #endif
+    }
+
+    // --- NEW: GRAPHICS SETTINGS CYCLER ---
+    public void ClickGraphicsSettings()
+    {
+        int currentLevel = QualitySettings.GetQualityLevel();
+        int nextLevel = (currentLevel + 1) % QualitySettings.names.Length;
+        
+        QualitySettings.SetQualityLevel(nextLevel);
+        
+        // Save to hard drive
+        PlayerPrefs.SetInt("SavedGraphics", nextLevel);
+        PlayerPrefs.Save();
+        
+        // Update visible text
+        if (graphicsText != null)
+        {
+            graphicsText.text = "Graphics: " + QualitySettings.names[nextLevel];
+        }
+        
+        Debug.Log("Graphics saved and changed to: " + QualitySettings.names[nextLevel]);
     }
 }
