@@ -2852,10 +2852,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PostGameSlideshow
   backgroundImages:
-  - {fileID: 21300000, guid: 6b8741b6396b76506b9060cb700a3e50, type: 3}
-  - {fileID: 21300000, guid: 5c9bafdc7cd5115faa7b0d97f03cb216, type: 3}
-  - {fileID: 21300000, guid: e7a67097cfff78601a5761af792ea15c, type: 3}
-  - {fileID: 21300000, guid: 0d43c0782d34d4eb78499b7fd3ed5a5e, type: 3}
+  - {fileID: 21300000, guid: 3f6f4684abb190da7be23f7a4a70d4ce, type: 3}
+  - {fileID: 21300000, guid: c8a1c42da25daa1bf9f8dec3238ec979, type: 3}
+  - {fileID: 21300000, guid: 73816b52e2a9252cc8463929493de32e, type: 3}
+  - {fileID: 21300000, guid: 4481cd77b7f79012298c7b8232c110c3, type: 3}
+  - {fileID: 21300000, guid: fdd388ba27d7011ca9cc777531223a36, type: 3}
+  - {fileID: 21300000, guid: 0b7a1f38fb8a0c66686ba785a8aee8cd, type: 3}
   currentBg: {fileID: 168090262}
   timePerImage: 5
   zoomSpeed: 0.02
