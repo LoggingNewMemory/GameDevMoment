@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class MainMenuController : MonoBehaviour
     public string firstLevelName = "Level_0"; 
     public GameObject resumeButton; // Drag your Resume Button object here!
 
+    [Header("Tutorial Settings")]
+    public GameObject howToPlayPanel; // Drag the HowToPlayPanel UI here!
+
     private int currentIndex = 0;
     private Image currentBg;
     private Image nextBg;
@@ -27,17 +31,20 @@ public class MainMenuController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // --- NEW: Save System Check ---
-        // Check the hard drive to see if a save file called "SavedLevel" exists
+        // --- Save System Check ---
         if (PlayerPrefs.HasKey("SavedLevel"))
         {
-            // A save file exists! Turn the button ON.
             resumeButton.SetActive(true);
         }
         else
         {
-            // No save file. Turn the button OFF.
             resumeButton.SetActive(false);
+        }
+
+        // --- Safety Check: Ensure Panel is OFF at start ---
+        if (howToPlayPanel != null)
+        {
+            howToPlayPanel.SetActive(false);
         }
 
         if (backgroundImages.Length > 0)
@@ -63,6 +70,16 @@ public class MainMenuController : MonoBehaviour
         if (nextBg != null && nextBg.color.a > 0)
         {
             nextBg.rectTransform.localScale += Vector3.one * (zoomSpeed * Time.unscaledDeltaTime);
+        }
+
+        // --- NEW: How to Play ESC listener (NEW INPUT SYSTEM FIX) ---
+        if (howToPlayPanel != null && howToPlayPanel.activeSelf)
+        {
+            // If the panel is ON, check the new keyboard system for the Escape key!
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                howToPlayPanel.SetActive(false); // Turn it OFF!
+            }
         }
     }
 
@@ -124,7 +141,16 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-public void ClickExitGame()
+    // --- NEW: Open How To Play Menu ---
+    public void ClickHowToPlay()
+    {
+        if (howToPlayPanel != null)
+        {
+            howToPlayPanel.SetActive(true); // Turn it ON!
+        }
+    }
+
+    public void ClickExitGame()
     {
         Debug.Log("Exiting Game...");
         
