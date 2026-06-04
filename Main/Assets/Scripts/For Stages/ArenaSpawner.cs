@@ -207,7 +207,7 @@ public class ArenaSpawner : MonoBehaviour
         if (enemiesLeftText != null)
         {
             int remaining = totalEnemiesToSpawn - enemiesKilled;
-            enemiesLeftText.text = "Enemy: " + remaining;
+            enemiesLeftText.text = "Enemy Left\n" + remaining;
         }
     }
 }
