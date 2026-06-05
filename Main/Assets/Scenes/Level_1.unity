@@ -2881,6 +2881,11 @@ Transform:
   - {fileID: 3989443309715628955}
   m_Father: {fileID: 1660741427819028141}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1278603878 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9147893219407539617, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
+  m_PrefabInstance: {fileID: 945729136}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1306099160
 GameObject:
   m_ObjectHideFlags: 0
@@ -3058,7 +3063,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuManager
   pauseMenuUI: {fileID: 1768034105}
-  gameHUD: {fileID: 0}
+  gameHUD: {fileID: 1278603878}
   resumeButton: {fileID: 1970003173}
   restartButton: {fileID: 378466262}
   saveButton: {fileID: 1534815282}
