@@ -3,7 +3,6 @@ using UnityEngine;
 public class BasicChaserAI : MonoBehaviour
 {
     [Header("AI & Combat")]
-    // --- FIXED: Default values matched to your perfect Inspector settings! ---
     public float moveSpeed = 8f;
     public float attackRange = 2.5f;
     public float attackDamage = 10f;
@@ -23,9 +22,14 @@ public class BasicChaserAI : MonoBehaviour
         meleeScript = GetComponent<UniversalMeleeAttack>();
         healthScript = GetComponent<UniversalHealth>();
         rb = GetComponent<Rigidbody>(); 
+        
+        // KOBO OPTIMIZATION: No more FindGameObjectWithTag! Target is injected by spawner!
+    }
 
-        GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null) playerTarget = p.transform;
+    // Function to receive the target from the spawner
+    public void SetTarget(Transform target)
+    {
+        playerTarget = target;
     }
 
     void FixedUpdate() 
@@ -36,19 +40,17 @@ public class BasicChaserAI : MonoBehaviour
         Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
         transform.LookAt(lookPos);
 
-        float distance = Vector3.Distance(transform.position, playerTarget.position);
+        // KOBO OPTIMIZATION: sqrMagnitude is 10x faster than Vector3.Distance!
+        float sqrDistance = (transform.position - playerTarget.position).sqrMagnitude;
 
-        if (distance > attackRange)
+        // Multiply attackRange by itself to match the sqrDistance
+        if (sqrDistance > (attackRange * attackRange))
         {
             if (anim != null) anim.SetBool("isChasing", true);
             
-            // --- FIXED: Using Velocity instead of MovePosition stops the "running away" bounce-back glitch! ---
             if (rb != null)
             {
-                // Find the exact direction to the player
                 Vector3 direction = (lookPos - transform.position).normalized;
-                
-                // Set the speed in that direction, but KEEP the current Y velocity so gravity still works!
                 rb.linearVelocity = new Vector3(direction.x * moveSpeed, rb.linearVelocity.y, direction.z * moveSpeed);
             }
         }
@@ -56,7 +58,6 @@ public class BasicChaserAI : MonoBehaviour
         {
             if (anim != null) anim.SetBool("isChasing", false);
             
-            // --- FIXED: Slam the brakes so they don't slide around like they are on ice! ---
             if (rb != null)
             {
                 rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);

@@ -17,18 +17,16 @@ public class LevelEnemy
 public class ArenaSpawner : MonoBehaviour
 {
     [Header("GDD: Level Enemy Pool")]
-    [Tooltip("Set exactly which enemies belong in THIS specific level!")]
     public LevelEnemy[] enemiesToSpawn;      
     
     [Header("Wave Settings")]
     public int totalEnemiesToSpawn = 250;  
     public int maxAliveAtOnce = 20;        
     
-    // --- NEW: BURST SPAWNING SETTINGS ---
     [Header("Burst Settings")]
     public int minSpawnAtOnce = 2;         
     public int maxSpawnAtOnce = 10;        
-    public float timeBetweenBursts = 3f; // Replaced spawnDelay to act as a wave delay!
+    public float timeBetweenBursts = 3f; 
 
     [Header("Level Transition")]
     public string nextLevelName = "Level_2"; 
@@ -73,35 +71,27 @@ public class ArenaSpawner : MonoBehaviour
                 int enemiesLeftInTotal = totalEnemiesToSpawn - enemiesSpawned;
                 int burstAmount = 0;
 
-                // --- THE ULTIMATE FIX: Summon all remaining! ---
                 if (enemiesLeftInTotal <= minSpawnAtOnce)
                 {
-                    // Ignore the map limits and just dump the rest of the wave!
                     burstAmount = enemiesLeftInTotal;
                 }
                 else
                 {
-                    // Otherwise, calculate a normal wave
                     int spaceLeftOnMap = maxAliveAtOnce - enemiesAlive;
                     int currentMaxSpawn = Mathf.Min(maxSpawnAtOnce, enemiesLeftInTotal);
                     burstAmount = Random.Range(minSpawnAtOnce, currentMaxSpawn + 1);
-                    
-                    // Only apply map limits to standard waves
                     burstAmount = Mathf.Min(burstAmount, spaceLeftOnMap);
                 }
 
-                // Spawn the burst!
                 for (int i = 0; i < burstAmount; i++)
                 {
                     SpawnEnemy();
                 }
 
-                // Wait before the next wave
                 yield return new WaitForSeconds(timeBetweenBursts);
             }
             else
             {
-                // Map is completely full! Wait a short moment and check again.
                 yield return new WaitForSeconds(1f); 
             }
         }
@@ -111,30 +101,22 @@ public class ArenaSpawner : MonoBehaviour
     {
         if (player == null || enemiesToSpawn.Length == 0) return;
 
-        // --- NEW FIX: Try up to 10 times to find a safe spot! ---
         for (int attempts = 0; attempts < 10; attempts++)
         {
             Vector2 randomDir = Random.insideUnitCircle.normalized;
             float distance = Random.Range(minSpawnDistance, maxSpawnDistance);
             Vector3 spawnOffset = new Vector3(randomDir.x, 0, randomDir.y) * distance;
 
-            // 1. Raycast horizontally from the player's chest to check for walls
             Vector3 rayStart = player.position + Vector3.up * 1f; 
             Vector3 rayDir = spawnOffset.normalized;
 
-            // Check if there is a wall blocking the path
             if (Physics.Raycast(rayStart, rayDir, out RaycastHit wallHit, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
             {
-                // We hit a wall! Pull the spawn distance back by 1.5 meters (enemy thickness)
                 distance = wallHit.distance - 1.5f;
-                
-                // If pulling it back puts them too close to the player, cancel and try a new random spot
                 if (distance < minSpawnDistance) continue; 
-                
                 spawnOffset = rayDir * distance;
             }
 
-            // 2. Now that we know the X/Z position is safely inside the room, cast DOWN to find the floor
             Vector3 spawnPos = player.position + spawnOffset;
             spawnPos.y += 15f; 
 
@@ -144,10 +126,15 @@ public class ArenaSpawner : MonoBehaviour
                 
                 if (chosenEnemy != null)
                 {
-                    Instantiate(chosenEnemy, hit.point, Quaternion.identity);
+                    GameObject newEnemy = Instantiate(chosenEnemy, hit.point, Quaternion.identity);
+                    
+                    // KOBO OPTIMIZATION: Inject the player target instantly!
+                    BasicChaserAI ai = newEnemy.GetComponent<BasicChaserAI>();
+                    if (ai != null) ai.SetTarget(player);
+
                     enemiesSpawned++;
                     enemiesAlive++;
-                    return; // Success! Exit the function.
+                    return; 
                 }
             }
         }
@@ -155,9 +142,6 @@ public class ArenaSpawner : MonoBehaviour
         Debug.LogWarning("Spawner couldn't find a safe spot after 10 tries. Room might be too crowded!");
     }
 
-    // ==========================================
-    // WEIGHTED RANDOM SPAWN LOGIC
-    // ==========================================
     GameObject PickRandomEnemyBasedOnWeight()
     {
         int totalWeight = 0;
