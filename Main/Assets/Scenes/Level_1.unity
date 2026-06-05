@@ -756,12 +756,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3580297220566686675, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3580297220566686675, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
       objectReference: {fileID: 945729141}
+    - target: {fileID: 3580297220566686675, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: beamEffectPrefab
+      value: 
+      objectReference: {fileID: 1821409177193198128, guid: c5714132250f2bcfda85abce44c60767, type: 3}
     - target: {fileID: 3580297220566686675, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: crosshairDisplay
       value: 

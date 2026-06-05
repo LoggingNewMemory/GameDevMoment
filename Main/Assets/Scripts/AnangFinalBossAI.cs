@@ -3,23 +3,38 @@ using System.Collections;
 
 public class AnangFinalBossAI : MonoBehaviour
 {
-    [Header("Final Boss Stats")]
-    public float walkSpeed = 8f;
+    [Header("Final Boss Stats (Balanced)")]
+    public float walkSpeed = 7.5f; 
     public float attackRange = 3f;
-    public float railgunRange = 30f; // Can shoot from across the map!
 
-    [Header("Melee Combat")]
+    [Header("Evasive Protocol (Dodge)")]
+    public float dodgeCooldown = 5f; 
+    public float dodgeSpeed = 25f;
+    public float dodgeDuration = 0.2f;
+
+    [Header("Woke Protocol (Dash Knockdown)")]
+    public float dashCooldown = 10f; 
+    public float dashSpeed = 30f; 
+    public float dashDuration = 0.25f;
+    
+    [Header("Stalker Protocol (Teleport)")]
+    public float teleportCooldown = 11f;
+    public float teleportDistance = 2f;
+
+    [Header("Kaya Protocol (Flashbang Melee)")]
     public float meleeDamage = 20f;
     public float meleeCooldown = 1.2f;
+    [Range(0f, 100f)] public float flashbangChance = 25f; 
+    public float flashbangDuration = 1.5f;
 
     [Header("Railgun Protocol (Annihilation)")]
-    public GameObject railgunBeamEffect; // Drag the RailgunBeamEffect here!
-    public float railgunDamage = 50f;
-    public float railgunCooldown = 7f;
-    public float aimTrackingTime = 1.0f; // Time he follows your movement
-    public float aimLockTime = 0.5f;     // Time he freezes before firing (DODGE NOW!)
-    public float blastDuration = 0.5f;   // How long the beam stays on screen
+    public GameObject railgunBeamPrefab; 
+    public float railgunDamage = 40f; 
+    public float railgunCooldown = 16f; 
+    public float aimTrackingTime = 1.5f; 
+    public float aimLockTime = 0.5f;     
 
+    // --- Internal State ---
     private Transform playerTarget;
     private Rigidbody rb;
     private Animator anim;
@@ -28,7 +43,11 @@ public class AnangFinalBossAI : MonoBehaviour
 
     private float lastMeleeTime = 0f;
     private float lastRailgunTime = 0f;
-    private bool isCastingRailgun = false;
+    private float lastTeleportTime = 0f;
+    private float lastDashTime = 0f;
+    private float lastDodgeTime = 0f;
+    
+    private bool isBusy = false; 
 
     void Start()
     {
@@ -37,72 +56,167 @@ public class AnangFinalBossAI : MonoBehaviour
         healthScript = GetComponent<UniversalHealth>();
         meleeScript = GetComponent<UniversalMeleeAttack>();
 
-        // Ensure the beam is hidden at the start!
-        if (railgunBeamEffect != null) railgunBeamEffect.SetActive(false);
-
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
         
-        // Give the player a few seconds before the first railgun blast
         lastRailgunTime = Time.time - (railgunCooldown / 2f); 
-    }
-
-    public void SetTarget(Transform target)
-    {
-        playerTarget = target;
+        lastTeleportTime = Time.time + 3f; 
     }
 
     void FixedUpdate()
     {
         if (healthScript != null && healthScript.isDead) return;
-        if (playerTarget == null || isCastingRailgun) return;
+        if (playerTarget == null || isBusy) return;
 
         Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
         float distance = Vector3.Distance(transform.position, playerTarget.position);
+        transform.LookAt(lookPos);
 
-        // 1. RAILGUN ANNIHILATION CHECK
-        if (Time.time >= lastRailgunTime + railgunCooldown && distance <= railgunRange)
+        // --- 1. THREAT PRIORITY: RAILGUN ---
+        if (Time.time >= lastRailgunTime + railgunCooldown && distance <= 30f)
         {
             StartCoroutine(FireRailgunRoutine());
             return;
         }
 
-        // 2. MELEE AND CHASING
-        transform.LookAt(lookPos);
+        // --- 2. THREAT PRIORITY: STALKER TELEPORT ---
+        if (Time.time >= lastTeleportTime + teleportCooldown && distance > 5f)
+        {
+            ExecuteTeleportStrike();
+            return;
+        }
 
+        // --- 3. THREAT PRIORITY: WOKE DASH ---
+        if (Time.time >= lastDashTime + dashCooldown && distance > attackRange && distance < 15f)
+        {
+            StartCoroutine(DashKnockdownRoutine());
+            return;
+        }
+
+        // --- 4. COMBAT MOVEMENT & EVASION ---
         if (distance > attackRange)
         {
             if (anim != null) anim.SetBool("isChasing", true);
+            
+            if (Time.time >= lastDodgeTime + dodgeCooldown)
+            {
+                StartCoroutine(EvasiveDodgeRoutine());
+                return;
+            }
+
             Vector3 direction = (lookPos - transform.position).normalized;
             rb.linearVelocity = new Vector3(direction.x * walkSpeed, rb.linearVelocity.y, direction.z * walkSpeed);
         }
         else
         {
+            // --- 5. MELEE / FLASHBANG ATTACK ---
             if (anim != null) anim.SetBool("isChasing", false);
             rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
 
             if (Time.time >= lastMeleeTime + meleeCooldown)
             {
-                lastMeleeTime = Time.time;
-                if (meleeScript != null) meleeScript.TriggerAttack(meleeDamage);
+                ExecuteMeleeStrike();
             }
         }
     }
 
-    // ==========================================
-    // ANNIHILATION PROTOCOL
-    // ==========================================
+    IEnumerator EvasiveDodgeRoutine()
+    {
+        isBusy = true;
+        lastDodgeTime = Time.time;
+
+        Vector3 dodgeDir = (Random.value > 0.5f) ? transform.right : -transform.right;
+        
+        float elapsed = 0f;
+        while (elapsed < dodgeDuration)
+        {
+            rb.linearVelocity = new Vector3(dodgeDir.x * dodgeSpeed, rb.linearVelocity.y, dodgeDir.z * dodgeSpeed);
+            elapsed += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.linearVelocity = Vector3.zero;
+        isBusy = false;
+    }
+
+    void ExecuteMeleeStrike()
+    {
+        lastMeleeTime = Time.time;
+        if (anim != null) anim.SetTrigger("Attack");
+        if (meleeScript != null) meleeScript.TriggerAttack(meleeDamage);
+
+        if (Random.Range(0f, 100f) <= flashbangChance)
+        {
+            PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
+            if (stats != null) stats.TriggerFlashbang(flashbangDuration);
+        }
+    }
+
+    void ExecuteTeleportStrike()
+    {
+        lastTeleportTime = Time.time;
+
+        Vector3 teleportDir = -playerTarget.forward;
+        Vector3 rayStart = playerTarget.position + Vector3.up * 1f; // Cast from chest height
+        Vector3 targetBehindPos = playerTarget.position + (teleportDir * teleportDistance);
+
+        // AGENT ZETA HACK: Raycast backwards to check for arena walls!
+        // We use default layers, but it will hit anything with a collider.
+        if (Physics.Raycast(rayStart, teleportDir, out RaycastHit hit, teleportDistance))
+        {
+            // If there is a wall, teleport slightly in front of it so his collider doesn't get stuck!
+            targetBehindPos = hit.point - (teleportDir * 0.8f); 
+        }
+
+        targetBehindPos.y = transform.position.y; 
+        
+        transform.position = targetBehindPos;
+        transform.LookAt(new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z));
+
+        ExecuteMeleeStrike();
+    }
+
+    IEnumerator DashKnockdownRoutine()
+    {
+        isBusy = true; 
+        lastDashTime = Time.time;
+
+        if (anim != null) anim.SetTrigger("Attack");
+
+        Vector3 targetPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
+        Vector3 dashDir = (targetPos - transform.position).normalized;
+
+        float elapsed = 0f;
+        while (elapsed < dashDuration)
+        {
+            rb.linearVelocity = new Vector3(dashDir.x * dashSpeed, rb.linearVelocity.y, dashDir.z * dashSpeed);
+            elapsed += Time.fixedDeltaTime;
+
+            if (Vector3.Distance(transform.position, playerTarget.position) <= attackRange)
+            {
+                rb.linearVelocity = Vector3.zero;
+                PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
+                if (stats != null) stats.TakeDamage(meleeDamage * 1.5f, transform); 
+                DoomMovement movement = playerTarget.GetComponent<DoomMovement>();
+                if (movement != null) movement.TriggerKnockdown();
+                break; 
+            }
+            yield return new WaitForFixedUpdate();
+        }
+        
+        rb.linearVelocity = Vector3.zero;
+        yield return new WaitForSeconds(0.5f); 
+        isBusy = false; 
+    }
 
     IEnumerator FireRailgunRoutine()
     {
-        isCastingRailgun = true;
+        isBusy = true;
         lastRailgunTime = Time.time;
 
-        // Hit the brakes!
         rb.linearVelocity = Vector3.zero;
         if (anim != null) anim.SetBool("isChasing", false);
         
-        // PHASE 1: TRACKING (He follows your movement)
         float timer = 0;
         while (timer < aimTrackingTime)
         {
@@ -115,43 +229,33 @@ public class AnangFinalBossAI : MonoBehaviour
             yield return null;
         }
 
-        // PHASE 2: LOCK ON (He stops rotating. THIS IS THE DODGE WINDOW!)
-        if (anim != null) anim.SetTrigger("chargeDash"); // Warning animation!
-        yield return new WaitForSeconds(aimLockTime);
+        if (anim != null) anim.SetTrigger("Attack"); 
+        yield return new WaitForSeconds(aimLockTime); 
 
-        // PHASE 3: FIRE!
-        if (railgunBeamEffect != null) railgunBeamEffect.SetActive(true);
-        if (anim != null) anim.SetTrigger("Attack");
+        if (railgunBeamPrefab != null)
+        {
+            Vector3 startPos = transform.position + Vector3.up * 1.2f; 
+            Vector3 endPos = startPos + (transform.forward * 30f);
 
-        // Calculate if the player actually dodged!
+            GameObject beam = Instantiate(railgunBeamPrefab, startPos, Quaternion.identity);
+            BeamFader fader = beam.GetComponent<BeamFader>();
+            
+            if (fader != null) fader.ActivateBeam(startPos, endPos);
+        }
+
         if (playerTarget != null)
         {
             Vector3 toPlayer = (playerTarget.position - transform.position).normalized;
             float angle = Vector3.Angle(transform.forward, toPlayer);
             
-            // If the player is still within 15 degrees of the front, they get hit!
             if (angle < 15f) 
             {
-                UniversalHealth playerHealth = playerTarget.GetComponent<UniversalHealth>();
-                if (playerHealth != null)
-                {
-                    playerHealth.TakeDamage(railgunDamage);
-                    Debug.Log("ANANG HIT PLAYER WITH RAILGUN FOR 50 DAMAGE!");
-                }
-            }
-            else
-            {
-                Debug.Log("Player successfully dodged the Railgun!");
+                PlayerStats playerStats = playerTarget.GetComponent<PlayerStats>();
+                if (playerStats != null) playerStats.TakeDamage(railgunDamage, transform);
             }
         }
 
-        // Keep the beam visible for a moment
-        yield return new WaitForSeconds(blastDuration);
-
-        // Turn off beam and recover
-        if (railgunBeamEffect != null) railgunBeamEffect.SetActive(false);
-        yield return new WaitForSeconds(1f);
-
-        isCastingRailgun = false;
+        yield return new WaitForSeconds(1f); 
+        isBusy = false;
     }
 }
