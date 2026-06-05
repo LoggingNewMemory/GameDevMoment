@@ -1,59 +1,67 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(LineRenderer))]
 public class BeamFader : MonoBehaviour
 {
-    private LineRenderer lr;
-    public float fadeDuration = 0.2f; // Keep it super fast for a railgun!
-
-    void Awake()
-    {
-        lr = GetComponent<LineRenderer>();
-    }
+    public float fadeDuration = 0.2f; 
+    private Material beamMatInstance;
 
     public void ActivateBeam(Vector3 startPoint, Vector3 endPoint)
     {
-        // Cancel any previous fading in case we spam-shot
-        StopAllCoroutines(); 
+        gameObject.SetActive(true);
+        
+        // 1. Calculate the exact center and distance
+        float distance = Vector3.Distance(startPoint, endPoint);
+        Vector3 centerPosition = (startPoint + endPoint) / 2f;
 
-        // 1. Set the points in world space
-        lr.SetPosition(0, startPoint);
-        lr.SetPosition(1, endPoint);
+        // 2. Position the cube exactly between the gun and the target
+        transform.position = centerPosition;
 
-        // 2. Turn the beam on
-        lr.enabled = true;
+        // 3. Make the cube point at the target
+        transform.LookAt(endPoint);
 
-        // 3. Start the fade routine
+        // 4. Stretch the cube to form a perfect laser beam! 
+        // (0.1 thickness, and 'distance' for the length)
+        transform.localScale = new Vector3(0.1f, 0.1f, distance);
+
+        // 5. Clone the material to fade safely
+        Renderer rend = GetComponent<Renderer>();
+        if (rend != null)
+        {
+            beamMatInstance = new Material(rend.sharedMaterial);
+            rend.material = beamMatInstance;
+        }
+
         StartCoroutine(FadeRoutine());
     }
 
     IEnumerator FadeRoutine()
     {
         float elapsedTime = 0f;
-        
-        // Start completely white/opaque
-        lr.startColor = Color.white;
-        lr.endColor = Color.white;
 
         while (elapsedTime < fadeDuration)
         {
             elapsedTime += Time.deltaTime;
-            
-            // Calculate a new alpha value (1 to 0)
-            float newAlpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
+            float currentAlpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
 
-            // Create a faded color
-            Color fadedColor = new Color(1f, 1f, 1f, newAlpha);
-            
-            // Apply it to the Line Renderer
-            lr.startColor = fadedColor;
-            lr.endColor = fadedColor;
+            // Change the physical material color safely
+            if (beamMatInstance != null)
+            {
+                beamMatInstance.color = new Color(1f, 1f, 1f, currentAlpha);
+            }
 
             yield return null; 
         }
 
-        // 4. Finally turn the beam back off
-        lr.enabled = false;
+        Destroy(gameObject); // Kamikaze cleanup!
+    }
+
+    void OnDestroy()
+    {
+        // Prevent memory leaks
+        if (beamMatInstance != null)
+        {
+            Destroy(beamMatInstance);
+        }
     }
 }
