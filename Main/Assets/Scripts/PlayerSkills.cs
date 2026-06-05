@@ -191,7 +191,7 @@ public class PlayerSkills : MonoBehaviour
         if (hasHaluOfCS)
         {
             uiOutput += "[E] HALU OF CS: ";
-            if (isHaluActive) uiOutput += $"<color=cyan>ACTIVE ({haluTimer:F1}s)</color>\n";
+            if (isHaluActive) uiOutput += $"<color=#00FFFF>ACTIVE ({haluTimer:F1}s)</color>\n";
             else if (haluCDTimer > 0) uiOutput += $"<color=red>CD ({haluCDTimer:F1}s)</color>\n";
             else uiOutput += "<color=green>READY</color>\n";
         }
