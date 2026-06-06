@@ -3,6 +3,9 @@ using System.Collections;
 using TMPro; 
 using UnityEngine.SceneManagement; 
 
+// --- AGENT ZETA TACTIC: Dropdown for Boss Rewards! ---
+public enum BossSkillReward { None, RageOfCS, HaluOfCS, TimeForCoding }
+
 [System.Serializable]
 public class LevelEnemy
 {
@@ -18,7 +21,12 @@ public class ArenaSpawner : MonoBehaviour
     [Header("Boss Fight Mode")]
     [Tooltip("Drag Shanna in here! The spawner will infinitely spawn normal enemies as supplies until she dies!")]
     public GameObject bossTargetToDefeat; 
+    
+    [Tooltip("Select which skill the player unlocks for beating this boss!")]
+    public BossSkillReward skillToUnlock = BossSkillReward.None; // <-- THE UPGRADE!
+
     private bool isBossLevel = false;
+    private UniversalHealth bossHealthScript; 
 
     [Header("GDD: Level Enemy Pool")]
     public LevelEnemy[] enemiesToSpawn;      
@@ -45,6 +53,9 @@ public class ArenaSpawner : MonoBehaviour
     [Header("UI & Tracking")]
     public TextMeshProUGUI enemiesLeftText; 
     
+    public GameObject gachaScreen;    
+    public TextMeshProUGUI gachaText; 
+    
     private Transform player;
     private int enemiesSpawned = 0;
     public int enemiesAlive = 0;
@@ -56,8 +67,11 @@ public class ArenaSpawner : MonoBehaviour
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
 
-        // AGENT ZETA TACTICS: If a boss is assigned, switch to Infinite Survival Mode!
-        if (bossTargetToDefeat != null) isBossLevel = true;
+        if (bossTargetToDefeat != null) 
+        {
+            isBossLevel = true;
+            bossHealthScript = bossTargetToDefeat.GetComponent<UniversalHealth>();
+        }
 
         if (enemiesLeftText == null)
         {
@@ -65,17 +79,28 @@ public class ArenaSpawner : MonoBehaviour
             if (textObj != null) enemiesLeftText = textObj.GetComponent<TextMeshProUGUI>();
         }
 
+        if (gachaScreen != null) gachaScreen.SetActive(false);
+
         UpdateUI();
         StartCoroutine(SpawnRoutine());
     }
 
     void Update()
     {
-        // If we are in a Boss Level, constantly check if the Boss is dead!
         if (isBossLevel && !stageCleared)
         {
-            // If Shanna's GameObject is destroyed or disabled, the mission is complete!
+            bool isBossDead = false;
+
             if (bossTargetToDefeat == null || !bossTargetToDefeat.activeInHierarchy)
+            {
+                isBossDead = true;
+            }
+            else if (bossHealthScript != null && bossHealthScript.isDead)
+            {
+                isBossDead = true;
+            }
+
+            if (isBossDead)
             {
                 TriggerVictory();
             }
@@ -84,10 +109,9 @@ public class ArenaSpawner : MonoBehaviour
 
     IEnumerator SpawnRoutine()
     {
-        // If it's a Boss Level, spawn infinitely. Otherwise, stop at the normal limit.
         while (isBossLevel || enemiesSpawned < totalEnemiesToSpawn)
         {
-            if (stageCleared) yield break; // Stop spawning immediately if we win!
+            if (stageCleared) yield break; 
 
             if (enemiesAlive < maxAliveAtOnce)
             {
@@ -192,7 +216,6 @@ public class ArenaSpawner : MonoBehaviour
         enemiesKilled++;
         UpdateUI();
 
-        // Only trigger victory via kill count if we are NOT in a boss level
         if (!isBossLevel && enemiesKilled >= totalEnemiesToSpawn)
         {
             TriggerVictory();
@@ -202,7 +225,51 @@ public class ArenaSpawner : MonoBehaviour
     void TriggerVictory()
     {
         stageCleared = true;
-        Debug.Log("<color=cyan>[Agent Zeta] TARGET ELIMINATED! BREACHING NEXT AREA...</color>");
+        string gachaMessage = "";
+
+        if (isBossLevel)
+        {
+            // Check the dropdown to see what reward to give!
+            if (skillToUnlock == BossSkillReward.RageOfCS)
+            {
+                PlayerPrefs.SetInt("Unlocked_RageOfCS", 1);
+                gachaMessage = "BOSS DEFEATED!\n<color=yellow>UNLOCKED: RAGE OF CS</color>";
+            }
+            else if (skillToUnlock == BossSkillReward.HaluOfCS)
+            {
+                PlayerPrefs.SetInt("Unlocked_HaluOfCS", 1);
+                gachaMessage = "BOSS DEFEATED!\n<color=yellow>UNLOCKED: HALU OF CS</color>";
+            }
+            else if (skillToUnlock == BossSkillReward.TimeForCoding)
+            {
+                PlayerPrefs.SetInt("Unlocked_TimeForCoding", 1);
+                gachaMessage = "BOSS DEFEATED!\n<color=yellow>UNLOCKED: TIME FOR CODING</color>";
+            }
+            else
+            {
+                gachaMessage = "BOSS DEFEATED!\n<color=yellow>AREA CLEARED</color>";
+            }
+            
+            Debug.Log($"<color=yellow>[Agent Zeta] Boss Defeated! Reward: {skillToUnlock}</color>");
+        }
+        else
+        {
+            string[] gachaPool = { "Unlocked_Shotgun", "Unlocked_SMG", "Unlocked_AssaultRifle", "Unlocked_Sniper", "Unlocked_LMG" };
+            string pulledWeapon = gachaPool[Random.Range(0, gachaPool.Length)];
+            
+            PlayerPrefs.SetInt(pulledWeapon, 1);
+            string weaponName = pulledWeapon.Replace("Unlocked_", "");
+            gachaMessage = $"WAVE CLEARED!\n<color=yellow>UNLOCKED: {weaponName.ToUpper()}</color>";
+            
+            Debug.Log($"<color=magenta>[Agent Zeta] Gacha Pull: {pulledWeapon}!</color>");
+        }
+        
+        PlayerPrefs.Save(); 
+
+        if (enemiesLeftText != null) enemiesLeftText.gameObject.SetActive(false);
+        if (gachaScreen != null) gachaScreen.SetActive(true);
+        if (gachaText != null) gachaText.text = gachaMessage;
+
         StartCoroutine(LoadNextLevelRoutine());
     }
 
@@ -224,15 +291,8 @@ public class ArenaSpawner : MonoBehaviour
     {
         if (enemiesLeftText != null)
         {
-            if (isBossLevel)
-            {
-                enemiesLeftText.text = "BOSS ENGAGED!";
-            }
-            else
-            {
-                int remaining = totalEnemiesToSpawn - enemiesKilled;
-                enemiesLeftText.text = "Enemy Left\n" + remaining;
-            }
+            if (isBossLevel) enemiesLeftText.text = "BOSS ENGAGED!";
+            else enemiesLeftText.text = "Enemy Left\n" + (totalEnemiesToSpawn - enemiesKilled);
         }
     }
 }

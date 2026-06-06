@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
-using TMPro; // REQUIRED FOR TEXTMESHPRO! ✨
+using TMPro; 
 
 public class PlayerSkills : MonoBehaviour
 {
@@ -9,7 +9,7 @@ public class PlayerSkills : MonoBehaviour
     private PlayerStats stats;
 
     [Header("UI Reference")]
-    public TextMeshProUGUI powerStatusText; // Drag "Power Status" text here!
+    public TextMeshProUGUI powerStatusText; 
 
     [Header("Unlocked Skills (Progression)")]
     public bool hasRageOfCS = false;
@@ -44,6 +44,14 @@ public class PlayerSkills : MonoBehaviour
     {
         movement = GetComponent<DoomMovement>();
         stats = GetComponent<PlayerStats>();
+        
+        // --- AGENT ZETA SKILL RETRIEVAL ---
+        // Check if Shanna was defeated previously!
+        if (PlayerPrefs.GetInt("Unlocked_HaluOfCS", 0) == 1) 
+        {
+            hasHaluOfCS = true; 
+        }
+        // ----------------------------------
     }
 
     void Update()
@@ -109,7 +117,7 @@ public class PlayerSkills : MonoBehaviour
     {
         isRageActive = true;
         rageActiveTimer = rageDuration;
-        rageCDTimer = rageCooldownMax; // Cooldown starts instantly upon cast
+        rageCDTimer = rageCooldownMax; 
         if (movement != null) movement.speedMultiplier = rageSpeedMultiplier;
         Debug.Log("RAGE OF CS ACTIVATED!");
     }
@@ -143,7 +151,7 @@ public class PlayerSkills : MonoBehaviour
     {
         if (!isHaluActive) return;
         isHaluActive = false;
-        haluCDTimer = haluCooldownMax; // Cooldown starts after usage ends
+        haluCDTimer = haluCooldownMax; 
         Debug.Log("HALU OF CS ENDED!");
     }
 
@@ -178,7 +186,6 @@ public class PlayerSkills : MonoBehaviour
 
         string uiOutput = "";
 
-        // Skill 1 Status Builder
         if (hasRageOfCS)
         {
             uiOutput += "[Q] RAGE OF CS: ";
@@ -187,7 +194,6 @@ public class PlayerSkills : MonoBehaviour
             else uiOutput += "<color=green>READY</color>\n";
         }
 
-        // Skill 2 Status Builder
         if (hasHaluOfCS)
         {
             uiOutput += "[E] HALU OF CS: ";
@@ -196,7 +202,6 @@ public class PlayerSkills : MonoBehaviour
             else uiOutput += "<color=green>READY</color>\n";
         }
 
-        // Skill 3 Status Builder
         if (hasTimeForCoding)
         {
             uiOutput += "[F] TIME FOR CODING: ";
@@ -208,7 +213,6 @@ public class PlayerSkills : MonoBehaviour
         powerStatusText.text = uiOutput;
     }
 
-    // Unlock logic overrides remain intact...
     public void UnlockRageOfCS() { hasRageOfCS = true; }
     public void UnlockHaluOfCS() { hasHaluOfCS = true; }
     public void UnlockTimeForCoding() { hasTimeForCoding = true; }

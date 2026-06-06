@@ -988,7 +988,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2637835533856087502, guid: 7993338835949cebcbbb24f0d86adba7, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8636023100445324359, guid: 7993338835949cebcbbb24f0d86adba7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2245,10 +2245,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1402206395893586}
     - target: {fileID: 5830023700721560103, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
-      propertyPath: lootLifetime
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5830023700721560103, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
       propertyPath: ammoBoxPrefab
       value: 
       objectReference: {fileID: 1299374266}
@@ -2263,10 +2259,6 @@ PrefabInstance:
     - target: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
       propertyPath: m_Name
       value: The Black
-      objectReference: {fileID: 0}
-    - target: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

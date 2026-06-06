@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro; 
 using System.Collections;
 
-// --- FIXED: Sniper and LMG are now completely separate! ---
 public enum AmmoType { Pistol, Shotgun, SMG, AssaultRifle, Sniper, LMG, Railgun }
 
 public class PlayerAmmoStore : MonoBehaviour
@@ -21,8 +20,8 @@ public class PlayerAmmoStore : MonoBehaviour
     public int shotgunAmmo = 8;    
     public int smgAmmo = 60;       
     public int arAmmo = 45;        
-    public int sniperAmmo = 15;    // Sniper starts low
-    public int lmgAmmo = 150;      // LMG starts massive!
+    public int sniperAmmo = 15;    
+    public int lmgAmmo = 150;      
     public int railgunAmmo = 2;    
 
     [Header("Max Ammo Capacity")]
@@ -30,8 +29,8 @@ public class PlayerAmmoStore : MonoBehaviour
     public int maxShotgunAmmo = 16;
     public int maxSmgAmmo = 120;
     public int maxArAmmo = 90;
-    public int maxSniperAmmo = 30; // Snipers need to make every shot count
-    public int maxLmgAmmo = 300;   // LMGs need massive reserves to lay down fire
+    public int maxSniperAmmo = 30; 
+    public int maxLmgAmmo = 300;   
     public int maxRailgunAmmo = 5;
 
     [Header("UI Notification Settings")]
@@ -43,6 +42,16 @@ public class PlayerAmmoStore : MonoBehaviour
 
     void Start()
     {
+        // --- AGENT ZETA WEAPON RETRIEVAL ---
+        // Load the saved gacha results into the player's inventory!
+        hasPistol = true; 
+        if (PlayerPrefs.GetInt("Unlocked_Shotgun", 0) == 1) hasShotgun = true;
+        if (PlayerPrefs.GetInt("Unlocked_SMG", 0) == 1) hasSMG = true; 
+        if (PlayerPrefs.GetInt("Unlocked_AssaultRifle", 0) == 1) hasAssaultRifle = true;
+        if (PlayerPrefs.GetInt("Unlocked_Sniper", 0) == 1) hasSniper = true;
+        if (PlayerPrefs.GetInt("Unlocked_LMG", 0) == 1) hasLMG = true;
+        // -----------------------------------
+
         if (notificationText == null || !notificationText.gameObject.scene.IsValid())
         {
             notificationText = null; 

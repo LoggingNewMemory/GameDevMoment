@@ -164,7 +164,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 44124212}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: f44a972b510b23e8493abe0d7e7ca479, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: b7dd965264f3e49e28b7e1f7eba41bc8, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 1700771072}
@@ -366,7 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d7912f1c4401d47786eda5487f3d634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneLoader
-  nextSceneName: CUTSCENE Level 2
+  nextSceneName: Level_1
   videoPlayer: {fileID: 44124214}
   skipPromptText: {fileID: 73299108}
 --- !u!4 &794170621
