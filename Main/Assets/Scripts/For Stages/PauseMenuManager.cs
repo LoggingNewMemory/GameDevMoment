@@ -8,15 +8,16 @@ public class PauseMenuManager : MonoBehaviour
 
     [Header("UI Elements")]
     public GameObject pauseMenuUI;
-    public GameObject gameHUD; // <-- KOBO ADDED THIS: Reference to your new HUD folder!
+    public GameObject gameHUD; 
     
     [Header("Menu Buttons")]
     public GameObject resumeButton;   
     public GameObject restartButton;  
     public GameObject saveButton;     
 
-    [Header("Settings")]
-    public string mainMenuSceneName = "Special_Main_Menu";
+    [Header("Menu Routing Settings")]
+    public string defaultMainMenuName = "main_menu";       // Normal players go here
+    public string specialMainMenuName = "Special_Main_Menu"; // Good Ending players go here
 
     [Header("Player Reference")]
     public GameObject playerRoot; 
@@ -30,7 +31,6 @@ public class PauseMenuManager : MonoBehaviour
     void Start()
     {
         if (pauseMenuUI != null) pauseMenuUI.SetActive(false);
-        // Ensure HUD is ON when the game starts!
         if (gameHUD != null) gameHUD.SetActive(true); 
 
         if (playerRoot != null)
@@ -55,7 +55,7 @@ public class PauseMenuManager : MonoBehaviour
     public void Resume()
     {
         pauseMenuUI.SetActive(false);
-        if (gameHUD != null) gameHUD.SetActive(true); // <-- HUD COMES BACK!
+        if (gameHUD != null) gameHUD.SetActive(true); 
 
         Time.timeScale = 1f;          
         AudioListener.pause = false;  
@@ -72,7 +72,7 @@ public class PauseMenuManager : MonoBehaviour
     void Pause()
     {
         pauseMenuUI.SetActive(true);
-        if (gameHUD != null) gameHUD.SetActive(false); // <-- HUD DISAPPEARS!
+        if (gameHUD != null) gameHUD.SetActive(false); 
 
         Time.timeScale = 0f;           
         AudioListener.pause = true;   
@@ -96,7 +96,7 @@ public class PauseMenuManager : MonoBehaviour
         GameIsPaused = true;
         
         pauseMenuUI.SetActive(true);
-        if (gameHUD != null) gameHUD.SetActive(false); // <-- HUD DISAPPEARS ON DEATH TOO!
+        if (gameHUD != null) gameHUD.SetActive(false); 
 
         Time.timeScale = 0f;           
         AudioListener.pause = true;   
@@ -134,7 +134,18 @@ public class PauseMenuManager : MonoBehaviour
         Time.timeScale = 1f;
         AudioListener.pause = false;
         GameIsPaused = false;
-        SceneManager.LoadScene(mainMenuSceneName);
+        
+        // --- AGENT ZETA INTEL CHECK ---
+        // Verify if Pria Sigma 1 has the Anang Railgun in his save data!
+        string sceneToLoad = defaultMainMenuName;
+        
+        if (PlayerPrefs.GetInt("Unlocked_Railgun", 0) == 1)
+        {
+            Debug.Log("<color=cyan>[Agent Zeta] Good Ending Flag Detected! Rerouting to Special Main Menu!</color>");
+            sceneToLoad = specialMainMenuName;
+        }
+
+        SceneManager.LoadScene(sceneToLoad);
     }
 
     public void QuitGame()
