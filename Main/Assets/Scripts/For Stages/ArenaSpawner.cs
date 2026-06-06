@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic; // <-- AGENT ZETA REQUIRED: For tracking lists!
 using TMPro; 
 using UnityEngine.SceneManagement; 
 
@@ -13,6 +14,15 @@ public class LevelEnemy
     
     [Range(1, 100)] 
     public int spawnWeight = 50;             
+
+    // --- AGENT ZETA TACTICS: ENEMY POPULATION CAP ---
+    [Header("Difficulty Balance")]
+    [Tooltip("Maximum amount of THIS specific enemy alive at once. Set to 0 for unlimited!")]
+    public int maxActiveAtOnce = 5; 
+
+    // The spawner uses this hidden list to track exactly how many are currently breathing!
+    [HideInInspector] 
+    public List<GameObject> activeInstances = new List<GameObject>();
 }
 
 public class ArenaSpawner : MonoBehaviour
@@ -146,6 +156,13 @@ public class ArenaSpawner : MonoBehaviour
     {
         if (player == null || enemiesToSpawn.Length == 0) return;
 
+        // --- AGENT ZETA CHECK: Pick an enemy that hasn't hit its cap! ---
+        LevelEnemy chosenEnemyData = PickRandomEnemyBasedOnWeight();
+        
+        // If all available enemies are maxed out, abort spawn for this loop!
+        if (chosenEnemyData == null || chosenEnemyData.enemyPrefab == null) return; 
+        // ----------------------------------------------------------------
+
         for (int attempts = 0; attempts < 10; attempts++)
         {
             Vector2 randomDir = Random.insideUnitCircle.normalized;
@@ -167,32 +184,50 @@ public class ArenaSpawner : MonoBehaviour
 
             if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 30f, floorLayer))
             {
-                GameObject chosenEnemy = PickRandomEnemyBasedOnWeight();
-                if (chosenEnemy != null)
-                {
-                    GameObject newEnemy = Instantiate(chosenEnemy, hit.point, Quaternion.identity);
-                    BasicChaserAI ai = newEnemy.GetComponent<BasicChaserAI>();
-                    if (ai != null) ai.SetTarget(player);
-                    enemiesSpawned++;
-                    enemiesAlive++;
-                    return; 
-                }
+                GameObject newEnemy = Instantiate(chosenEnemyData.enemyPrefab, hit.point, Quaternion.identity);
+                
+                // Add the newly born enemy to the tracker!
+                chosenEnemyData.activeInstances.Add(newEnemy);
+
+                BasicChaserAI ai = newEnemy.GetComponent<BasicChaserAI>();
+                if (ai != null) ai.SetTarget(player);
+                enemiesSpawned++;
+                enemiesAlive++;
+                return; 
             }
         }
     }
 
-    GameObject PickRandomEnemyBasedOnWeight()
+    LevelEnemy PickRandomEnemyBasedOnWeight()
     {
         int totalWeight = 0;
-        foreach (var enemy in enemiesToSpawn) totalWeight += enemy.spawnWeight;
-        int randomValue = Random.Range(0, totalWeight);
+        List<LevelEnemy> validEnemies = new List<LevelEnemy>();
 
         foreach (var enemy in enemiesToSpawn)
         {
-            if (randomValue < enemy.spawnWeight) return enemy.enemyPrefab;
+            // 1. Clean the list! Automatically remove any dead bodies from the count.
+            enemy.activeInstances.RemoveAll(item => item == null || !item.activeInHierarchy);
+
+            // 2. Filter: Is this enemy allowed to spawn right now?
+            if (enemy.maxActiveAtOnce <= 0 || enemy.activeInstances.Count < enemy.maxActiveAtOnce)
+            {
+                validEnemies.Add(enemy);
+                totalWeight += enemy.spawnWeight;
+            }
+        }
+
+        // 3. If every single enemy is maxed out on the map, return null!
+        if (validEnemies.Count == 0) return null;
+
+        int randomValue = Random.Range(0, totalWeight);
+
+        foreach (var enemy in validEnemies)
+        {
+            if (randomValue < enemy.spawnWeight) return enemy;
             randomValue -= enemy.spawnWeight;
         }
-        return enemiesToSpawn[0].enemyPrefab;
+        
+        return validEnemies[0];
     }
 
     public void EnemyDefeated()
@@ -257,7 +292,6 @@ public class ArenaSpawner : MonoBehaviour
         }
         else
         {
-            // --- AGENT ZETA TACTICS: DUPLICATE PREVENTION! ---
             System.Collections.Generic.List<string> availablePool = new System.Collections.Generic.List<string>();
             
             if (PlayerPrefs.GetInt("Unlocked_Shotgun", 0) == 0) availablePool.Add("Unlocked_Shotgun");
@@ -290,7 +324,6 @@ public class ArenaSpawner : MonoBehaviour
                 gachaMessage = "WAVE CLEARED!\n<color=yellow>ARSENAL MAXED OUT</color>";
                 Debug.Log("<color=cyan>[Agent Zeta] Arsenal is full! No new weapons to drop.</color>");
             }
-            // -------------------------------------------------
         }
         
         PlayerPrefs.Save(); 
