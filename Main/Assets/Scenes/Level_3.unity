@@ -1483,6 +1483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ArenaSpawner
   bossTargetToDefeat: {fileID: 0}
   skillToUnlock: 0
+  badEndingSceneName: 
   enemiesToSpawn:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
@@ -2227,7 +2228,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1234700884}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Round_Table
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3024,7 +3025,7 @@ GameObject:
   - component: {fileID: 8986112314468058473}
   - component: {fileID: 6836044561843448058}
   - component: {fileID: 1481719107067864731}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3626,7 +3627,7 @@ GameObject:
   - component: {fileID: 6576618465373124037}
   - component: {fileID: 5691118323169590253}
   - component: {fileID: 1597750370437570598}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5235,7 +5236,7 @@ GameObject:
   - component: {fileID: 2490954481632362393}
   - component: {fileID: 9195974276520059498}
   - component: {fileID: 6504330467230477922}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6047,7 +6048,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7831480308015991336}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6728,7 +6729,7 @@ GameObject:
   - component: {fileID: 4206546553786597373}
   - component: {fileID: 408173178256014476}
   - component: {fileID: 5701426888687019434}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6824,7 +6825,7 @@ GameObject:
   - component: {fileID: 6111540796902271698}
   - component: {fileID: 959258084139160119}
   - component: {fileID: 7395702388115860810}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7010,7 +7011,7 @@ GameObject:
   - component: {fileID: 1140549800924890670}
   - component: {fileID: 7724744341676297438}
   - component: {fileID: 1405288311702520675}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7784,7 +7785,7 @@ GameObject:
   - component: {fileID: 1751795667755457661}
   - component: {fileID: 8763308121854498284}
   - component: {fileID: 5391170683556191701}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9980,7 +9981,7 @@ GameObject:
   - component: {fileID: 4817818786662873564}
   - component: {fileID: 7717952756111498284}
   - component: {fileID: 6531426251559217349}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12644,7 +12645,7 @@ GameObject:
   - component: {fileID: 4321938711977828984}
   - component: {fileID: 7917943178497102096}
   - component: {fileID: 7550564974890546970}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13101,7 +13102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6834217850395102762}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14259,7 +14260,7 @@ GameObject:
   - component: {fileID: 7342290168367872001}
   - component: {fileID: 4312793593032998403}
   - component: {fileID: 9221329998823299227}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15886,7 +15887,7 @@ GameObject:
   - component: {fileID: 5367096370444549386}
   - component: {fileID: 385010822660382072}
   - component: {fileID: 6759727640460866925}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15924,7 +15925,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3989443309715628955}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16075,7 +16076,7 @@ GameObject:
   - component: {fileID: 7566950086547366976}
   - component: {fileID: 226329070684312484}
   - component: {fileID: 4220294946383714278}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16248,7 +16249,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6054252134527786764}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16449,7 +16450,7 @@ GameObject:
   - component: {fileID: 1600878775444154396}
   - component: {fileID: 5911392356910235255}
   - component: {fileID: 2404793793069499763}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16753,7 +16754,7 @@ GameObject:
   - component: {fileID: 6550271370309817546}
   - component: {fileID: 3409746057944894249}
   - component: {fileID: 5520530473777331648}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17229,7 +17230,7 @@ GameObject:
   - component: {fileID: 726665172277863139}
   - component: {fileID: 1509881034770632987}
   - component: {fileID: 5607171428756502834}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17659,7 +17660,7 @@ GameObject:
   - component: {fileID: 6975068794799750578}
   - component: {fileID: 6599973195575239195}
   - component: {fileID: 3003212998978187683}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18455,7 +18456,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8819145734123063804}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18790,7 +18791,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6694151253273824991}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18851,7 +18852,7 @@ GameObject:
   - component: {fileID: 2482296407392254479}
   - component: {fileID: 9177291799328098062}
   - component: {fileID: 3034481299203141829}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19050,7 +19051,7 @@ GameObject:
   - component: {fileID: 4669017776781031662}
   - component: {fileID: 9071537807659669168}
   - component: {fileID: 2465767459732599701}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19624,7 +19625,7 @@ GameObject:
   - component: {fileID: 6850383931743034595}
   - component: {fileID: 2554250748739419799}
   - component: {fileID: 7514822483904395366}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19991,7 +19992,7 @@ GameObject:
   - component: {fileID: 4655945287896849165}
   - component: {fileID: 3824371677552459987}
   - component: {fileID: 6088990523893464168}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20837,7 +20838,7 @@ GameObject:
   - component: {fileID: 7177699238801624591}
   - component: {fileID: 7762660219615843891}
   - component: {fileID: 425443419323576333}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20966,7 +20967,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2737120964223615154}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21249,7 +21250,7 @@ GameObject:
   - component: {fileID: 5765254178734709147}
   - component: {fileID: 1146634576293074524}
   - component: {fileID: 7665156891342274099}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21268,7 +21269,7 @@ GameObject:
   - component: {fileID: 5956281238478471913}
   - component: {fileID: 1229852171882169951}
   - component: {fileID: 6464939511185346836}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21575,7 +21576,7 @@ GameObject:
   - component: {fileID: 7548453769084654750}
   - component: {fileID: 447291257780076281}
   - component: {fileID: 6465794316383854296}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24934,7 +24935,7 @@ GameObject:
   - component: {fileID: 3458492731705081498}
   - component: {fileID: 5527719022354106700}
   - component: {fileID: 3086250396489385284}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26151,7 +26152,7 @@ GameObject:
   - component: {fileID: 6376081743779100322}
   - component: {fileID: 2958650488228625589}
   - component: {fileID: 8446721714580625970}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27672,7 +27673,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3768216898395452996}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28833,7 +28834,7 @@ GameObject:
   - component: {fileID: 3187560598148328303}
   - component: {fileID: 6662737239680497380}
   - component: {fileID: 5754158849361795097}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30903,7 +30904,7 @@ GameObject:
   - component: {fileID: 9221941067521988140}
   - component: {fileID: 3327220231800782535}
   - component: {fileID: 8640599853222453989}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31861,7 +31862,7 @@ GameObject:
   - component: {fileID: 8351331709431527614}
   - component: {fileID: 3275733132660700257}
   - component: {fileID: 8288993909683316517}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32300,7 +32301,7 @@ GameObject:
   - component: {fileID: 3277293004528370888}
   - component: {fileID: 5950930425665165233}
   - component: {fileID: 4517475720788854011}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33636,7 +33637,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7842570352863858235}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Table round big 1300.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34423,7 +34424,7 @@ GameObject:
   - component: {fileID: 1924300716595444254}
   - component: {fileID: 9044341526244306309}
   - component: {fileID: 248173655521397576}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: top.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34831,7 +34832,7 @@ GameObject:
   - component: {fileID: 6907694516469352867}
   - component: {fileID: 7720032062200028365}
   - component: {fileID: 8198046500415810431}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.014
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34946,7 +34947,7 @@ GameObject:
   - component: {fileID: 3071055831316807449}
   - component: {fileID: 6996311371125477098}
   - component: {fileID: 8893596768001550938}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: brass.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35285,7 +35286,7 @@ GameObject:
   - component: {fileID: 8075847851008053973}
   - component: {fileID: 4855923229868439307}
   - component: {fileID: 8922846210891993684}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36394,7 +36395,7 @@ GameObject:
   - component: {fileID: 3492284467562035221}
   - component: {fileID: 7591076507898396081}
   - component: {fileID: 3233162563659827989}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Circle.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37426,7 +37427,7 @@ GameObject:
   - component: {fileID: 4799022202498669617}
   - component: {fileID: 6052762622269797699}
   - component: {fileID: 7650840036619123369}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: round table base.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
