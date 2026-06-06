@@ -32,6 +32,134 @@ Transform:
   - {fileID: 4392569897160642431}
   m_Father: {fileID: 1607103176572244398}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &31745616707813107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4076884116675755433}
+  - component: {fileID: 8815472213125680154}
+  - component: {fileID: 7396691036859004039}
+  m_Layer: 0
+  m_Name: WeaponCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4076884116675755433
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31745616707813107}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 618465635789198105}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &8815472213125680154
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31745616707813107}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 4
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.01
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 256
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!114 &7396691036859004039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31745616707813107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 1
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &127575724937840842
 GameObject:
   m_ObjectHideFlags: 0
@@ -564,7 +692,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3477081534016064464}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2241,7 +2369,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2251149656132234266}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3095,7 +3223,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2906645269335655705}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3985,6 +4113,8 @@ GameObject:
   - component: {fileID: 5193352100363711992}
   - component: {fileID: 1643573748245324859}
   - component: {fileID: 7595795726222052823}
+  - component: {fileID: 7228406177975556466}
+  - component: {fileID: 130593552033430572}
   m_Layer: 0
   m_Name: Pria Sigma 1
   m_TagString: Player
@@ -4087,7 +4217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: VRM::VRM.VRMFirstPerson
   FirstPersonBone: {fileID: 2822582756030880046}
-  FirstPersonOffset: {x: 0, y: 0.06, z: 0}
+  FirstPersonOffset: {x: 0, y: 84.25576, z: 0}
   Renderers:
   - Renderer: {fileID: 7206321729940532056}
     FirstPersonFlag: 0
@@ -4291,7 +4421,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 2
-  m_Radius: 0.15
+  m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -4312,7 +4442,7 @@ MonoBehaviour:
   controller: {fileID: 6436643029745982069}
   playerCamera: {fileID: 618465635789198105}
   walkSpeed: 10
-  runSpeed: 18
+  runSpeed: 15
   slideSpeed: 25
   speedMultiplier: 1
   dashSpeed: 40
@@ -4336,6 +4466,10 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: 92fe22692de7e3d9ab92e3da5c0538e7, type: 3}
   slideSound: {fileID: 8300000, guid: b93a95ffc4a9ff190b604ddc7b265b9a, type: 3}
   dashSound: {fileID: 8300000, guid: 4456bca58e17561848990bead30d0a40, type: 3}
+  walkBobSpeed: 14
+  runBobSpeed: 18
+  bobAmountX: 0.3
+  bobAmountY: 0.3
 --- !u!82 &2463887187246242070
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4454,7 +4588,7 @@ MonoBehaviour:
   overhealBreakSound: {fileID: 8300000, guid: 0b04f6804f4d173af9e4cf5f5990af4f, type: 3}
   playerHitSound: {fileID: 8300000, guid: fb530921aaabecd55adfb50083db0ade, type: 3}
   playerKnockoutSound: {fileID: 8300000, guid: 1648e66fc47c50c1e96ebf4b0a14adb4, type: 3}
-  playerDeathSound: {fileID: 8300000, guid: fa42a9009e6aa07dd89b2335f60dcf6f, type: 3}
+  playerDeathSound: {fileID: 8300000, guid: 77a433eb6173b1f8a86ea0a67f990caf, type: 3}
   bloodScreen: {fileID: 0}
   normalHitAlpha: 0.4
   knockdownAlpha: 0.85
@@ -4504,15 +4638,94 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a100717b05d3d5052b4367abc5168cfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSkills
-  rageDuration: 15
+  powerStatusText: {fileID: 0}
+  hasRageOfCS: 0
+  hasHaluOfCS: 0
+  hasTimeForCoding: 0
+  rageDuration: 7
   rageSpeedMultiplier: 1.5
+  rageCooldownMax: 30
   isRageActive: 0
-  haluBaseDuration: 10
+  haluBaseDuration: 5
   haluKillBonus: 0.2
+  haluCooldownMax: 25
   isHaluActive: 0
-  timeForCodingDuration: 5
+  timeForCodingDuration: 3
   slowMotionScale: 0.2
+  timeCodingCooldownMax: 20
   isTimeCodingActive: 0
+--- !u!114 &7228406177975556466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5519485496679102122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd7629d92490000b3920fad31ebc1b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAmmoStore
+  hasPistol: 1
+  hasShotgun: 0
+  hasSMG: 0
+  hasAssaultRifle: 0
+  hasSniper: 0
+  hasLMG: 0
+  hasRailgun: 0
+  pistolAmmo: 60
+  shotgunAmmo: 16
+  smgAmmo: 120
+  arAmmo: 90
+  sniperAmmo: 15
+  lmgAmmo: 150
+  railgunAmmo: 5
+  maxPistolAmmo: 60
+  maxShotgunAmmo: 16
+  maxSmgAmmo: 120
+  maxArAmmo: 90
+  maxSniperAmmo: 30
+  maxLmgAmmo: 300
+  maxRailgunAmmo: 5
+  notificationText: {fileID: 0}
+  showDuration: 2
+  fadeDuration: 1
+--- !u!114 &130593552033430572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5519485496679102122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd7629d92490000b3920fad31ebc1b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAmmoStore
+  hasPistol: 1
+  hasShotgun: 0
+  hasSMG: 0
+  hasAssaultRifle: 0
+  hasSniper: 0
+  hasLMG: 0
+  hasRailgun: 0
+  pistolAmmo: 60
+  shotgunAmmo: 16
+  smgAmmo: 120
+  arAmmo: 90
+  sniperAmmo: 15
+  lmgAmmo: 150
+  railgunAmmo: 5
+  maxPistolAmmo: 60
+  maxShotgunAmmo: 16
+  maxSmgAmmo: 120
+  maxArAmmo: 90
+  maxSniperAmmo: 30
+  maxLmgAmmo: 300
+  maxRailgunAmmo: 5
+  notificationText: {fileID: 0}
+  showDuration: 2
+  fadeDuration: 1
 --- !u!1 &5531612295733254301
 GameObject:
   m_ObjectHideFlags: 0
@@ -4522,7 +4735,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 573006975739393651}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4616,7 +4829,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9150682551013616145}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6418,7 +6631,7 @@ GameObject:
   - component: {fileID: 5040810398171321406}
   - component: {fileID: 2387894166266533501}
   - component: {fileID: 6119407637837125460}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WeaponHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6482,7 +6695,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67714dbb07c62c029b60d106fa99c1f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSwitcher
-  equippedWeapons: []
+  meleeWeapon: {fileID: 3413463683475452845}
+  pistol: {fileID: 3003148060420198016}
+  shotgun: {fileID: 6848414041877650751}
+  smg1: {fileID: 2023751434998875312}
+  smg2: {fileID: 8344382870461524797}
+  assaultRifle: {fileID: 7870470160750590261}
+  sniper: {fileID: 74048201841894066}
+  lmg: {fileID: 653750215657493666}
+  railgun: {fileID: 4517953738026592834}
+  equippedWeapons:
+  - {fileID: 3413463683475452845}
+  - {fileID: 3003148060420198016}
   switchDelay: 0.5
   ammoCounterUI: {fileID: 0}
 --- !u!1 &7596284117919422635
@@ -6748,6 +6972,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5040810398171321406}
+  - {fileID: 4076884116675755433}
   m_Father: {fileID: 1676616658992085987}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &8812380224241752565
@@ -6781,7 +7006,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -6789,7 +7014,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 183
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -6825,7 +7050,8 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras: []
+  m_Cameras:
+  - {fileID: 8815472213125680154}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
@@ -6833,7 +7059,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 0
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -6926,7 +7152,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3266732173623102567}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6957,7 +7183,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4668353028787960272}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7051,7 +7277,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3510701090801773859}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MuzzleFlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7400,6 +7626,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5040810398171321406}
     m_Modifications:
+    - target: {fileID: 1060427154820450249, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1228875484425257262, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1423145098600444336, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -7440,13 +7674,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1462894759894900302, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1749521357187523964, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1768742856745986826, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_Name
       value: WWII_LMG_A
       objectReference: {fileID: 0}
+    - target: {fileID: 1768742856745986826, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823830990126476107, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1938391026219010222, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2592608646501055404, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2816553242562567465, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_CastShadows
@@ -7460,6 +7714,22 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3759890268213482874, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3875154104728608579, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4329517325225987149, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4569469025196746973, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4925890845743353806, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -7467,6 +7737,10 @@ PrefabInstance:
     - target: {fileID: 5004159015522859835, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5342505483388007829, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5702063997554626755, guid: 04d33a3ab7d2b8245a0c7c49473d8396, type: 3}
       propertyPath: m_CastShadows
@@ -7527,6 +7801,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 8812380224241752565}
   range: 60
   damage: 30
+  weaponAmmoType: 4
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 10
@@ -7543,8 +7818,6 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 100
-  reserveAmmo: 50
-  maxReserveAmmo: 200
   hideDistance: 1.5
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 9bb71ab0f24545041b3cf8e9945c0095, type: 3}
@@ -7679,9 +7952,17 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 193340404205984038, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 361270602789702984, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810870756243782735, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1023844766018807294, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_CastShadows
@@ -7691,6 +7972,18 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1259245724890801211, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1681363416350469261, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2238583140999210869, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2288712773556726161, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -7698,6 +7991,10 @@ PrefabInstance:
     - target: {fileID: 2317243751031875724, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2433536598271950477, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4198977477219334072, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_CastShadows
@@ -7715,9 +8012,21 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5204320479964344285, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5249744722671955237, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5543466138718978169, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6706803735128983218, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6838338320129899625, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_CastShadows
@@ -7763,9 +8072,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7121388396979574246, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7189374937325624511, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7627992318955172719, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7660624483632653708, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_Name
       value: SMG_J
+      objectReference: {fileID: 0}
+    - target: {fileID: 7660624483632653708, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829236862111878779, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8249885935557110966, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8479953994796570472, guid: d7791594d53f2a9489a02a65171f508c, type: 3}
       propertyPath: m_CastShadows
@@ -7814,6 +8147,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 8812380224241752565}
   range: 25
   damage: 18
+  weaponAmmoType: 2
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 14.5
@@ -7830,8 +8164,6 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 35
-  reserveAmmo: 60
-  maxReserveAmmo: 105
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 972473908e33142a299aadef99de62cf, type: 3}
@@ -7969,6 +8301,10 @@ PrefabInstance:
     - target: {fileID: 2049977056430061286, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
       propertyPath: m_Name
       value: Sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 2049977056430061286, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8670512161190804812, guid: 352b1efab7a9f8d40b3584067976a77a, type: 3}
       propertyPath: m_LocalScale.x
@@ -8198,6 +8534,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 108847981802408624, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 151627938604495175, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -8209,6 +8549,10 @@ PrefabInstance:
     - target: {fileID: 686038903977711517, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1412904520550936558, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1441800927511760585, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
@@ -8274,6 +8618,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1786832008733652149, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1804905076892787444, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -8281,6 +8629,10 @@ PrefabInstance:
     - target: {fileID: 1903279304590604891, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094704897760488151, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4299293171547338639, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
@@ -8290,6 +8642,26 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4844138868004039204, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5087749047075820227, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5457477313897822908, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5620558273774275834, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5768183570705742376, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6133503316489494110, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -8297,6 +8669,10 @@ PrefabInstance:
     - target: {fileID: 6251669777459064587, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6473839788785401348, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6591266750230604600, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
@@ -8306,13 +8682,37 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7298246148199734932, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8075536961989042992, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8220749499638718107, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8617890155258181923, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
       propertyPath: m_Name
       value: LanangRailgun
+      objectReference: {fileID: 0}
+    - target: {fileID: 8617890155258181923, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8658303735046901550, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9105085702387856630, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9198696494999415667, guid: 0dded95cc08e86b4ebe259faeaff4f63, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8353,6 +8753,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 8812380224241752565}
   range: 200
   damage: 500
+  weaponAmmoType: 6
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
@@ -8369,8 +8770,6 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 2
-  reserveAmmo: 1
-  maxReserveAmmo: 4
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 0e4eee2b51e7d7c689862b786cdef73b, type: 3}
@@ -8386,11 +8785,11 @@ MonoBehaviour:
   ammoTextDisplay: {fileID: 0}
   crosshairDisplay: {fileID: 0}
   weaponCrosshair: {fileID: 21300000, guid: 552478a654d2eb8478c30045279d5688, type: 3}
-  beamEffectPrefab: {fileID: 0}
+  beamEffectPrefab: {fileID: 1821409177193198128, guid: c5714132250f2bcfda85abce44c60767, type: 3}
   useScreenFlash: 1
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashFadeDuration: 0.5
+  flashFadeDuration: 0.3
 --- !u!82 &7431423175250417385
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8501,17 +8900,45 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5040810398171321406}
     m_Modifications:
+    - target: {fileID: 142975192943918090, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 431853602123368525, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 757963750835269928, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2088078122666357335, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2492250703842056803, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3888249775361449239, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5165951128018392765, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5726223910753541420, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5782696911360418534, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
       propertyPath: m_Name
       value: WWII_Recon_A
+      objectReference: {fileID: 0}
+    - target: {fileID: 5782696911360418534, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6234769506432539946, guid: e510c3ebc1fcc91408e00937238ce7e2, type: 3}
       propertyPath: m_CastShadows
@@ -8603,6 +9030,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 8812380224241752565}
   range: 100
   damage: 75
+  weaponAmmoType: 4
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 1.2
@@ -8619,8 +9047,6 @@ MonoBehaviour:
   chamberHideDistance: 0.1
   chamberDuration: 1.5
   magSize: 5
-  reserveAmmo: 5
-  maxReserveAmmo: 25
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: a8e1a2f9ce21b152d93fc6d1d02ecb41, type: 3}
@@ -8756,6 +9182,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5040810398171321406}
     m_Modifications:
+    - target: {fileID: 320468712745320707, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 680695220488662085, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 841515749759792023, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -8764,9 +9198,29 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 897488429848154712, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2710245588308465360, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2869225439176319424, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3330036771757304508, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3378089200406636538, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3413278398017338526, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3557320247793090291, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8816,6 +9270,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: AR_A_1
       objectReference: {fileID: 0}
+    - target: {fileID: 4185518912306324553, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4638949467097366829, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4699324437517989664, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -8836,9 +9298,21 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6452371806086536003, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105054624255696399, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8008821597837332461, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8186281911719701307, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8231315684876909008, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       propertyPath: m_CastShadows
@@ -8847,6 +9321,10 @@ PrefabInstance:
     - target: {fileID: 9007649579228396840, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069808470590087953, guid: 34d9918439c82da478947f5832aed8b9, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8892,6 +9370,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 8812380224241752565}
   range: 50
   damage: 25
+  weaponAmmoType: 3
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 13.5
@@ -8908,8 +9387,6 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 40
-  reserveAmmo: 80
-  maxReserveAmmo: 120
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: 1d43bd6733bf31690bbacf49b6f3fdf5, type: 3}
@@ -9051,9 +9528,41 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2104057179221471707, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3009012540199243895, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3132939287560021296, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3348269866745400902, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3405646012677533637, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5106327718378592131, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5156231669666364021, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251189325591917116, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5408696121654204181, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5593253305131117051, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
       propertyPath: m_CastShadows
@@ -9062,6 +9571,10 @@ PrefabInstance:
     - target: {fileID: 5758479418350978456, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6773680086089762255, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6818236231378478651, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
       propertyPath: m_CastShadows
@@ -9075,9 +9588,21 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7346916817527679952, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 7438171949098552446, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8026382188295586866, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8183900052608661432, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8332101960591973964, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9127,6 +9652,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMG_F
       objectReference: {fileID: 0}
+    - target: {fileID: 8712849249800013046, guid: 457a5e0e81592b046a8717a070ea6770, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -9166,6 +9695,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 8812380224241752565}
   range: 15
   damage: 10
+  weaponAmmoType: 2
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 20
@@ -9182,8 +9712,6 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 45
-  reserveAmmo: 90
-  maxReserveAmmo: 180
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: f8e11dd53ece2d74a8f3f2067c8ca18b, type: 3}
@@ -9326,6 +9854,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3444375215726945352, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4510009253751667896, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -9333,6 +9865,14 @@ PrefabInstance:
     - target: {fileID: 4920507860935382577, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
       propertyPath: m_Name
       value: Pistol_D
+      objectReference: {fileID: 0}
+    - target: {fileID: 4920507860935382577, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5506949411328772694, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5577706116454393923, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
       propertyPath: m_CastShadows
@@ -9378,9 +9918,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5845825414163114276, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6114543570693722040, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6293064923252658822, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8731242872596279849, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8818350177159460995, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9421,6 +9977,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 8812380224241752565}
   range: 30
   damage: 35
+  weaponAmmoType: 0
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 8
@@ -9437,8 +9994,6 @@ MonoBehaviour:
   chamberHideDistance: 1.5
   chamberDuration: 1.5
   magSize: 7
-  reserveAmmo: 14
-  maxReserveAmmo: 49
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 8300000, guid: ba67f82a7b9ad99bd90e36723a8dd55d, type: 3}
@@ -9577,13 +10132,25 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 427088583552130261, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 667728397993062982, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1345148440250549376, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1873841498203466440, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2659374623714333025, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2804795454002728856, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9625,13 +10192,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3243747234924669908, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3289723630241895714, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_Name
       value: ShotGun_F
       objectReference: {fileID: 0}
+    - target: {fileID: 3289723630241895714, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3295979632122707868, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3666052260559144184, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4337590017030267867, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4657796600062245390, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727383788254935566, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6438179576081222225, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_CastShadows
@@ -9644,6 +10235,14 @@ PrefabInstance:
     - target: {fileID: 7042745512115896773, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7294525407955056674, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8575251849409625800, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8597468695585333815, guid: e5eabc2f21f5b45448b3e5ab8f24e193, type: 3}
       propertyPath: m_CastShadows
@@ -9692,6 +10291,7 @@ MonoBehaviour:
   fpsCamera: {fileID: 8812380224241752565}
   range: 10
   damage: 50
+  weaponAmmoType: 1
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 1.5
@@ -9708,8 +10308,6 @@ MonoBehaviour:
   chamberHideDistance: 0.1
   chamberDuration: 1
   magSize: 7
-  reserveAmmo: 24
-  maxReserveAmmo: 56
   hideDistance: 1.2
   slideDuration: 0.3
   reloadSound: {fileID: 0}

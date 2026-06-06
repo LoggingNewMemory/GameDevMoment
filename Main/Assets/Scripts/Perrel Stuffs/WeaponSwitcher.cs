@@ -1,10 +1,24 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System.Collections.Generic; 
 
 public class WeaponSwitcher : MonoBehaviour
 {
+    [Header("Master Arsenal (Drag all your child weapons here!)")]
+    [Tooltip("Drag the actual weapon objects from the player's hands into these slots.")]
+    public GameObject meleeWeapon; 
+    public GameObject pistol;      
+    public GameObject shotgun;
+    public GameObject smg1; // <-- AGENT ZETA TACTIC: Arya - 9
+    public GameObject smg2; // <-- AGENT ZETA TACTIC: Krizz Vector
+    public GameObject assaultRifle;
+    public GameObject sniper;
+    public GameObject lmg;
+    public GameObject railgun;
+
     [Header("Currently Equipped Loadout")]
+    [Tooltip("Do NOT touch this! The script will automatically fill this based on your Gacha unlocks!")]
     public GameObject[] equippedWeapons; 
     
     [Header("Settings")]
@@ -26,17 +40,38 @@ public class WeaponSwitcher : MonoBehaviour
 
     void Start()
     {
-        // --- THE LIFECYCLE FIX ---
-        // By moving this to Start(), we guarantee every gun has already run its Awake() 
-        // and perfectly memorized its position before we start turning them invisible!
+        // ==========================================
+        // AGENT ZETA DYNAMIC ARSENAL BUILDER
+        // ==========================================
+        List<GameObject> dynamicLoadout = new List<GameObject>();
+
+        if (meleeWeapon != null) dynamicLoadout.Add(meleeWeapon);
+        if (pistol != null) dynamicLoadout.Add(pistol);
         
+        if (PlayerPrefs.GetInt("Unlocked_Shotgun", 0) == 1 && shotgun != null) dynamicLoadout.Add(shotgun);
+        
+        // --- THE TWIN SMG LOGIC ---
+        if (PlayerPrefs.GetInt("Unlocked_SMG", 0) == 1)
+        {
+            if (smg1 != null) dynamicLoadout.Add(smg1);
+            if (smg2 != null) dynamicLoadout.Add(smg2);
+        }
+        // --------------------------
+
+        if (PlayerPrefs.GetInt("Unlocked_AssaultRifle", 0) == 1 && assaultRifle != null) dynamicLoadout.Add(assaultRifle);
+        if (PlayerPrefs.GetInt("Unlocked_Sniper", 0) == 1 && sniper != null) dynamicLoadout.Add(sniper);
+        if (PlayerPrefs.GetInt("Unlocked_LMG", 0) == 1 && lmg != null) dynamicLoadout.Add(lmg);
+        if (PlayerPrefs.GetInt("Unlocked_Railgun", 0) == 1 && railgun != null) dynamicLoadout.Add(railgun);
+
+        equippedWeapons = dynamicLoadout.ToArray();
+        // ==========================================
+
         foreach (Transform child in transform)
         {
             child.gameObject.SetActive(false);
         }
 
-        // Now, safely turn on ONLY the weapons in our chosen loadout
-        if (equippedWeapons != null)
+        if (equippedWeapons != null && equippedWeapons.Length > 0)
         {
             for (int i = 0; i < equippedWeapons.Length; i++)
             {
@@ -58,7 +93,6 @@ public class WeaponSwitcher : MonoBehaviour
 
         int previousWeapon = currentWeaponIndex;
 
-        // --- SCROLL WHEEL SWITCHING ---
         float scroll = Mouse.current.scroll.ReadValue().y;
         if (scroll > 0f)
         {
@@ -71,7 +105,6 @@ public class WeaponSwitcher : MonoBehaviour
             if (currentWeaponIndex < 0) currentWeaponIndex = equippedWeapons.Length - 1;
         }
 
-        // --- NUMBER KEY SWITCHING ---
         if (Keyboard.current.digit1Key.wasPressedThisFrame && equippedWeapons.Length > 0) currentWeaponIndex = 0;
         if (Keyboard.current.digit2Key.wasPressedThisFrame && equippedWeapons.Length > 1) currentWeaponIndex = 1;
         if (Keyboard.current.digit3Key.wasPressedThisFrame && equippedWeapons.Length > 2) currentWeaponIndex = 2;

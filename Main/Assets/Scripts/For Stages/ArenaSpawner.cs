@@ -21,6 +21,10 @@ public class ArenaSpawner : MonoBehaviour
     public GameObject bossTargetToDefeat; 
     public BossSkillReward skillToUnlock = BossSkillReward.None; 
 
+    [Header("Gacha Settings")]
+    [Tooltip("Check this box for Tutorial/Intro levels where you don't want to give a random weapon!")]
+    public bool disableGachaReward = false;
+
     [Header("Defeat Transition (For Bad Endings)")]
     [Tooltip("If the player dies in this boss room, load this scene! Leave empty for normal levels.")]
     public string badEndingSceneName = ""; 
@@ -94,14 +98,12 @@ public class ArenaSpawner : MonoBehaviour
     {
         if (isBossLevel && !stageCleared && !playerDefeated)
         {
-            // --- AGENT ZETA PULSE CHECK: PLAYER ---
             if (playerHealthScript != null && playerHealthScript.isDead)
             {
                 TriggerDefeat();
                 return;
             }
 
-            // --- AGENT ZETA PULSE CHECK: BOSS ---
             bool isBossDead = false;
             if (bossTargetToDefeat == null || !bossTargetToDefeat.activeInHierarchy) isBossDead = true;
             else if (bossHealthScript != null && bossHealthScript.isDead) isBossDead = true;
@@ -204,16 +206,11 @@ public class ArenaSpawner : MonoBehaviour
         if (!isBossLevel && enemiesKilled >= totalEnemiesToSpawn) TriggerVictory();
     }
 
-    // ==========================================
-    // AGENT ZETA ENDING PROTOCOLS
-    // ==========================================
-    
     void TriggerDefeat()
     {
         playerDefeated = true;
         Debug.Log("<color=red>[Agent Zeta] AGENT DOWN! EXTRACTING TO BAD ENDING...</color>");
         
-        // Wait a few seconds for the player to see they died, then load the bad ending!
         if (!string.IsNullOrEmpty(badEndingSceneName))
         {
             StartCoroutine(LoadDefeatRoutine());
@@ -228,7 +225,7 @@ public class ArenaSpawner : MonoBehaviour
         else SceneManager.LoadScene(badEndingSceneName);
     }
 
-    void TriggerVictory()
+    public void TriggerVictory()
     {
         stageCleared = true;
         string gachaMessage = "";
@@ -247,32 +244,53 @@ public class ArenaSpawner : MonoBehaviour
             }
             else if (skillToUnlock == BossSkillReward.TimeForCoding)
             {
-                // --- THE ULTIMATE LEVEL 6 REWARD! ---
                 PlayerPrefs.SetInt("Unlocked_TimeForCoding", 1);
                 PlayerPrefs.SetInt("Unlocked_Railgun", 1); 
                 gachaMessage = "FINAL BOSS DEFEATED!\n<color=yellow>UNLOCKED: TIME FOR CODING & ANANG RAILGUN</color>";
             }
             else gachaMessage = "BOSS DEFEATED!\n<color=yellow>AREA CLEARED</color>";
         }
+        else if (disableGachaReward)
+        {
+            gachaMessage = "WAVE CLEARED!\n<color=yellow>AREA SECURED</color>";
+            Debug.Log("<color=cyan>[Agent Zeta] Tutorial level cleared! No gacha reward issued.</color>");
+        }
         else
         {
-            string[] gachaPool = { "Unlocked_Shotgun", "Unlocked_SMG", "Unlocked_AssaultRifle", "Unlocked_Sniper", "Unlocked_LMG" };
-            string pulledWeapon = gachaPool[Random.Range(0, gachaPool.Length)];
+            // --- AGENT ZETA TACTICS: DUPLICATE PREVENTION! ---
+            System.Collections.Generic.List<string> availablePool = new System.Collections.Generic.List<string>();
             
-            PlayerPrefs.SetInt(pulledWeapon, 1);
-            
-            string displayWeaponName = "";
-            switch (pulledWeapon)
-            {
-                case "Unlocked_Shotgun": displayWeaponName = "FAUZAN SHOTGUN"; break;
-                case "Unlocked_SMG": displayWeaponName = "ARYA - 9 & KRIZZ VECTOR"; break;
-                case "Unlocked_AssaultRifle": displayWeaponName = "SAWUNGGA M4"; break;
-                case "Unlocked_Sniper": displayWeaponName = "PAKCIK KAR-98"; break;
-                case "Unlocked_LMG": displayWeaponName = "KANGKUNG DP-28"; break;
-                default: displayWeaponName = "MYSTERY WEAPON"; break;
-            }
+            if (PlayerPrefs.GetInt("Unlocked_Shotgun", 0) == 0) availablePool.Add("Unlocked_Shotgun");
+            if (PlayerPrefs.GetInt("Unlocked_SMG", 0) == 0) availablePool.Add("Unlocked_SMG");
+            if (PlayerPrefs.GetInt("Unlocked_AssaultRifle", 0) == 0) availablePool.Add("Unlocked_AssaultRifle");
+            if (PlayerPrefs.GetInt("Unlocked_Sniper", 0) == 0) availablePool.Add("Unlocked_Sniper");
+            if (PlayerPrefs.GetInt("Unlocked_LMG", 0) == 0) availablePool.Add("Unlocked_LMG");
 
-            gachaMessage = $"WAVE CLEARED!\n<color=yellow>UNLOCKED: {displayWeaponName}</color>";
+            if (availablePool.Count > 0)
+            {
+                string pulledWeapon = availablePool[Random.Range(0, availablePool.Count)];
+                PlayerPrefs.SetInt(pulledWeapon, 1);
+                
+                string displayWeaponName = "";
+                switch (pulledWeapon)
+                {
+                    case "Unlocked_Shotgun": displayWeaponName = "FAUZAN SHOTGUN"; break;
+                    case "Unlocked_SMG": displayWeaponName = "ARYA - 9 & KRIZZ VECTOR"; break;
+                    case "Unlocked_AssaultRifle": displayWeaponName = "SAWUNGGA M4"; break;
+                    case "Unlocked_Sniper": displayWeaponName = "PAKCIK KAR-98"; break;
+                    case "Unlocked_LMG": displayWeaponName = "KANGKUNG MG-48"; break;
+                    default: displayWeaponName = "MYSTERY WEAPON"; break;
+                }
+
+                gachaMessage = $"WAVE CLEARED!\n<color=yellow>UNLOCKED: {displayWeaponName}</color>";
+                Debug.Log($"<color=magenta>[Agent Zeta] Gacha Pull: {pulledWeapon} ({displayWeaponName})!</color>");
+            }
+            else
+            {
+                gachaMessage = "WAVE CLEARED!\n<color=yellow>ARSENAL MAXED OUT</color>";
+                Debug.Log("<color=cyan>[Agent Zeta] Arsenal is full! No new weapons to drop.</color>");
+            }
+            // -------------------------------------------------
         }
         
         PlayerPrefs.Save(); 

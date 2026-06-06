@@ -46,11 +46,10 @@ public class PlayerSkills : MonoBehaviour
         stats = GetComponent<PlayerStats>();
         
         // --- AGENT ZETA SKILL RETRIEVAL ---
-        // Check if Shanna was defeated previously!
-        if (PlayerPrefs.GetInt("Unlocked_HaluOfCS", 0) == 1) 
-        {
-            hasHaluOfCS = true; 
-        }
+        // Check the save file for ALL the boss rewards!
+        if (PlayerPrefs.GetInt("Unlocked_RageOfCS", 0) == 1) hasRageOfCS = true; 
+        if (PlayerPrefs.GetInt("Unlocked_HaluOfCS", 0) == 1) hasHaluOfCS = true; 
+        if (PlayerPrefs.GetInt("Unlocked_TimeForCoding", 0) == 1) hasTimeForCoding = true; 
         // ----------------------------------
     }
 
