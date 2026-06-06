@@ -183,7 +183,17 @@ public class ArenaSpawner : MonoBehaviour
     IEnumerator LoadNextLevelRoutine()
     {
         yield return new WaitForSeconds(timeBeforeNextLevel);
-        SceneManager.LoadScene(nextLevelName);
+        
+        // AGENT ZETA HACK: Trigger the cinematic fade-out!
+        if (ScreenFader.Instance != null)
+        {
+            ScreenFader.Instance.FadeOutToScene(nextLevelName);
+        }
+        else
+        {
+            // Fallback just in case you forgot to put the Fader Prefab in the scene
+            SceneManager.LoadScene(nextLevelName);
+        }
     }
 
     void UpdateUI()

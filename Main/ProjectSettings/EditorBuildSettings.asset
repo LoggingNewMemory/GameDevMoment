@@ -12,8 +12,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Main_Menu.unity
     guid: 0ba7c0ed3e42df86cb0862f33ee3255d
   - enabled: 1
+    path: Assets/Scenes/CUTSCENE Prolouge.unity
+    guid: 131a6e1357a8a5168980ae579b94b614
+  - enabled: 1
     path: Assets/Scenes/Level_0.unity
     guid: e697cbd32a964c3ed8dbe4a6499c1295
+  - enabled: 1
+    path: Assets/Scenes/CUTSCENE Prolouge 2.unity
+    guid: 01449c0cea012d35eaf2a66fc9d6553e
   - enabled: 1
     path: Assets/Scenes/Level_1.unity
     guid: 75feff916cded8d4d934b5818bdf47af

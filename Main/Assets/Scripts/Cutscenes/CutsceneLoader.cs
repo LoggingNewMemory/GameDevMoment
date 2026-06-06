@@ -88,8 +88,23 @@ public class CutsceneLoader : MonoBehaviour
 
     void OnVideoFinished(VideoPlayer vp)
     {
-        // If the video ends naturally before they press E, pause it on the last frame
+        // Pause the video on the final frame so it doesn't go black
         vp.Pause();
+        
+        // AGENT ZETA HACK: Automatically breach the next room if the video finishes naturally!
+        StartCoroutine(AutoProceedRoutine());
+    }
+
+    IEnumerator AutoProceedRoutine()
+    {
+        // Hold the line until the background loader gives the green light (isSceneReady = true)
+        while (!isSceneReady)
+        {
+            yield return null;
+        }
+
+        // The level is ready and the video is done. Kick down the door!
+        ProceedToNextScene();
     }
 
     void ProceedToNextScene()
