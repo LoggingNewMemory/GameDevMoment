@@ -4114,7 +4114,6 @@ GameObject:
   - component: {fileID: 1643573748245324859}
   - component: {fileID: 7595795726222052823}
   - component: {fileID: 7228406177975556466}
-  - component: {fileID: 130593552033430572}
   m_Layer: 0
   m_Name: Pria Sigma 1
   m_TagString: Player
@@ -4655,42 +4654,6 @@ MonoBehaviour:
   timeCodingCooldownMax: 20
   isTimeCodingActive: 0
 --- !u!114 &7228406177975556466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5519485496679102122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd7629d92490000b3920fad31ebc1b66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAmmoStore
-  hasPistol: 1
-  hasShotgun: 0
-  hasSMG: 0
-  hasAssaultRifle: 0
-  hasSniper: 0
-  hasLMG: 0
-  hasRailgun: 0
-  pistolAmmo: 60
-  shotgunAmmo: 16
-  smgAmmo: 120
-  arAmmo: 90
-  sniperAmmo: 15
-  lmgAmmo: 150
-  railgunAmmo: 5
-  maxPistolAmmo: 60
-  maxShotgunAmmo: 16
-  maxSmgAmmo: 120
-  maxArAmmo: 90
-  maxSniperAmmo: 30
-  maxLmgAmmo: 300
-  maxRailgunAmmo: 5
-  notificationText: {fileID: 0}
-  showDuration: 2
-  fadeDuration: 1
---- !u!114 &130593552033430572
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

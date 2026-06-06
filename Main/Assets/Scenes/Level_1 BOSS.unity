@@ -875,10 +875,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 945729138}
     - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      propertyPath: playerDeathSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 77a433eb6173b1f8a86ea0a67f990caf, type: 3}
-    - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: healthTextDisplay
       value: 
       objectReference: {fileID: 438072688}
@@ -1010,6 +1006,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: notificationText
+      value: 
+      objectReference: {fileID: 2054299097}
     - target: {fileID: 7456181007734404913, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1019,33 +1019,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      propertyPath: hasHaluOfCS
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      propertyPath: hasRageOfCS
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      propertyPath: rageDuration
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: powerStatusText
       value: 
       objectReference: {fileID: 433649491}
-    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      propertyPath: haluBaseDuration
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      propertyPath: hasTimeForCoding
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      propertyPath: timeForCodingDuration
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 7773299748424671751, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1228,10 +1204,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 618465635789198105, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1939257920}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5519485496679102122, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1684611663}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
 --- !u!1 &325346633
 GameObject:
@@ -2436,42 +2409,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5519485496679102122, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
   m_PrefabInstance: {fileID: 284795396}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1684611663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1684611648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd7629d92490000b3920fad31ebc1b66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAmmoStore
-  hasPistol: 1
-  hasShotgun: 0
-  hasSMG: 0
-  hasAssaultRifle: 0
-  hasSniper: 0
-  hasLMG: 0
-  hasRailgun: 0
-  pistolAmmo: 60
-  shotgunAmmo: 16
-  smgAmmo: 120
-  arAmmo: 90
-  sniperAmmo: 15
-  lmgAmmo: 150
-  railgunAmmo: 5
-  maxPistolAmmo: 60
-  maxShotgunAmmo: 16
-  maxSmgAmmo: 120
-  maxArAmmo: 90
-  maxSniperAmmo: 30
-  maxLmgAmmo: 300
-  maxRailgunAmmo: 5
-  notificationText: {fileID: 2054299097}
-  showDuration: 2
-  fadeDuration: 1
 --- !u!1 &1702841296
 GameObject:
   m_ObjectHideFlags: 0

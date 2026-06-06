@@ -1122,6 +1122,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: notificationText
+      value: 
+      objectReference: {fileID: 2054299097}
     - target: {fileID: 7456181007734404913, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1595,6 +1599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ArenaSpawner
   bossTargetToDefeat: {fileID: 1117369203}
   skillToUnlock: 3
+  disableGachaReward: 0
   badEndingSceneName: Bad Ending
   enemiesToSpawn:
   - editorNote: Jambret
