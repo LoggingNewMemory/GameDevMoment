@@ -1136,19 +1136,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.623
+      value: -5.019
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 20.567
+      value: 30.748
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -17.31
+      value: -9.489
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1160,7 +1160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1168,7 +1168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
+      value: 270
       objectReference: {fileID: 0}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -1492,6 +1492,9 @@ MonoBehaviour:
     spawnWeight: 30
   - editorNote: Ste Jew
     enemyPrefab: {fileID: 4014714322278504851, guid: d4dfae223ab7bd8649fb75ee2261b1d6, type: 3}
+    spawnWeight: 20
+  - editorNote: Ste Jew
+    enemyPrefab: {fileID: 3125103903867278189, guid: c7da841298e73a554b159279b435d6d1, type: 3}
     spawnWeight: 20
   totalEnemiesToSpawn: 200
   maxAliveAtOnce: 30
@@ -22815,7 +22818,7 @@ GameObject:
   - component: {fileID: 1581350843283747682}
   - component: {fileID: 8903065713499563258}
   - component: {fileID: 436407002814479209}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: lantailantai4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23544,7 +23547,7 @@ GameObject:
   - component: {fileID: 7568892717121348755}
   - component: {fileID: 3200390607301928524}
   - component: {fileID: 2752748944684834266}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Lantailantai3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -60,6 +60,30 @@ EditorBuildSettings:
     path: Assets/Scenes/CUTSCENE/CUTSCENE Rizwan Outro.unity
     guid: 87ea4fe0dcfb92e4b8c357de60b7ec4a
   - enabled: 1
+    path: Assets/Scenes/CUTSCENE/CUTSCENE Level 4.unity
+    guid: 913f08c816f78f1e5ab3810b562d972e
+  - enabled: 1
+    path: Assets/Scenes/Level_4.unity
+    guid: 2d60cbca8de94973d81c6c4d5f33a848
+  - enabled: 1
+    path: Assets/Scenes/CUTSCENE/CUTSCENE Level 5.unity
+    guid: 097a807d33b8a0f8c856fff0fb28fb15
+  - enabled: 1
+    path: Assets/Scenes/Level_5.unity
+    guid: 9a016ff0f3c3e113e8d421dc3573dd21
+  - enabled: 1
+    path: Assets/Scenes/CUTSCENE/CUTSCENE Level 6.unity
+    guid: 4246ca0ccd636ebe196654d2c98df484
+  - enabled: 1
+    path: Assets/Scenes/Level_6.unity
+    guid: 4ee6ca8895fca555a85d8f19226b54ef
+  - enabled: 1
+    path: Assets/Scenes/CUTSCENE/Good Ending.unity
+    guid: 3843766ec422e913286cb8f190ef51ba
+  - enabled: 1
+    path: Assets/Scenes/CUTSCENE/Bad Ending.unity
+    guid: 6b6e4a26f52692fe3bea1f3d8b51fed5
+  - enabled: 1
     path: Assets/Scenes/Special_Main_Menu.unity
     guid: 98a4b805947808f4aa6d78cd18cf7a17
   m_configObjects:

@@ -21,6 +21,12 @@ public class ArenaSpawner : MonoBehaviour
     public GameObject bossTargetToDefeat; 
     public BossSkillReward skillToUnlock = BossSkillReward.None; 
 
+    [Header("Defeat Transition (For Bad Endings)")]
+    [Tooltip("If the player dies in this boss room, load this scene! Leave empty for normal levels.")]
+    public string badEndingSceneName = ""; 
+    private bool playerDefeated = false;
+    private UniversalHealth playerHealthScript;
+
     private bool isBossLevel = false;
     private UniversalHealth bossHealthScript; 
 
@@ -48,7 +54,6 @@ public class ArenaSpawner : MonoBehaviour
 
     [Header("UI & Tracking")]
     public TextMeshProUGUI enemiesLeftText; 
-    
     public GameObject gachaScreen;    
     public TextMeshProUGUI gachaText; 
     
@@ -61,7 +66,11 @@ public class ArenaSpawner : MonoBehaviour
     void Start()
     {
         GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null) player = p.transform;
+        if (p != null) 
+        {
+            player = p.transform;
+            playerHealthScript = player.GetComponent<UniversalHealth>();
+        }
 
         if (bossTargetToDefeat != null) 
         {
@@ -83,23 +92,21 @@ public class ArenaSpawner : MonoBehaviour
 
     void Update()
     {
-        if (isBossLevel && !stageCleared)
+        if (isBossLevel && !stageCleared && !playerDefeated)
         {
+            // --- AGENT ZETA PULSE CHECK: PLAYER ---
+            if (playerHealthScript != null && playerHealthScript.isDead)
+            {
+                TriggerDefeat();
+                return;
+            }
+
+            // --- AGENT ZETA PULSE CHECK: BOSS ---
             bool isBossDead = false;
+            if (bossTargetToDefeat == null || !bossTargetToDefeat.activeInHierarchy) isBossDead = true;
+            else if (bossHealthScript != null && bossHealthScript.isDead) isBossDead = true;
 
-            if (bossTargetToDefeat == null || !bossTargetToDefeat.activeInHierarchy)
-            {
-                isBossDead = true;
-            }
-            else if (bossHealthScript != null && bossHealthScript.isDead)
-            {
-                isBossDead = true;
-            }
-
-            if (isBossDead)
-            {
-                TriggerVictory();
-            }
+            if (isBossDead) TriggerVictory();
         }
     }
 
@@ -107,17 +114,14 @@ public class ArenaSpawner : MonoBehaviour
     {
         while (isBossLevel || enemiesSpawned < totalEnemiesToSpawn)
         {
-            if (stageCleared) yield break; 
+            if (stageCleared || playerDefeated) yield break; 
 
             if (enemiesAlive < maxAliveAtOnce)
             {
                 int enemiesLeftInTotal = isBossLevel ? 999 : (totalEnemiesToSpawn - enemiesSpawned);
                 int burstAmount = 0;
 
-                if (enemiesLeftInTotal <= minSpawnAtOnce)
-                {
-                    burstAmount = enemiesLeftInTotal;
-                }
+                if (enemiesLeftInTotal <= minSpawnAtOnce) burstAmount = enemiesLeftInTotal;
                 else
                 {
                     int spaceLeftOnMap = maxAliveAtOnce - enemiesAlive;
@@ -126,11 +130,7 @@ public class ArenaSpawner : MonoBehaviour
                     burstAmount = Mathf.Min(burstAmount, spaceLeftOnMap);
                 }
 
-                for (int i = 0; i < burstAmount; i++)
-                {
-                    SpawnEnemy();
-                }
-
+                for (int i = 0; i < burstAmount; i++) SpawnEnemy();
                 yield return new WaitForSeconds(timeBetweenBursts);
             }
             else
@@ -166,14 +166,11 @@ public class ArenaSpawner : MonoBehaviour
             if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 30f, floorLayer))
             {
                 GameObject chosenEnemy = PickRandomEnemyBasedOnWeight();
-                
                 if (chosenEnemy != null)
                 {
                     GameObject newEnemy = Instantiate(chosenEnemy, hit.point, Quaternion.identity);
-                    
                     BasicChaserAI ai = newEnemy.GetComponent<BasicChaserAI>();
                     if (ai != null) ai.SetTarget(player);
-
                     enemiesSpawned++;
                     enemiesAlive++;
                     return; 
@@ -185,37 +182,50 @@ public class ArenaSpawner : MonoBehaviour
     GameObject PickRandomEnemyBasedOnWeight()
     {
         int totalWeight = 0;
-        foreach (var enemy in enemiesToSpawn)
-        {
-            totalWeight += enemy.spawnWeight;
-        }
-
+        foreach (var enemy in enemiesToSpawn) totalWeight += enemy.spawnWeight;
         int randomValue = Random.Range(0, totalWeight);
 
         foreach (var enemy in enemiesToSpawn)
         {
-            if (randomValue < enemy.spawnWeight)
-            {
-                return enemy.enemyPrefab;
-            }
+            if (randomValue < enemy.spawnWeight) return enemy.enemyPrefab;
             randomValue -= enemy.spawnWeight;
         }
-
         return enemiesToSpawn[0].enemyPrefab;
     }
 
     public void EnemyDefeated()
     {
-        if (stageCleared) return;
+        if (stageCleared || playerDefeated) return;
 
         enemiesAlive--;
         enemiesKilled++;
         UpdateUI();
 
-        if (!isBossLevel && enemiesKilled >= totalEnemiesToSpawn)
+        if (!isBossLevel && enemiesKilled >= totalEnemiesToSpawn) TriggerVictory();
+    }
+
+    // ==========================================
+    // AGENT ZETA ENDING PROTOCOLS
+    // ==========================================
+    
+    void TriggerDefeat()
+    {
+        playerDefeated = true;
+        Debug.Log("<color=red>[Agent Zeta] AGENT DOWN! EXTRACTING TO BAD ENDING...</color>");
+        
+        // Wait a few seconds for the player to see they died, then load the bad ending!
+        if (!string.IsNullOrEmpty(badEndingSceneName))
         {
-            TriggerVictory();
+            StartCoroutine(LoadDefeatRoutine());
         }
+    }
+
+    IEnumerator LoadDefeatRoutine()
+    {
+        yield return new WaitForSeconds(timeBeforeNextLevel);
+        
+        if (ScreenFader.Instance != null) ScreenFader.Instance.FadeOutToScene(badEndingSceneName);
+        else SceneManager.LoadScene(badEndingSceneName);
     }
 
     void TriggerVictory()
@@ -237,15 +247,12 @@ public class ArenaSpawner : MonoBehaviour
             }
             else if (skillToUnlock == BossSkillReward.TimeForCoding)
             {
+                // --- THE ULTIMATE LEVEL 6 REWARD! ---
                 PlayerPrefs.SetInt("Unlocked_TimeForCoding", 1);
-                gachaMessage = "BOSS DEFEATED!\n<color=yellow>UNLOCKED: TIME FOR CODING</color>";
+                PlayerPrefs.SetInt("Unlocked_Railgun", 1); 
+                gachaMessage = "FINAL BOSS DEFEATED!\n<color=yellow>UNLOCKED: TIME FOR CODING & ANANG RAILGUN</color>";
             }
-            else
-            {
-                gachaMessage = "BOSS DEFEATED!\n<color=yellow>AREA CLEARED</color>";
-            }
-            
-            Debug.Log($"<color=yellow>[Agent Zeta] Boss Defeated! Reward: {skillToUnlock}</color>");
+            else gachaMessage = "BOSS DEFEATED!\n<color=yellow>AREA CLEARED</color>";
         }
         else
         {
@@ -254,7 +261,6 @@ public class ArenaSpawner : MonoBehaviour
             
             PlayerPrefs.SetInt(pulledWeapon, 1);
             
-            // --- AGENT ZETA TACTICS: CUSTOM WEAPON NAMES! ---
             string displayWeaponName = "";
             switch (pulledWeapon)
             {
@@ -267,9 +273,6 @@ public class ArenaSpawner : MonoBehaviour
             }
 
             gachaMessage = $"WAVE CLEARED!\n<color=yellow>UNLOCKED: {displayWeaponName}</color>";
-            // ------------------------------------------------
-
-            Debug.Log($"<color=magenta>[Agent Zeta] Gacha Pull: {pulledWeapon} ({displayWeaponName})!</color>");
         }
         
         PlayerPrefs.Save(); 
@@ -285,14 +288,8 @@ public class ArenaSpawner : MonoBehaviour
     {
         yield return new WaitForSeconds(timeBeforeNextLevel);
         
-        if (ScreenFader.Instance != null)
-        {
-            ScreenFader.Instance.FadeOutToScene(nextLevelName);
-        }
-        else
-        {
-            SceneManager.LoadScene(nextLevelName);
-        }
+        if (ScreenFader.Instance != null) ScreenFader.Instance.FadeOutToScene(nextLevelName);
+        else SceneManager.LoadScene(nextLevelName);
     }
 
     void UpdateUI()

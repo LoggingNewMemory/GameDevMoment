@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 25986495}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Speaker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1692,7 +1692,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 829613804}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Panggung
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3743,7 +3743,7 @@ GameObject:
   - component: {fileID: 4408434339538126579}
   - component: {fileID: 6857728680489448371}
   - component: {fileID: 2369215983129555391}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Layar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10229,7 +10229,7 @@ GameObject:
   - component: {fileID: 4634469642103375298}
   - component: {fileID: 5517844529604774418}
   - component: {fileID: 4887970542955207473}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: speak.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10248,7 +10248,7 @@ GameObject:
   - component: {fileID: 1098529182528256202}
   - component: {fileID: 2238572559660964943}
   - component: {fileID: 6569096721455816993}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: speak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20419,7 +20419,7 @@ GameObject:
   - component: {fileID: 4582694959504364188}
   - component: {fileID: 1736334831449715419}
   - component: {fileID: 3958331983845774859}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: mesh.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30966,7 +30966,7 @@ GameObject:
   - component: {fileID: 4905949677506695602}
   - component: {fileID: 7319785291008123033}
   - component: {fileID: 914914451018224124}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Layar_Panggung
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34928,7 +34928,7 @@ GameObject:
   - component: {fileID: 2783368857960433600}
   - component: {fileID: 5155855666650951403}
   - component: {fileID: 1510960845886829819}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Lantai_Panggung
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36021,7 +36021,7 @@ GameObject:
   - component: {fileID: 9061081451721622623}
   - component: {fileID: 6866488373256424897}
   - component: {fileID: 4440686200603701967}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: mesh.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -50,6 +50,7 @@ public class PlayerAmmoStore : MonoBehaviour
         if (PlayerPrefs.GetInt("Unlocked_AssaultRifle", 0) == 1) hasAssaultRifle = true;
         if (PlayerPrefs.GetInt("Unlocked_Sniper", 0) == 1) hasSniper = true;
         if (PlayerPrefs.GetInt("Unlocked_LMG", 0) == 1) hasLMG = true;
+        if (PlayerPrefs.GetInt("Unlocked_Railgun", 0) == 1) hasRailgun = true;
         // -----------------------------------
 
         if (notificationText == null || !notificationText.gameObject.scene.IsValid())
