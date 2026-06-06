@@ -36,6 +36,15 @@ EditorBuildSettings:
     path: Assets/Scenes/CUTSCENE/CUTSCENE Shanna Outro.unity
     guid: 62a09aa2430dc01498711e8fc214e195
   - enabled: 1
+    path: Assets/Scenes/CUTSCENE/CUTSCENE Level 2.unity
+    guid: 9b20101b35db8c1fc9050c168ede42a6
+  - enabled: 1
+    path: Assets/Scenes/Level_2.unity
+    guid: 069e24a179f2accf7863a75a50e8dff0
+  - enabled: 1
+    path: Assets/Scenes/CUTSCENE/CUTSCENE Level 2 END.unity
+    guid: 9375d329cb436f131995531ba370049b
+  - enabled: 1
     path: Assets/Scenes/Special_Main_Menu.unity
     guid: 98a4b805947808f4aa6d78cd18cf7a17
   m_configObjects:

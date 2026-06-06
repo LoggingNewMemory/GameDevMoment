@@ -3,7 +3,6 @@ using System.Collections;
 using TMPro; 
 using UnityEngine.SceneManagement; 
 
-// --- AGENT ZETA TACTIC: Dropdown for Boss Rewards! ---
 public enum BossSkillReward { None, RageOfCS, HaluOfCS, TimeForCoding }
 
 [System.Serializable]
@@ -19,11 +18,8 @@ public class LevelEnemy
 public class ArenaSpawner : MonoBehaviour
 {
     [Header("Boss Fight Mode")]
-    [Tooltip("Drag Shanna in here! The spawner will infinitely spawn normal enemies as supplies until she dies!")]
     public GameObject bossTargetToDefeat; 
-    
-    [Tooltip("Select which skill the player unlocks for beating this boss!")]
-    public BossSkillReward skillToUnlock = BossSkillReward.None; // <-- THE UPGRADE!
+    public BossSkillReward skillToUnlock = BossSkillReward.None; 
 
     private bool isBossLevel = false;
     private UniversalHealth bossHealthScript; 
@@ -229,7 +225,6 @@ public class ArenaSpawner : MonoBehaviour
 
         if (isBossLevel)
         {
-            // Check the dropdown to see what reward to give!
             if (skillToUnlock == BossSkillReward.RageOfCS)
             {
                 PlayerPrefs.SetInt("Unlocked_RageOfCS", 1);
@@ -258,10 +253,23 @@ public class ArenaSpawner : MonoBehaviour
             string pulledWeapon = gachaPool[Random.Range(0, gachaPool.Length)];
             
             PlayerPrefs.SetInt(pulledWeapon, 1);
-            string weaponName = pulledWeapon.Replace("Unlocked_", "");
-            gachaMessage = $"WAVE CLEARED!\n<color=yellow>UNLOCKED: {weaponName.ToUpper()}</color>";
             
-            Debug.Log($"<color=magenta>[Agent Zeta] Gacha Pull: {pulledWeapon}!</color>");
+            // --- AGENT ZETA TACTICS: CUSTOM WEAPON NAMES! ---
+            string displayWeaponName = "";
+            switch (pulledWeapon)
+            {
+                case "Unlocked_Shotgun": displayWeaponName = "FAUZAN SHOTGUN"; break;
+                case "Unlocked_SMG": displayWeaponName = "ARYA - 9 & KRIZZ VECTOR"; break;
+                case "Unlocked_AssaultRifle": displayWeaponName = "SAWUNGGA M4"; break;
+                case "Unlocked_Sniper": displayWeaponName = "PAKCIK KAR-98"; break;
+                case "Unlocked_LMG": displayWeaponName = "KANGKUNG DP-28"; break;
+                default: displayWeaponName = "MYSTERY WEAPON"; break;
+            }
+
+            gachaMessage = $"WAVE CLEARED!\n<color=yellow>UNLOCKED: {displayWeaponName}</color>";
+            // ------------------------------------------------
+
+            Debug.Log($"<color=magenta>[Agent Zeta] Gacha Pull: {pulledWeapon} ({displayWeaponName})!</color>");
         }
         
         PlayerPrefs.Save(); 
