@@ -9,13 +9,17 @@ public class LevelEnemy
     public string editorNote = "Enemy Name"; 
     public GameObject enemyPrefab;           
     
-    [Tooltip("Higher number = spawns more often! (e.g., 80 Jambret, 20 Kaya)")]
     [Range(1, 100)] 
     public int spawnWeight = 50;             
 }
 
 public class ArenaSpawner : MonoBehaviour
 {
+    [Header("Boss Fight Mode")]
+    [Tooltip("Drag Shanna in here! The spawner will infinitely spawn normal enemies as supplies until she dies!")]
+    public GameObject bossTargetToDefeat; 
+    private bool isBossLevel = false;
+
     [Header("GDD: Level Enemy Pool")]
     public LevelEnemy[] enemiesToSpawn;      
     
@@ -52,6 +56,9 @@ public class ArenaSpawner : MonoBehaviour
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
 
+        // AGENT ZETA TACTICS: If a boss is assigned, switch to Infinite Survival Mode!
+        if (bossTargetToDefeat != null) isBossLevel = true;
+
         if (enemiesLeftText == null)
         {
             GameObject textObj = GameObject.Find("EnemiesLeftText"); 
@@ -62,13 +69,29 @@ public class ArenaSpawner : MonoBehaviour
         StartCoroutine(SpawnRoutine());
     }
 
+    void Update()
+    {
+        // If we are in a Boss Level, constantly check if the Boss is dead!
+        if (isBossLevel && !stageCleared)
+        {
+            // If Shanna's GameObject is destroyed or disabled, the mission is complete!
+            if (bossTargetToDefeat == null || !bossTargetToDefeat.activeInHierarchy)
+            {
+                TriggerVictory();
+            }
+        }
+    }
+
     IEnumerator SpawnRoutine()
     {
-        while (enemiesSpawned < totalEnemiesToSpawn)
+        // If it's a Boss Level, spawn infinitely. Otherwise, stop at the normal limit.
+        while (isBossLevel || enemiesSpawned < totalEnemiesToSpawn)
         {
+            if (stageCleared) yield break; // Stop spawning immediately if we win!
+
             if (enemiesAlive < maxAliveAtOnce)
             {
-                int enemiesLeftInTotal = totalEnemiesToSpawn - enemiesSpawned;
+                int enemiesLeftInTotal = isBossLevel ? 999 : (totalEnemiesToSpawn - enemiesSpawned);
                 int burstAmount = 0;
 
                 if (enemiesLeftInTotal <= minSpawnAtOnce)
@@ -128,7 +151,6 @@ public class ArenaSpawner : MonoBehaviour
                 {
                     GameObject newEnemy = Instantiate(chosenEnemy, hit.point, Quaternion.identity);
                     
-                    // KOBO OPTIMIZATION: Inject the player target instantly!
                     BasicChaserAI ai = newEnemy.GetComponent<BasicChaserAI>();
                     if (ai != null) ai.SetTarget(player);
 
@@ -138,8 +160,6 @@ public class ArenaSpawner : MonoBehaviour
                 }
             }
         }
-        
-        Debug.LogWarning("Spawner couldn't find a safe spot after 10 tries. Room might be too crowded!");
     }
 
     GameObject PickRandomEnemyBasedOnWeight()
@@ -172,26 +192,30 @@ public class ArenaSpawner : MonoBehaviour
         enemiesKilled++;
         UpdateUI();
 
-        if (enemiesKilled >= totalEnemiesToSpawn)
+        // Only trigger victory via kill count if we are NOT in a boss level
+        if (!isBossLevel && enemiesKilled >= totalEnemiesToSpawn)
         {
-            stageCleared = true;
-            Debug.Log("STAGE CLEARED! LOADING NEXT LEVEL...");
-            StartCoroutine(LoadNextLevelRoutine());
+            TriggerVictory();
         }
+    }
+
+    void TriggerVictory()
+    {
+        stageCleared = true;
+        Debug.Log("<color=cyan>[Agent Zeta] TARGET ELIMINATED! BREACHING NEXT AREA...</color>");
+        StartCoroutine(LoadNextLevelRoutine());
     }
 
     IEnumerator LoadNextLevelRoutine()
     {
         yield return new WaitForSeconds(timeBeforeNextLevel);
         
-        // AGENT ZETA HACK: Trigger the cinematic fade-out!
         if (ScreenFader.Instance != null)
         {
             ScreenFader.Instance.FadeOutToScene(nextLevelName);
         }
         else
         {
-            // Fallback just in case you forgot to put the Fader Prefab in the scene
             SceneManager.LoadScene(nextLevelName);
         }
     }
@@ -200,8 +224,15 @@ public class ArenaSpawner : MonoBehaviour
     {
         if (enemiesLeftText != null)
         {
-            int remaining = totalEnemiesToSpawn - enemiesKilled;
-            enemiesLeftText.text = "Enemy Left\n" + remaining;
+            if (isBossLevel)
+            {
+                enemiesLeftText.text = "BOSS ENGAGED!";
+            }
+            else
+            {
+                int remaining = totalEnemiesToSpawn - enemiesKilled;
+                enemiesLeftText.text = "Enemy Left\n" + remaining;
+            }
         }
     }
 }

@@ -1481,17 +1481,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c47f93cd4e72fc7897ffe230a2958ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArenaSpawner
-  bossCutscene: {fileID: 0}
+  bossTargetToDefeat: {fileID: 4848084319948957851, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
   enemiesToSpawn:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
     spawnWeight: 100
   totalEnemiesToSpawn: 200
-  maxAliveAtOnce: 30
+  maxAliveAtOnce: 10
   minSpawnAtOnce: 2
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1
-  nextLevelName: CUTSCENE Shanna Intro
+  nextLevelName: CUTSCENE Shanna Outro
   timeBeforeNextLevel: 3
   minSpawnDistance: 12
   maxSpawnDistance: 30
@@ -1548,6 +1548,67 @@ Transform:
   - {fileID: 1968117243}
   m_Father: {fileID: 1660741427819028141}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &743221454
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.505
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.25489
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 41.75504
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4848084319948957851, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: m_Name
+      value: Shanna
+      objectReference: {fileID: 0}
+    - target: {fileID: 6622382894798180645, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: health
+      value: 500
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
 --- !u!1 &821135109
 GameObject:
   m_ObjectHideFlags: 0
@@ -38151,3 +38212,4 @@ SceneRoots:
   - {fileID: 284795396}
   - {fileID: 1660741427819028141}
   - {fileID: 950584234}
+  - {fileID: 743221454}
