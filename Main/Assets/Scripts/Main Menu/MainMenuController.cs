@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.InputSystem;
-using TMPro; // <-- KOBO ADDED THIS! For TextMeshPro UI ✨
+using TMPro; 
 
 public class MainMenuController : MonoBehaviour
 {
@@ -17,12 +17,13 @@ public class MainMenuController : MonoBehaviour
     public float zoomSpeed = 0.02f;   
 
     [Header("Level & Save Settings")]
-    public string firstLevelName = "Level_0"; 
+    [Tooltip("Make sure this matches your scene name EXACTLY!")]
+    public string firstLevelName = "CUTSCENE Prolouge"; // <-- AGENT ZETA TACTIC: Updated destination!
     public GameObject resumeButton; 
 
     [Header("Tutorial & Graphics Settings")]
     public GameObject howToPlayPanel; 
-    public TextMeshProUGUI graphicsText; // <-- KOBO ADDED THIS! Drag your Graphics Text here!
+    public TextMeshProUGUI graphicsText; 
 
     private int currentIndex = 0;
     private Image currentBg;
@@ -33,20 +34,17 @@ public class MainMenuController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // --- NEW: LOAD SAVED GRAPHICS FROM HARD DRIVE ---
         if (PlayerPrefs.HasKey("SavedGraphics"))
         {
             int savedLevel = PlayerPrefs.GetInt("SavedGraphics");
             QualitySettings.SetQualityLevel(savedLevel);
         }
 
-        // --- NEW: INITIALIZE GRAPHICS TEXT ON BOOTUP ---
         if (graphicsText != null)
         {
             graphicsText.text = "Graphics: " + QualitySettings.names[QualitySettings.GetQualityLevel()];
         }
 
-        // --- Save System Check ---
         if (PlayerPrefs.HasKey("SavedLevel"))
         {
             resumeButton.SetActive(true);
@@ -56,7 +54,6 @@ public class MainMenuController : MonoBehaviour
             resumeButton.SetActive(false);
         }
 
-        // --- Safety Check: Ensure Panel is OFF at start ---
         if (howToPlayPanel != null)
         {
             howToPlayPanel.SetActive(false);
@@ -87,7 +84,6 @@ public class MainMenuController : MonoBehaviour
             nextBg.rectTransform.localScale += Vector3.one * (zoomSpeed * Time.unscaledDeltaTime);
         }
 
-        // --- How to Play ESC listener (NEW INPUT SYSTEM FIX) ---
         if (howToPlayPanel != null && howToPlayPanel.activeSelf)
         {
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
@@ -131,15 +127,14 @@ public class MainMenuController : MonoBehaviour
             currentIndex = nextIndex;
         }
     }
-
-    // ==========================================
-    // BUTTON FUNCTIONS
-    // ==========================================
     
     public void ClickStartGame()
     {
+        // Wipe the old save so they start fresh!
         PlayerPrefs.DeleteKey("SavedLevel");
         PlayerPrefs.Save();
+        
+        // Boot up the prologue!
         SceneManager.LoadScene(firstLevelName);
     }
 
@@ -170,7 +165,6 @@ public class MainMenuController : MonoBehaviour
         #endif
     }
 
-    // --- NEW: GRAPHICS SETTINGS CYCLER ---
     public void ClickGraphicsSettings()
     {
         int currentLevel = QualitySettings.GetQualityLevel();
@@ -178,11 +172,9 @@ public class MainMenuController : MonoBehaviour
         
         QualitySettings.SetQualityLevel(nextLevel);
         
-        // Save to hard drive
         PlayerPrefs.SetInt("SavedGraphics", nextLevel);
         PlayerPrefs.Save();
         
-        // Update visible text
         if (graphicsText != null)
         {
             graphicsText.text = "Graphics: " + QualitySettings.names[nextLevel];

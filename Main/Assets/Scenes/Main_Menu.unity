@@ -555,7 +555,7 @@ MonoBehaviour:
   timePerImage: 5
   fadeDuration: 1.5
   zoomSpeed: 0.02
-  firstLevelName: Level_0
+  firstLevelName: CUTSCENE Prolouge
   resumeButton: {fileID: 1467287428}
   howToPlayPanel: {fileID: 867917949}
   graphicsText: {fileID: 977812106}

@@ -1505,7 +1505,7 @@ MonoBehaviour:
   minSpawnAtOnce: 2
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1
-  nextLevelName: Level_3 BOSS
+  nextLevelName: CUTSCENE Level 6
   timeBeforeNextLevel: 3
   minSpawnDistance: 12
   maxSpawnDistance: 30
@@ -2344,7 +2344,8 @@ MonoBehaviour:
   resumeButton: {fileID: 1970003173}
   restartButton: {fileID: 378466262}
   saveButton: {fileID: 1534815282}
-  mainMenuSceneName: Main_Menu
+  defaultMainMenuName: main_menu
+  specialMainMenuName: Special_Main_Menu
   playerRoot: {fileID: 1684611648}
 --- !u!4 &1513904084
 Transform:

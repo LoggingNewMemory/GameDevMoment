@@ -2682,7 +2682,7 @@ MonoBehaviour:
   loginMusic: {fileID: 8300000, guid: d682e646ed468ff818011246fe6e4362, type: 3}
   mainMenuMusic: {fileID: 8300000, guid: 40f8c033f23ce9f758771531e98e3d29, type: 3}
   crossfadeDuration: 3
-  firstGameScene: Level_0
+  firstGameScene: CUTSCENE Prolouge
   loadingBar: {fileID: 0}
   finalMenuUI: {fileID: 1784671175}
   characterAnimator: {fileID: 443660107}
