@@ -366,7 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d7912f1c4401d47786eda5487f3d634, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneLoader
-  nextSceneName: Main_Menu
+  nextSceneName: Level_6
   videoPlayer: {fileID: 44124214}
   skipPromptText: {fileID: 73299108}
 --- !u!4 &794170621

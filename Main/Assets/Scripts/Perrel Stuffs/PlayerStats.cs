@@ -11,6 +11,10 @@ public class PlayerStats : MonoBehaviour
     public float currentHealth;
     public TextMeshProUGUI healthTextDisplay;
 
+    [Header("Level Settings")]
+    [Tooltip("Tick this box if dying here triggers the Bad Ending!")]
+    public bool isBadEndingLevel = false; // <-- AGENT ZETA TACTIC: The manual override!
+
     [Header("Overheal Audio")]
     public AudioSource sfxSource;          
     public AudioClip overhealGainSound;      
@@ -161,8 +165,6 @@ public class PlayerStats : MonoBehaviour
     public void TakeDamage(float damageAmount, Transform attacker = null)
     {
         if (isDead) return;
-
-        // --- THE FIX: Removed the line that was cancelling the Halu of CS buff! ---
         
         bool hadOverheal = currentHealth > maxHealth;
         currentHealth -= damageAmount;
@@ -234,7 +236,23 @@ public class PlayerStats : MonoBehaviour
                 StartCoroutine(FadeInDeadScreenRoutine());
             }
 
-            Time.timeScale = 0f; 
+            // --- AGENT ZETA TACTICS: MANUAL TICK OVERRIDE ---
+            if (isBadEndingLevel)
+            {
+                // Box is ticked! Do NOT freeze time! Save the level for retry!
+                string currentLevel = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+                PlayerPrefs.SetString("RetryLevel", currentLevel);
+                PlayerPrefs.Save();
+                
+                Debug.Log($"<color=red>[Agent Zeta] Bad Ending Checkbox Ticked! Player died on {currentLevel}. Time continues flowing!</color>");
+            }
+            else
+            {
+                // Normal level! Freeze time for the Game Over Menu!
+                Time.timeScale = 0f; 
+                Debug.Log("<color=yellow>[Agent Zeta] Standard Game Over. Time frozen.</color>");
+            }
+            // ------------------------------------------------
         }
         else if (isHeavyHit)
         {

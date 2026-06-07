@@ -987,6 +987,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 945729138}
     - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: isBadEndingLevel
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: playerDeathSound
       value: 
       objectReference: {fileID: 8300000, guid: 77a433eb6173b1f8a86ea0a67f990caf, type: 3}
@@ -2583,6 +2587,7 @@ MonoBehaviour:
   saveButton: {fileID: 1534815282}
   defaultMainMenuName: main_menu
   specialMainMenuName: Special_Main_Menu
+  isBadEndingLevel: 1
   playerRoot: {fileID: 1684611648}
 --- !u!4 &1513904084
 Transform:

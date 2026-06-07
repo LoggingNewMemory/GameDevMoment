@@ -19,6 +19,10 @@ public class PauseMenuManager : MonoBehaviour
     public string defaultMainMenuName = "main_menu";       // Normal players go here
     public string specialMainMenuName = "Special_Main_Menu"; // Good Ending players go here
 
+    [Header("Level Settings")]
+    [Tooltip("Tick this box to stop the Pause Menu from appearing when you die!")]
+    public bool isBadEndingLevel = false; // <-- AGENT ZETA TACTIC: The manual override!
+
     [Header("Player Reference")]
     public GameObject playerRoot; 
 
@@ -92,6 +96,14 @@ public class PauseMenuManager : MonoBehaviour
 
     public void TriggerGameOver()
     {
+        // --- AGENT ZETA OVERRIDE: MANUAL CHECKBOX ---
+        if (isBadEndingLevel)
+        {
+            Debug.Log("<color=red>[Agent Zeta] Bad Ending box ticked! Suppressing Pause Menu UI.</color>");
+            return; // Exit early! Don't show the pause menu!
+        }
+        // --------------------------------------------
+
         isPlayerDead = true;
         GameIsPaused = true;
         

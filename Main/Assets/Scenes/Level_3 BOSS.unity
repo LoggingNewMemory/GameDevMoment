@@ -1048,11 +1048,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: hasHaluOfCS
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: hasRageOfCS
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: rageDuration
@@ -1068,7 +1068,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: hasTimeForCoding
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: timeForCodingDuration
@@ -2370,6 +2370,7 @@ MonoBehaviour:
   saveButton: {fileID: 1534815282}
   defaultMainMenuName: main_menu
   specialMainMenuName: Special_Main_Menu
+  isBadEndingLevel: 0
   playerRoot: {fileID: 1684611648}
 --- !u!4 &1513904084
 Transform:

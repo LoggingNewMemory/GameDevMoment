@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic; // <-- AGENT ZETA REQUIRED: For tracking lists!
+using System.Collections.Generic; 
 using TMPro; 
 using UnityEngine.SceneManagement; 
 
@@ -15,12 +15,10 @@ public class LevelEnemy
     [Range(1, 100)] 
     public int spawnWeight = 50;             
 
-    // --- AGENT ZETA TACTICS: ENEMY POPULATION CAP ---
     [Header("Difficulty Balance")]
     [Tooltip("Maximum amount of THIS specific enemy alive at once. Set to 0 for unlimited!")]
     public int maxActiveAtOnce = 5; 
 
-    // The spawner uses this hidden list to track exactly how many are currently breathing!
     [HideInInspector] 
     public List<GameObject> activeInstances = new List<GameObject>();
 }
@@ -39,7 +37,9 @@ public class ArenaSpawner : MonoBehaviour
     [Tooltip("If the player dies in this boss room, load this scene! Leave empty for normal levels.")]
     public string badEndingSceneName = ""; 
     private bool playerDefeated = false;
-    private UniversalHealth playerHealthScript;
+    
+    // --- AGENT ZETA FIX 1: Look for PlayerStats instead of UniversalHealth! ---
+    private PlayerStats playerStatsScript;
 
     private bool isBossLevel = false;
     private UniversalHealth bossHealthScript; 
@@ -83,7 +83,8 @@ public class ArenaSpawner : MonoBehaviour
         if (p != null) 
         {
             player = p.transform;
-            playerHealthScript = player.GetComponent<UniversalHealth>();
+            // --- AGENT ZETA FIX 1 APPLIED ---
+            playerStatsScript = player.GetComponent<PlayerStats>();
         }
 
         if (bossTargetToDefeat != null) 
@@ -106,14 +107,19 @@ public class ArenaSpawner : MonoBehaviour
 
     void Update()
     {
-        if (isBossLevel && !stageCleared && !playerDefeated)
+        // --- AGENT ZETA FIX 2: ALWAYS check if the player is dead, even if there is no boss! ---
+        if (!stageCleared && !playerDefeated)
         {
-            if (playerHealthScript != null && playerHealthScript.isDead)
+            if (playerStatsScript != null && playerStatsScript.isDead)
             {
                 TriggerDefeat();
                 return;
             }
+        }
 
+        // Only check boss death if it's actually a boss level
+        if (isBossLevel && !stageCleared && !playerDefeated)
+        {
             bool isBossDead = false;
             if (bossTargetToDefeat == null || !bossTargetToDefeat.activeInHierarchy) isBossDead = true;
             else if (bossHealthScript != null && bossHealthScript.isDead) isBossDead = true;
@@ -156,12 +162,8 @@ public class ArenaSpawner : MonoBehaviour
     {
         if (player == null || enemiesToSpawn.Length == 0) return;
 
-        // --- AGENT ZETA CHECK: Pick an enemy that hasn't hit its cap! ---
         LevelEnemy chosenEnemyData = PickRandomEnemyBasedOnWeight();
-        
-        // If all available enemies are maxed out, abort spawn for this loop!
         if (chosenEnemyData == null || chosenEnemyData.enemyPrefab == null) return; 
-        // ----------------------------------------------------------------
 
         for (int attempts = 0; attempts < 10; attempts++)
         {
@@ -179,17 +181,12 @@ public class ArenaSpawner : MonoBehaviour
                 spawnOffset = rayDir * distance;
             }
 
-            // --- AGENT ZETA INDOOR FIX ---
             Vector3 spawnPos = player.position + spawnOffset;
-            spawnPos.y += 2f; // AGENT ZETA: Lowered from 15f to 2f! No more roof spawning!
+            spawnPos.y += 2f; 
 
-            // Shoot a short laser down to find the floor (lowered distance to 10f)
             if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 10f, floorLayer))
             {
-                // Added a tiny 0.1f boost so their feet don't clip into the floor!
                 GameObject newEnemy = Instantiate(chosenEnemyData.enemyPrefab, hit.point + (Vector3.up * 0.1f), Quaternion.identity);
-                
-                // Add the newly born enemy to the tracker!
                 chosenEnemyData.activeInstances.Add(newEnemy);
 
                 BasicChaserAI ai = newEnemy.GetComponent<BasicChaserAI>();
@@ -208,10 +205,8 @@ public class ArenaSpawner : MonoBehaviour
 
         foreach (var enemy in enemiesToSpawn)
         {
-            // 1. Clean the list! Automatically remove any dead bodies from the count.
             enemy.activeInstances.RemoveAll(item => item == null || !item.activeInHierarchy);
 
-            // 2. Filter: Is this enemy allowed to spawn right now?
             if (enemy.maxActiveAtOnce <= 0 || enemy.activeInstances.Count < enemy.maxActiveAtOnce)
             {
                 validEnemies.Add(enemy);
@@ -219,7 +214,6 @@ public class ArenaSpawner : MonoBehaviour
             }
         }
 
-        // 3. If every single enemy is maxed out on the map, return null!
         if (validEnemies.Count == 0) return null;
 
         int randomValue = Random.Range(0, totalWeight);
