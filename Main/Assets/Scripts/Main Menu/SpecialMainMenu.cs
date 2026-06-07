@@ -32,7 +32,9 @@ public class SpecialMainMenu : MonoBehaviour
     private AsyncOperation pendingLoad; 
 
     private void Start()
-    {
+    {   
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         Time.timeScale = 1f;
 
         // --- NEW: LOAD SAVED GRAPHICS FROM HARD DRIVE ---
