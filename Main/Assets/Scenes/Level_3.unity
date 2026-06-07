@@ -1194,6 +1194,10 @@ PrefabInstance:
       propertyPath: bobAmountY
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 8719095646281405008, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: knockbackDecay
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8726532848439146432, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -1489,14 +1493,20 @@ MonoBehaviour:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
     spawnWeight: 50
+    maxActiveAtOnce: 5
+    activeInstances: []
   - editorNote: The Black
     enemyPrefab: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
     spawnWeight: 30
+    maxActiveAtOnce: 5
+    activeInstances: []
   - editorNote: Ste Jew
     enemyPrefab: {fileID: 4014714322278504851, guid: d4dfae223ab7bd8649fb75ee2261b1d6, type: 3}
     spawnWeight: 20
-  totalEnemiesToSpawn: 200
-  maxAliveAtOnce: 30
+    maxActiveAtOnce: 5
+    activeInstances: []
+  totalEnemiesToSpawn: 120
+  maxAliveAtOnce: 15
   minSpawnAtOnce: 2
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1

@@ -5883,11 +5883,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d03ce824034857abe2588872157bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UniversalLootDrop
-  udonPrefab: {fileID: 0}
-  macNCheesePrefab: {fileID: 0}
-  ammoBoxPrefab: {fileID: 0}
-  vodkaPrefab: {fileID: 0}
-  extraJossPrefab: {fileID: 0}
+  udonPrefab: {fileID: 2567075757341239971, guid: 782273cfb05025dfdb6aef7b1fcef692, type: 3}
+  macNCheesePrefab: {fileID: 5280790652959980970, guid: 14c4667317aca51c596cfc908d6f6846, type: 3}
+  ammoBoxPrefab: {fileID: 6135886786783103493, guid: b7def7e077215b7b1b4793d1c843bacf, type: 3}
+  vodkaPrefab: {fileID: 1663480217342578924, guid: 8a406fc1a86d612bd8139299908d1554, type: 3}
+  extraJossPrefab: {fileID: 2868457701875626391, guid: 108ac2d6c8099f3c3be2d2236a3d988d, type: 3}
   lootLifetime: 15
 --- !u!54 &2588490575705658909
 Rigidbody:

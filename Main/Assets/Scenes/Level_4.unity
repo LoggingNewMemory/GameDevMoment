@@ -1011,6 +1011,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasShotgun
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: notificationText
       value: 
       objectReference: {fileID: 2054299097}
@@ -1492,18 +1496,26 @@ MonoBehaviour:
   enemiesToSpawn:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 50
+    spawnWeight: 45
+    maxActiveAtOnce: 5
+    activeInstances: []
   - editorNote: The Black
     enemyPrefab: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
-    spawnWeight: 30
+    spawnWeight: 40
+    maxActiveAtOnce: 5
+    activeInstances: []
   - editorNote: Ste Jew
     enemyPrefab: {fileID: 4014714322278504851, guid: d4dfae223ab7bd8649fb75ee2261b1d6, type: 3}
-    spawnWeight: 20
-  - editorNote: Ste Jew
+    spawnWeight: 10
+    maxActiveAtOnce: 5
+    activeInstances: []
+  - editorNote: AmericanWoke
     enemyPrefab: {fileID: 3125103903867278189, guid: c7da841298e73a554b159279b435d6d1, type: 3}
-    spawnWeight: 20
-  totalEnemiesToSpawn: 200
-  maxAliveAtOnce: 30
+    spawnWeight: 3
+    maxActiveAtOnce: 3
+    activeInstances: []
+  totalEnemiesToSpawn: 100
+  maxAliveAtOnce: 20
   minSpawnAtOnce: 2
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1
@@ -2409,12 +2421,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAmmoStore
   hasPistol: 1
-  hasShotgun: 0
-  hasSMG: 0
-  hasAssaultRifle: 0
-  hasSniper: 0
-  hasLMG: 0
-  hasRailgun: 0
+  hasShotgun: 1
+  hasSMG: 1
+  hasAssaultRifle: 1
+  hasSniper: 1
+  hasLMG: 1
+  hasRailgun: 1
   pistolAmmo: 60
   shotgunAmmo: 16
   smgAmmo: 120

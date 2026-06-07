@@ -1462,15 +1462,37 @@ MonoBehaviour:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
     spawnWeight: 100
+    maxActiveAtOnce: 5
+    activeInstances: []
+  - editorNote: Jambret
+    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
+    spawnWeight: 100
+    maxActiveAtOnce: 5
+    activeInstances: []
+  - editorNote: Jambret
+    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
+    spawnWeight: 100
+    maxActiveAtOnce: 5
+    activeInstances: []
+  - editorNote: Jambret
+    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
+    spawnWeight: 100
+    maxActiveAtOnce: 5
+    activeInstances: []
+  - editorNote: Jambret
+    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
+    spawnWeight: 100
+    maxActiveAtOnce: 5
+    activeInstances: []
   totalEnemiesToSpawn: 200
-  maxAliveAtOnce: 10
+  maxAliveAtOnce: 30
   minSpawnAtOnce: 2
-  maxSpawnAtOnce: 4
+  maxSpawnAtOnce: 5
   timeBetweenBursts: 1
   nextLevelName: CUTSCENE Shanna Outro
   timeBeforeNextLevel: 3
   minSpawnDistance: 12
-  maxSpawnDistance: 30
+  maxSpawnDistance: 25
   floorLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -1539,6 +1561,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1868917747095734376, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: baseDamage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1868917747095734376, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: teleportDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1868917747095734376, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: teleportCooldown
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2347321780138143285, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.505
@@ -1586,6 +1620,10 @@ PrefabInstance:
     - target: {fileID: 6622382894798180645, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
       propertyPath: health
       value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 6622382894798180645, guid: 4e03b90c9ea873a8292af4ea1de51e3c, type: 3}
+      propertyPath: maxHealth
+      value: 1000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

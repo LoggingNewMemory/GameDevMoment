@@ -1011,6 +1011,30 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasLMG
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasSMG
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasSniper
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasRailgun
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasShotgun
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasAssaultRifle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: notificationText
       value: 
       objectReference: {fileID: 2054299097}
@@ -1024,11 +1048,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: hasHaluOfCS
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: hasRageOfCS
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: rageDuration
@@ -1044,7 +1068,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: hasTimeForCoding
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: timeForCodingDuration
@@ -1493,6 +1517,13 @@ MonoBehaviour:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
     spawnWeight: 100
+    maxActiveAtOnce: 5
+    activeInstances: []
+  - editorNote: Jambret
+    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
+    spawnWeight: 100
+    maxActiveAtOnce: 5
+    activeInstances: []
   totalEnemiesToSpawn: 200
   maxAliveAtOnce: 10
   minSpawnAtOnce: 2
@@ -2400,12 +2431,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAmmoStore
   hasPistol: 1
-  hasShotgun: 0
-  hasSMG: 0
-  hasAssaultRifle: 0
-  hasSniper: 0
-  hasLMG: 0
-  hasRailgun: 0
+  hasShotgun: 1
+  hasSMG: 1
+  hasAssaultRifle: 1
+  hasSniper: 1
+  hasLMG: 1
+  hasRailgun: 1
   pistolAmmo: 60
   shotgunAmmo: 16
   smgAmmo: 120
@@ -2515,8 +2546,16 @@ PrefabInstance:
       value: 3000
       objectReference: {fileID: 0}
     - target: {fileID: 1841950303601782080, guid: 7993338835949cebcbbb24f0d86adba7, type: 3}
+      propertyPath: walkSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841950303601782080, guid: 7993338835949cebcbbb24f0d86adba7, type: 3}
       propertyPath: maxSteJews
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1841950303601782080, guid: 7993338835949cebcbbb24f0d86adba7, type: 3}
+      propertyPath: basicDamage
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1841950303601782080, guid: 7993338835949cebcbbb24f0d86adba7, type: 3}
       propertyPath: steJewPrefab
