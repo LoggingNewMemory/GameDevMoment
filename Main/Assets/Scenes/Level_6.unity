@@ -1633,7 +1633,7 @@ MonoBehaviour:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
     spawnWeight: 50
-    maxActiveAtOnce: 5
+    maxActiveAtOnce: 11
     activeInstances: []
   - editorNote: The Black
     enemyPrefab: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
@@ -1643,27 +1643,23 @@ MonoBehaviour:
   - editorNote: Ste Jew
     enemyPrefab: {fileID: 4014714322278504851, guid: d4dfae223ab7bd8649fb75ee2261b1d6, type: 3}
     spawnWeight: 10
-    maxActiveAtOnce: 5
+    maxActiveAtOnce: 2
     activeInstances: []
   - editorNote: America Woke
     enemyPrefab: {fileID: 3125103903867278189, guid: c7da841298e73a554b159279b435d6d1, type: 3}
     spawnWeight: 5
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Kaya
-    enemyPrefab: {fileID: 1978879434711127254, guid: f0bae35bdd4322814811dc2a0220ad86, type: 3}
-    spawnWeight: 5
-    maxActiveAtOnce: 5
+    maxActiveAtOnce: 2
     activeInstances: []
   totalEnemiesToSpawn: 200
-  maxAliveAtOnce: 15
+  maxAliveAtOnce: 20
   minSpawnAtOnce: 2
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1
-  nextLevelName: Good Ending
-  timeBeforeNextLevel: 3
   minSpawnDistance: 20
   maxSpawnDistance: 30
+  forceSimpleRadialSpawn: 0
+  nextLevelName: Good Ending
+  timeBeforeNextLevel: 3
   floorLayer:
     serializedVersion: 2
     m_Bits: 128

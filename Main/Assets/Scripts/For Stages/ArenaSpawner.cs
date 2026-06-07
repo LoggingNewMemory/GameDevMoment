@@ -81,7 +81,12 @@ public class ArenaSpawner : MonoBehaviour
     private bool stageCleared = false;
 
     void Start()
-    {
+    {   
+        string currentScene = SceneManager.GetActiveScene().name;
+        PlayerPrefs.SetString("SavedLevel", currentScene);
+        PlayerPrefs.Save();
+        Debug.Log($"<color=green>[Agent Zeta] Progress auto-saved to: {currentScene}!</color>");
+        
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) 
         {
