@@ -3162,7 +3162,7 @@ MonoBehaviour:
   attackDamage: 2
   attackCooldown: 5
   damageDelay: 1
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 3343080604101466607}
   attackCastSound: {fileID: 8300000, guid: 8628c05288ffb3d01b0519332c845092, type: 3}
   emptyMagSound: {fileID: 8300000, guid: efa28c4b65c106976baab635addacfa7, type: 3}
   stealReserveSound: {fileID: 8300000, guid: 8409b586475ee4ab49835e3027325a00, type: 3}

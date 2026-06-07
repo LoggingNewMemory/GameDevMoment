@@ -169,7 +169,7 @@ public class ArenaSpawner : MonoBehaviour
             float distance = Random.Range(minSpawnDistance, maxSpawnDistance);
             Vector3 spawnOffset = new Vector3(randomDir.x, 0, randomDir.y) * distance;
 
-            Vector3 rayStart = player.position + Vector3.up * 1f; 
+            Vector3 rayStart = player.position + Vector3.up * 0.2f; 
             Vector3 rayDir = spawnOffset.normalized;
 
             if (Physics.Raycast(rayStart, rayDir, out RaycastHit wallHit, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
@@ -179,12 +179,15 @@ public class ArenaSpawner : MonoBehaviour
                 spawnOffset = rayDir * distance;
             }
 
+            // --- AGENT ZETA INDOOR FIX ---
             Vector3 spawnPos = player.position + spawnOffset;
-            spawnPos.y += 15f; 
+            spawnPos.y += 2f; // AGENT ZETA: Lowered from 15f to 2f! No more roof spawning!
 
-            if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 30f, floorLayer))
+            // Shoot a short laser down to find the floor (lowered distance to 10f)
+            if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 10f, floorLayer))
             {
-                GameObject newEnemy = Instantiate(chosenEnemyData.enemyPrefab, hit.point, Quaternion.identity);
+                // Added a tiny 0.1f boost so their feet don't clip into the floor!
+                GameObject newEnemy = Instantiate(chosenEnemyData.enemyPrefab, hit.point + (Vector3.up * 0.1f), Quaternion.identity);
                 
                 // Add the newly born enemy to the tracker!
                 chosenEnemyData.activeInstances.Add(newEnemy);

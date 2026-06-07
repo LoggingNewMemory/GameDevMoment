@@ -29,7 +29,6 @@ public class DoomMovement : MonoBehaviour
     [Header("Wall Jumping")]
     public float wallJumpUpForce = 8f;     
     public float wallJumpSideForce = 15f;  
-    [Tooltip("Increased distance makes it easier to register a wall near you!")]
     public float wallCheckDistance = 1.5f;   
     private bool wallLeft = false;
     private bool wallRight = false;
@@ -64,7 +63,6 @@ public class DoomMovement : MonoBehaviour
     public AudioClip slideSound; 
     public AudioClip dashSound; 
 
-    // --- NEW: HEAD BOBBING MERGED IN! ---
     [Header("Head Bobbing")]
     public float walkBobSpeed = 14f;
     public float runBobSpeed = 18f;
@@ -78,8 +76,6 @@ public class DoomMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         originalHeight = controller.height; 
-        
-        // Memorize the exact resting spot of the camera!
         defaultCameraPos = playerCamera.localPosition;
     }
 
@@ -90,7 +86,6 @@ public class DoomMovement : MonoBehaviour
         CheckForWalls();
 
         if (controller.isGrounded && velocity.y < 0) velocity.y = -2f; 
-
         velocity.y += gravity * Time.unscaledDeltaTime;
 
         Vector3 move = Vector3.zero;
@@ -106,16 +101,12 @@ public class DoomMovement : MonoBehaviour
             if (stats != null && stats.dizzyStacks > 0)
             {
                 currentDizzyRoll = Mathf.Sin(Time.unscaledTime * (2f + stats.dizzyStacks)) * (2f * stats.dizzyStacks);
-
                 if (Random.Range(0f, 100f) < (0.5f * stats.dizzyStacks)) 
                 {
-                    stumbleTimer = 0.4f; 
+                    stumbleTimer = 0.15f; // AGENT ZETA: Stumble time reduced!
                 }
             }
-            else
-            {
-                currentDizzyRoll = Mathf.Lerp(currentDizzyRoll, 0f, Time.unscaledDeltaTime * 5f);
-            }
+            else currentDizzyRoll = Mathf.Lerp(currentDizzyRoll, 0f, Time.unscaledDeltaTime * 5f);
 
             playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, currentDizzyRoll);
             transform.Rotate(Vector3.up * (mouseDelta.x * mouseSensitivity));
@@ -133,7 +124,6 @@ public class DoomMovement : MonoBehaviour
             bool isRunning = Keyboard.current.leftShiftKey.isPressed && z > 0;
             
             if (isRunning && !isSliding && !isDashing) currentSpeed = runSpeed;
-
             currentSpeed *= speedMultiplier;
 
             if (stumbleTimer > 0f)
@@ -142,24 +132,19 @@ public class DoomMovement : MonoBehaviour
                 currentSpeed *= 0.1f; 
             }
 
-            // --- THE MERGED BOB LOGIC! ---
-            // Only bob the head if we are safely on the ground and not dodging or sliding!
             if (controller.isGrounded && !isSliding && !isDashing)
             {
                 if (inputDirection.magnitude > 0.1f)
                 {
                     float currentBobSpeed = isRunning ? runBobSpeed : walkBobSpeed;
                     bobTimer += Time.unscaledDeltaTime * currentBobSpeed;
-
                     float bobX = Mathf.Cos(bobTimer / 2f) * bobAmountX; 
                     float bobY = Mathf.Sin(bobTimer) * bobAmountY;
-
                     Vector3 targetPos = defaultCameraPos + new Vector3(bobX, bobY, 0f);
                     playerCamera.localPosition = Vector3.Lerp(playerCamera.localPosition, targetPos, 10f * Time.unscaledDeltaTime);
                 }
                 else
                 {
-                    // Smoothly recenter when we stop!
                     bobTimer = 0f;
                     playerCamera.localPosition = Vector3.Lerp(playerCamera.localPosition, defaultCameraPos, 10f * Time.unscaledDeltaTime);
                 }
@@ -184,10 +169,7 @@ public class DoomMovement : MonoBehaviour
                     velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
                     if (playerAudio != null && jumpSound != null) playerAudio.PlayOneShot(jumpSound);
                 }
-                else if (!controller.isGrounded && (wallLeft || wallRight))
-                {
-                    WallBounceJump();
-                }
+                else if (!controller.isGrounded && (wallLeft || wallRight)) WallBounceJump();
             }
 
             if (isDashing) move = dashDirection * dashSpeed * speedMultiplier;
@@ -225,7 +207,7 @@ public class DoomMovement : MonoBehaviour
         if (!isKnockedDown && !isDead)
         {
             knockbackVelocity += direction * force;
-            stumbleTimer = 0.35f; 
+            stumbleTimer = 0.15f; // AGENT ZETA: Stumble time reduced!
             StartCoroutine(SmoothCameraPunchRoutine(12f, 0.08f)); 
         }
     }
@@ -259,8 +241,6 @@ public class DoomMovement : MonoBehaviour
 
         float fallDuration = 0.15f; 
         float elapsed = 0f;
-        
-        // Use our default camera pos so it doesn't get messed up!
         Vector3 normalCamPos = defaultCameraPos;
         Vector3 fallenCamPos = new Vector3(normalCamPos.x, -0.8f, normalCamPos.z); 
         float startXRot = xRotation;
@@ -275,7 +255,6 @@ public class DoomMovement : MonoBehaviour
         }
 
         yield return new WaitForSecondsRealtime(1.5f); 
-
         if (isDead) yield break; 
 
         elapsed = 0f;
@@ -297,10 +276,7 @@ public class DoomMovement : MonoBehaviour
         if (activeMelee != null) StartCoroutine(activeMelee.DrawWeaponRoutine());
     }
 
-    public void TriggerDeath()
-    {
-        if (!isDead) StartCoroutine(DeathRoutine());
-    }
+    public void TriggerDeath() { if (!isDead) StartCoroutine(DeathRoutine()); }
 
     IEnumerator DeathRoutine()
     {
@@ -329,26 +305,14 @@ public class DoomMovement : MonoBehaviour
         }
 
         PauseMenuManager pauseManager = FindObjectOfType<PauseMenuManager>();
-        if (pauseManager != null)
-        {
-            pauseManager.TriggerGameOver();
-        }
+        if (pauseManager != null) pauseManager.TriggerGameOver();
     }
 
     public void AddRecoil(float pushBackForce, float cameraKickUp) { if (isKnockedDown || isDead) return; knockbackVelocity -= playerCamera.forward * pushBackForce; xRotation -= cameraKickUp; xRotation = Mathf.Clamp(xRotation, -90f, 90f); }
     
-    IEnumerator SlideRoutine(Vector3 startDirection) 
-    { 
-        isSliding = true; 
-        slideDirection = startDirection; 
-        controller.height = slideHeight; 
-        playerCamera.localPosition = new Vector3(defaultCameraPos.x, defaultCameraPos.y - (originalHeight - slideHeight) / 2f, defaultCameraPos.z); 
-        yield return new WaitForSecondsRealtime(slideDuration); 
-        controller.height = originalHeight; 
-        playerCamera.localPosition = defaultCameraPos; 
-        isSliding = false; 
-    }
+    IEnumerator SlideRoutine(Vector3 startDirection) { isSliding = true; slideDirection = startDirection; controller.height = slideHeight; playerCamera.localPosition = new Vector3(defaultCameraPos.x, defaultCameraPos.y - (originalHeight - slideHeight) / 2f, defaultCameraPos.z); yield return new WaitForSecondsRealtime(slideDuration); controller.height = originalHeight; playerCamera.localPosition = defaultCameraPos; isSliding = false; }
     
     IEnumerator DashRoutine(Vector3 currentInputDirection) { isDashing = true; lastDashTime = Time.unscaledTime; if (playerAudio != null && dashSound != null) playerAudio.PlayOneShot(dashSound); if (currentInputDirection.magnitude == 0) dashDirection = transform.forward; else dashDirection = currentInputDirection; yield return new WaitForSecondsRealtime(dashDuration); isDashing = false; }
+    
     void PlayFootstepSound() { if (footstepSounds != null && footstepSounds.Length > 0 && playerAudio != null) { int randomIndex = Random.Range(0, footstepSounds.Length); playerAudio.PlayOneShot(footstepSounds[randomIndex]); } }
 }

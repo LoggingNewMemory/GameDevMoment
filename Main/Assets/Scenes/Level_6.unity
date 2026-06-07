@@ -182,7 +182,7 @@ Transform:
   m_GameObject: {fileID: 50931356}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.582, z: -0}
+  m_LocalPosition: {x: 0, y: 5.582, z: -0.088}
   m_LocalScale: {x: 3.2446, y: 5.2222, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -234,7 +234,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 0e149f14c76fafc47bdee3beb90d7dff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -617,96 +617,6 @@ Transform:
   - {fileID: 1154604860541825624}
   - {fileID: 1809707804}
   m_Father: {fileID: 1660741427819028141}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &258456932
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 258456934}
-  - component: {fileID: 258456933}
-  m_Layer: 0
-  m_Name: Wave Manager (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &258456933
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 258456932}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c47f93cd4e72fc7897ffe230a2958ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ArenaSpawner
-  bossTargetToDefeat: {fileID: 1117369203}
-  skillToUnlock: 3
-  disableGachaReward: 0
-  badEndingSceneName: Bad Ending
-  enemiesToSpawn:
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 50
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: The Black
-    enemyPrefab: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
-    spawnWeight: 30
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Ste Jew
-    enemyPrefab: {fileID: 4014714322278504851, guid: d4dfae223ab7bd8649fb75ee2261b1d6, type: 3}
-    spawnWeight: 20
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: America Woke
-    enemyPrefab: {fileID: 3125103903867278189, guid: c7da841298e73a554b159279b435d6d1, type: 3}
-    spawnWeight: 20
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Kaya
-    enemyPrefab: {fileID: 1978879434711127254, guid: f0bae35bdd4322814811dc2a0220ad86, type: 3}
-    spawnWeight: 20
-    maxActiveAtOnce: 5
-    activeInstances: []
-  totalEnemiesToSpawn: 200
-  maxAliveAtOnce: 30
-  minSpawnAtOnce: 2
-  maxSpawnAtOnce: 4
-  timeBetweenBursts: 1
-  nextLevelName: Good Ending
-  timeBeforeNextLevel: 3
-  minSpawnDistance: 12
-  maxSpawnDistance: 30
-  floorLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  enemiesLeftText: {fileID: 82864107}
-  gachaScreen: {fileID: 1605782459}
-  gachaText: {fileID: 1919740370}
-  enemiesAlive: 0
---- !u!4 &258456934
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 258456932}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.86919, y: 1.75881, z: 6.22162}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &284795396
 PrefabInstance:
@@ -1213,6 +1123,30 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasLMG
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasSMG
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasSniper
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasRailgun
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasShotgun
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasAssaultRifle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: notificationText
       value: 
       objectReference: {fileID: 2054299097}
@@ -1699,32 +1633,32 @@ MonoBehaviour:
     activeInstances: []
   - editorNote: The Black
     enemyPrefab: {fileID: 8862466790325390476, guid: be2e96e90f09980368247df3a7c7e761, type: 3}
-    spawnWeight: 30
+    spawnWeight: 20
     maxActiveAtOnce: 5
     activeInstances: []
   - editorNote: Ste Jew
     enemyPrefab: {fileID: 4014714322278504851, guid: d4dfae223ab7bd8649fb75ee2261b1d6, type: 3}
-    spawnWeight: 20
+    spawnWeight: 10
     maxActiveAtOnce: 5
     activeInstances: []
   - editorNote: America Woke
     enemyPrefab: {fileID: 3125103903867278189, guid: c7da841298e73a554b159279b435d6d1, type: 3}
-    spawnWeight: 20
+    spawnWeight: 5
     maxActiveAtOnce: 5
     activeInstances: []
   - editorNote: Kaya
     enemyPrefab: {fileID: 1978879434711127254, guid: f0bae35bdd4322814811dc2a0220ad86, type: 3}
-    spawnWeight: 20
+    spawnWeight: 5
     maxActiveAtOnce: 5
     activeInstances: []
   totalEnemiesToSpawn: 200
-  maxAliveAtOnce: 30
+  maxAliveAtOnce: 15
   minSpawnAtOnce: 2
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1
   nextLevelName: Good Ending
   timeBeforeNextLevel: 3
-  minSpawnDistance: 12
+  minSpawnDistance: 20
   maxSpawnDistance: 30
   floorLayer:
     serializedVersion: 2
@@ -2496,6 +2430,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5332707704859890872, guid: 3fea4de410cd9bfac993eefe542d6be6, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9176510519401836240, guid: 3fea4de410cd9bfac993eefe542d6be6, type: 3}
+      propertyPath: meleeDamage
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 9176510519401836240, guid: 3fea4de410cd9bfac993eefe542d6be6, type: 3}
+      propertyPath: railgunDamage
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 9176510519401836240, guid: 3fea4de410cd9bfac993eefe542d6be6, type: 3}
+      propertyPath: railgunCooldown
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 9176510519401836240, guid: 3fea4de410cd9bfac993eefe542d6be6, type: 3}
+      propertyPath: teleportCooldown
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 9176510519401836240, guid: 3fea4de410cd9bfac993eefe542d6be6, type: 3}
+      propertyPath: flashbangDuration
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -16354,7 +16308,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &3552065797057923509
 GameObject:
   m_ObjectHideFlags: 0
@@ -27329,7 +27283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!33 &6430412789517169415
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -38572,7 +38526,6 @@ SceneRoots:
   - {fileID: 1702841299}
   - {fileID: 821135111}
   - {fileID: 644364176}
-  - {fileID: 258456934}
   - {fileID: 502594759}
   - {fileID: 239962815}
   - {fileID: 1513904084}

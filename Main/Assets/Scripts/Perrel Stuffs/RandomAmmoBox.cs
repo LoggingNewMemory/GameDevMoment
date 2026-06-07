@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic; // <-- AGENT ZETA REQUIRED: For the smart list!
 
 public class RandomAmmoBox : MonoBehaviour
 {
@@ -14,8 +15,22 @@ public class RandomAmmoBox : MonoBehaviour
     {
         if (isCompletelyRandom)
         {
-            // CHANGED: Random.Range max is exclusive. We changed 6 to 7 to include Railgun!
-            myAmmoType = (AmmoType)Random.Range(0, 7);
+            // --- AGENT ZETA SMART AMMO LOGIC ---
+            // Only roll ammo for weapons Pria Sigma 1 actually unlocked!
+            List<AmmoType> ownedWeapons = new List<AmmoType>();
+            
+            ownedWeapons.Add(AmmoType.Pistol); // He always has his trusty pistol!
+
+            if (PlayerPrefs.GetInt("Unlocked_Shotgun", 0) == 1) ownedWeapons.Add(AmmoType.Shotgun);
+            if (PlayerPrefs.GetInt("Unlocked_SMG", 0) == 1) ownedWeapons.Add(AmmoType.SMG);
+            if (PlayerPrefs.GetInt("Unlocked_AssaultRifle", 0) == 1) ownedWeapons.Add(AmmoType.AssaultRifle);
+            if (PlayerPrefs.GetInt("Unlocked_Sniper", 0) == 1) ownedWeapons.Add(AmmoType.Sniper);
+            if (PlayerPrefs.GetInt("Unlocked_LMG", 0) == 1) ownedWeapons.Add(AmmoType.LMG);
+            if (PlayerPrefs.GetInt("Unlocked_Railgun", 0) == 1) ownedWeapons.Add(AmmoType.Railgun);
+
+            // Pick randomly ONLY from the list of owned weapons!
+            myAmmoType = ownedWeapons[Random.Range(0, ownedWeapons.Count)];
+            // -----------------------------------
         }
 
         switch (myAmmoType)
@@ -24,11 +39,8 @@ public class RandomAmmoBox : MonoBehaviour
             case AmmoType.Shotgun: ammoInside = Random.Range(4, 9); break;
             case AmmoType.SMG: ammoInside = Random.Range(30, 50); break;
             case AmmoType.AssaultRifle: ammoInside = Random.Range(20, 31); break;
-            
-            // --- FIXED: Split into Sniper and LMG with proper amounts! ---
             case AmmoType.Sniper: ammoInside = Random.Range(5, 10); break; 
             case AmmoType.LMG: ammoInside = Random.Range(40, 80); break;   
-            
             case AmmoType.Railgun: ammoInside = Random.Range(1, 4); break;
         }
 

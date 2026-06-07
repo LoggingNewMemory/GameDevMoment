@@ -513,6 +513,22 @@ PrefabInstance:
       propertyPath: notificationText
       value: 
       objectReference: {fileID: 1099083081}
+    - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: bloodScreen
+      value: 
+      objectReference: {fileID: 945729139}
+    - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: deadScreenImage
+      value: 
+      objectReference: {fileID: 945729138}
+    - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: healthTextDisplay
+      value: 
+      objectReference: {fileID: 945729140}
+    - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: flashbangScreenImage
+      value: 
+      objectReference: {fileID: 945729137}
     - target: {fileID: 5519485496679102122, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Name
       value: Pria Sigma 1
@@ -815,77 +831,7 @@ MonoBehaviour:
   - editorNote: Jambret
     enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
     spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
-    activeInstances: []
-  - editorNote: Jambret
-    enemyPrefab: {fileID: 3619185253028174861, guid: d32940210e2442815ae0b541b713b9bc, type: 3}
-    spawnWeight: 100
-    maxActiveAtOnce: 5
+    maxActiveAtOnce: 35
     activeInstances: []
   totalEnemiesToSpawn: 150
   maxAliveAtOnce: 40
@@ -1299,7 +1245,7 @@ PrefabInstance:
       objectReference: {fileID: 1513904083}
     - target: {fileID: 2575040351763350545, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2723577077570005595, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
       propertyPath: m_Pivot.x
@@ -1391,11 +1337,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4654284949369936941, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5608796156916793948, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5633980179724152392, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1407,17 +1353,65 @@ PrefabInstance:
       objectReference: {fileID: 1513904083}
     - target: {fileID: 7123131086653838888, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621994101835584971, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8505792513326077410, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
+--- !u!114 &945729137 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1391284871846260095, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
+  m_PrefabInstance: {fileID: 945729136}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &945729138 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 373540701532279436, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
+  m_PrefabInstance: {fileID: 945729136}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &945729139 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 319948131907056381, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
+  m_PrefabInstance: {fileID: 945729136}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &945729140 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7173142017912736044, guid: 01f546bbf78fa4eaa93b01f5336b9d90, type: 3}
+  m_PrefabInstance: {fileID: 945729136}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &950584234
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -75,14 +75,10 @@ public class SteJewAI : MonoBehaviour
         float distance = Vector3.Distance(transform.position, playerTarget.position);
         Vector3 currentMoveDir = Vector3.zero;
 
-        // --- 1. FLEE, PANIC & BOUNCE LOGIC ---
         if (distance < fleeDistance)
         {
             float currentSpeed = moveSpeed;
-            if (distance < panicDistance)
-            {
-                currentSpeed = panicSpeed;
-            }
+            if (distance < panicDistance) currentSpeed = panicSpeed;
 
             if (bounceTimer > 0)
             {
@@ -101,33 +97,24 @@ public class SteJewAI : MonoBehaviour
                 {
                     bounceDir = Vector3.Reflect(currentMoveDir, hit.normal).normalized;
                     bounceDir.y = 0;
-                    
                     bounceTimer = bounceDuration;
                     currentMoveDir = bounceDir;
                 }
             }
 
-            // --- ANTI-SKYROCKET VELOCITY ---
             if (rb != null)
             {
                 float safeY = rb.linearVelocity.y;
-                // If Unity tries to launch him upward faster than 2f, instantly kill the upward momentum!
                 if (safeY > 2f) safeY = -2f; 
-
                 rb.linearVelocity = new Vector3(currentMoveDir.x * currentSpeed, safeY, currentMoveDir.z * currentSpeed);
             }
-            else
-            {
-                transform.position += currentMoveDir * currentSpeed * Time.deltaTime;
-            }
+            else transform.position += currentMoveDir * currentSpeed * Time.deltaTime;
 
             if (anim != null) anim.SetBool("isChasing", true); 
         }
         else
         {
             if (anim != null) anim.SetBool("isChasing", false);
-            
-            // --- ANTI-SKYROCKET BRAKES ---
             if (rb != null) 
             {
                 float safeY = rb.linearVelocity.y;
@@ -136,15 +123,11 @@ public class SteJewAI : MonoBehaviour
             }
         }
 
-        // --- 2. ROTATION LOGIC ---
         if (isCasting)
         {
             Vector3 lookDir = (playerTarget.position - transform.position).normalized;
             lookDir.y = 0;
-            if (lookDir != Vector3.zero)
-            {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 15f);
-            }
+            if (lookDir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 15f);
         }
         else if (currentMoveDir != Vector3.zero)
         {
@@ -154,17 +137,10 @@ public class SteJewAI : MonoBehaviour
         {
             Vector3 lookDir = (playerTarget.position - transform.position).normalized;
             lookDir.y = 0;
-            if (lookDir != Vector3.zero)
-            {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
-            }
+            if (lookDir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
         }
 
-        // --- 3. GLOBAL ATTACK LOGIC ---
-        if (Time.time >= lastAttackTime + attackCooldown)
-        {
-            AttackPlayer();
-        }
+        if (Time.time >= lastAttackTime + attackCooldown) AttackPlayer();
     }
 
     void AttackPlayer()
@@ -173,11 +149,7 @@ public class SteJewAI : MonoBehaviour
         isCasting = true; 
 
         if (anim != null) anim.SetTrigger("Attack");
-
-        if (audioSource != null && attackCastSound != null)
-        {
-            audioSource.PlayOneShot(attackCastSound);
-        }
+        if (audioSource != null && attackCastSound != null) audioSource.PlayOneShot(attackCastSound);
 
         StartCoroutine(MagicHitRoutine());
     }
@@ -185,42 +157,31 @@ public class SteJewAI : MonoBehaviour
     IEnumerator MagicHitRoutine()
     {
         yield return new WaitForSeconds(damageDelay);
-        
         isCasting = false; 
 
         if (healthScript != null && healthScript.isDead) yield break;
 
+        float distance = Vector3.Distance(transform.position, playerTarget.position);
         PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
-        if (stats != null)
-        {
-            stats.TakeDamage(attackDamage, null); 
-            stats.AddDizzyStack();
-        }
-
-        float roll = Random.Range(0f, 100f);
         SimpleShoot activeGun = playerTarget.GetComponentInChildren<SimpleShoot>();
 
-        if (roll <= 60f) 
+        // --- AGENT ZETA TACTICS: RANGE-BASED ATTACKS ---
+        if (distance >= 20f && distance <= 40f)
         {
-            Debug.Log("SteJew just did a normal magic attack!");
+            // Range 20 - 40: Normal Damage, NO DIZZY!
+            if (stats != null) stats.TakeDamage(attackDamage, null); 
+            Debug.Log("SteJew attacked from afar (Range 20-40)!");
         }
-        else if (roll > 60f && roll <= 85f) 
+        else if (distance >= 0f && distance < 20f)
         {
+            // Range 0 - 20: Steal exactly 2 bullets!
             if (activeGun != null)
             {
-                activeGun.StealReserveAmmo(30); 
+                activeGun.StealReserveAmmo(2); 
                 if (stealReserveSound != null) AudioSource.PlayClipAtPoint(stealReserveSound, playerTarget.position);
-                Debug.Log("SteJew used Global Magic to steal 30 Reserve Ammo!");
+                Debug.Log("SteJew used Close-Range Magic to steal 2 Reserve Ammo!");
             }
         }
-        else 
-        {
-            if (activeGun != null)
-            {
-                activeGun.EmptyMagazine();
-                if (emptyMagSound != null) AudioSource.PlayClipAtPoint(emptyMagSound, playerTarget.position);
-                Debug.Log("SteJew used Global Magic to empty your magazine!");
-            }
-        }
+        // Gak usah ada else! (If distance > 40f, attack misses entirely!)
     }
 }
