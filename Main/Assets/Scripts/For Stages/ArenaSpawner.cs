@@ -38,7 +38,6 @@ public class ArenaSpawner : MonoBehaviour
     public string badEndingSceneName = ""; 
     private bool playerDefeated = false;
     
-    // --- AGENT ZETA FIX 1: Look for PlayerStats instead of UniversalHealth! ---
     private PlayerStats playerStatsScript;
 
     private bool isBossLevel = false;
@@ -56,13 +55,17 @@ public class ArenaSpawner : MonoBehaviour
     public int maxSpawnAtOnce = 10;        
     public float timeBetweenBursts = 3f; 
 
-    [Header("Level Transition")]
-    public string nextLevelName = "Level_2"; 
-    public float timeBeforeNextLevel = 3f;   
-
     [Header("Spawn Area (Around Player)")]
     public float minSpawnDistance = 12f;   
     public float maxSpawnDistance = 30f;   
+    
+    [Header("Level 5 Override (Tight Spaces)")]
+    [Tooltip("Tick this to ignore walls and just force spawn enemies around the player! Perfect for tight maps.")]
+    public bool forceSimpleRadialSpawn = false; 
+
+    [Header("Level Transition")]
+    public string nextLevelName = "Level_2"; 
+    public float timeBeforeNextLevel = 3f;   
     
     public LayerMask floorLayer; 
 
@@ -83,7 +86,6 @@ public class ArenaSpawner : MonoBehaviour
         if (p != null) 
         {
             player = p.transform;
-            // --- AGENT ZETA FIX 1 APPLIED ---
             playerStatsScript = player.GetComponent<PlayerStats>();
         }
 
@@ -107,7 +109,6 @@ public class ArenaSpawner : MonoBehaviour
 
     void Update()
     {
-        // --- AGENT ZETA FIX 2: ALWAYS check if the player is dead, even if there is no boss! ---
         if (!stageCleared && !playerDefeated)
         {
             if (playerStatsScript != null && playerStatsScript.isDead)
@@ -117,7 +118,6 @@ public class ArenaSpawner : MonoBehaviour
             }
         }
 
-        // Only check boss death if it's actually a boss level
         if (isBossLevel && !stageCleared && !playerDefeated)
         {
             bool isBossDead = false;
@@ -165,19 +165,57 @@ public class ArenaSpawner : MonoBehaviour
         LevelEnemy chosenEnemyData = PickRandomEnemyBasedOnWeight();
         if (chosenEnemyData == null || chosenEnemyData.enemyPrefab == null) return; 
 
-        for (int attempts = 0; attempts < 10; attempts++)
+        for (int attempts = 0; attempts < 30; attempts++)
         {
             Vector2 randomDir = Random.insideUnitCircle.normalized;
             float distance = Random.Range(minSpawnDistance, maxSpawnDistance);
             Vector3 spawnOffset = new Vector3(randomDir.x, 0, randomDir.y) * distance;
 
+            // --- AGENT ZETA OVERRIDE: BRUTE FORCE SPAWN ---
+            if (forceSimpleRadialSpawn)
+            {
+                Vector3 simpleSpawnPos = player.position + spawnOffset;
+                simpleSpawnPos.y += 2f; 
+
+                if (Physics.Raycast(simpleSpawnPos, Vector3.down, out RaycastHit hitFloor, 15f, floorLayer))
+                {
+                    Vector3 finalSpawnPoint = hitFloor.point + (Vector3.up * 0.1f);
+
+                    // 1. Anti-Wall Clipping Check
+                    if (Physics.CheckSphere(finalSpawnPoint + (Vector3.up * 1f), 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                    {
+                        continue; 
+                    }
+
+                    // 2. LINE-OF-SIGHT CHECK (The Outside Map Fix)
+                    Vector3 playerChest = player.position + (Vector3.up * 1f);
+                    Vector3 enemyChest = finalSpawnPoint + (Vector3.up * 1f);
+                    if (Physics.Linecast(playerChest, enemyChest, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                    {
+                        continue; // The laser hit a wall! The spawn point is outside the room! Abort!
+                    }
+
+                    GameObject simpleEnemy = Instantiate(chosenEnemyData.enemyPrefab, finalSpawnPoint, Quaternion.identity);
+                    chosenEnemyData.activeInstances.Add(simpleEnemy);
+
+                    BasicChaserAI simpleAI = simpleEnemy.GetComponent<BasicChaserAI>();
+                    if (simpleAI != null) simpleAI.SetTarget(player);
+                    enemiesSpawned++;
+                    enemiesAlive++;
+                    return; 
+                }
+                continue; 
+            }
+            // ----------------------------------------------
+
+            // NORMAL COMPLEX RADAR (For Levels 1-4)
             Vector3 rayStart = player.position + Vector3.up * 0.2f; 
             Vector3 rayDir = spawnOffset.normalized;
 
             if (Physics.Raycast(rayStart, rayDir, out RaycastHit wallHit, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
             {
                 distance = wallHit.distance - 1.5f;
-                if (distance < minSpawnDistance) continue; 
+                if (distance < 4f) continue; 
                 spawnOffset = rayDir * distance;
             }
 
@@ -186,7 +224,23 @@ public class ArenaSpawner : MonoBehaviour
 
             if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 10f, floorLayer))
             {
-                GameObject newEnemy = Instantiate(chosenEnemyData.enemyPrefab, hit.point + (Vector3.up * 0.1f), Quaternion.identity);
+                Vector3 finalSpawnPoint = hit.point + (Vector3.up * 0.1f);
+
+                // 1. Anti-Wall Clipping Check
+                if (Physics.CheckSphere(finalSpawnPoint + (Vector3.up * 1f), 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                {
+                    continue; 
+                }
+
+                // 2. LINE-OF-SIGHT CHECK (The Outside Map Fix)
+                Vector3 playerChest = player.position + (Vector3.up * 1f);
+                Vector3 enemyChest = finalSpawnPoint + (Vector3.up * 1f);
+                if (Physics.Linecast(playerChest, enemyChest, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                {
+                    continue; // They tried to spawn outside or in another room! Abort!
+                }
+
+                GameObject newEnemy = Instantiate(chosenEnemyData.enemyPrefab, finalSpawnPoint, Quaternion.identity);
                 chosenEnemyData.activeInstances.Add(newEnemy);
 
                 BasicChaserAI ai = newEnemy.GetComponent<BasicChaserAI>();

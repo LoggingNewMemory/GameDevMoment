@@ -1010,6 +1010,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: notificationText
+      value: 
+      objectReference: {fileID: 2054299097}
     - target: {fileID: 7456181007734404913, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -2351,6 +2355,7 @@ MonoBehaviour:
   saveButton: {fileID: 1534815282}
   defaultMainMenuName: main_menu
   specialMainMenuName: Special_Main_Menu
+  isBadEndingLevel: 0
   playerRoot: {fileID: 1684611648}
 --- !u!4 &1513904084
 Transform:

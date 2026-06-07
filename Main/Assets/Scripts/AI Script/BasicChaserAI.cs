@@ -8,6 +8,16 @@ public class BasicChaserAI : MonoBehaviour
     public float attackDamage = 10f;
     public float attackCooldown = 1.2f;
 
+    [Header("Agent Zeta's Wall Slider")]
+    [Tooltip("How far ahead the enemy looks for walls.")]
+    public float obstacleCheckDistance = 1.5f; 
+    [Tooltip("How thick the enemy is (prevents shoulder clipping).")]
+    public float bodyRadius = 0.4f; 
+
+    [Header("Phantom Protocol (Anti-Stuck)")]
+    public float stuckCheckInterval = 3f; 
+    public float stuckDistanceThreshold = 1.0f; 
+
     private Transform playerTarget;
     private float lastAttackTime = 0f;
 
@@ -16,17 +26,21 @@ public class BasicChaserAI : MonoBehaviour
     private UniversalHealth healthScript; 
     private Rigidbody rb; 
 
+    // Anti-stuck trackers
+    private Vector3 lastCheckedPosition;
+    private float nextStuckCheckTime = 0f;
+
     void Start()
     {
         anim = GetComponent<Animator>();
         meleeScript = GetComponent<UniversalMeleeAttack>();
         healthScript = GetComponent<UniversalHealth>();
         rb = GetComponent<Rigidbody>(); 
-        
-        // KOBO OPTIMIZATION: No more FindGameObjectWithTag! Target is injected by spawner!
+
+        lastCheckedPosition = transform.position;
+        nextStuckCheckTime = Time.time + stuckCheckInterval;
     }
 
-    // Function to receive the target from the spawner
     public void SetTarget(Transform target)
     {
         playerTarget = target;
@@ -40,10 +54,29 @@ public class BasicChaserAI : MonoBehaviour
         Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
         transform.LookAt(lookPos);
 
-        // KOBO OPTIMIZATION: sqrMagnitude is 10x faster than Vector3.Distance!
         float sqrDistance = (transform.position - playerTarget.position).sqrMagnitude;
 
-        // Multiply attackRange by itself to match the sqrDistance
+        // --- AGENT ZETA: ANTI-STUCK MONITOR ---
+        if (Time.time > nextStuckCheckTime)
+        {
+            // Only check if they are safely outside of their attack range!
+            if (sqrDistance > (attackRange * attackRange * 4f)) 
+            {
+                float movedDist = Vector3.Distance(transform.position, lastCheckedPosition);
+                
+                if (movedDist < stuckDistanceThreshold)
+                {
+                    // THEY ARE STUCK! INITIATE SAFE TELEPORT!
+                    SafeTeleportToPlayer();
+                }
+            }
+            
+            // Reset trackers for the next 3 seconds
+            lastCheckedPosition = transform.position;
+            nextStuckCheckTime = Time.time + stuckCheckInterval;
+        }
+        // --------------------------------------
+
         if (sqrDistance > (attackRange * attackRange))
         {
             if (anim != null) anim.SetBool("isChasing", true);
@@ -51,6 +84,18 @@ public class BasicChaserAI : MonoBehaviour
             if (rb != null)
             {
                 Vector3 direction = (lookPos - transform.position).normalized;
+
+                // Wall Slider Math
+                Vector3 chestPos = transform.position + Vector3.up * 1f;
+                
+                if (Physics.SphereCast(chestPos, bodyRadius, direction, out RaycastHit hit, obstacleCheckDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                {
+                    if (!hit.collider.CompareTag("Player"))
+                    {
+                        direction = Vector3.ProjectOnPlane(direction, hit.normal).normalized;
+                    }
+                }
+
                 rb.linearVelocity = new Vector3(direction.x * moveSpeed, rb.linearVelocity.y, direction.z * moveSpeed);
             }
         }
@@ -67,6 +112,36 @@ public class BasicChaserAI : MonoBehaviour
             {
                 lastAttackTime = Time.time;
                 if (meleeScript != null) meleeScript.TriggerAttack(attackDamage);
+            }
+        }
+    }
+
+    void SafeTeleportToPlayer()
+    {
+        // Try up to 10 times to find a safe spot around Pria Sigma 1
+        for (int i = 0; i < 10; i++) 
+        {
+            Vector2 randomDir = Random.insideUnitCircle.normalized;
+            float dist = Random.Range(6f, 15f); // Teleport 6 to 15 meters away
+            Vector3 testPos = playerTarget.position + new Vector3(randomDir.x, 2f, randomDir.y) * dist;
+
+            // 1. Shoot a laser down to find solid floor
+            if (Physics.Raycast(testPos, Vector3.down, out RaycastHit floorHit, 15f))
+            {
+                Vector3 finalPos = floorHit.point + (Vector3.up * 0.1f);
+
+                // 2. Anti-Wall Clipping Check (If the bubble hits Default layer, it's unsafe!)
+                if (!Physics.CheckSphere(finalPos + (Vector3.up * 1f), bodyRadius * 1.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                {
+                    // It is 100% safe! Warp them!
+                    if (rb != null) rb.position = finalPos;
+                    else transform.position = finalPos;
+                    
+                    // Reset the tracker so they don't immediately teleport again
+                    lastCheckedPosition = finalPos;
+                    Debug.Log("<color=cyan>[Agent Zeta] Enemy was stuck! Safely relocated to new coordinates!</color>");
+                    return;
+                }
             }
         }
     }

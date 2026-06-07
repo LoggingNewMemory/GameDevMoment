@@ -7,6 +7,10 @@ public class SteJewAI : MonoBehaviour
     public float moveSpeed = 22f; 
     public float fleeDistance = 15f; 
     
+    [Header("Phantom Protocol (Anti-Stuck Flee)")]
+    public float stuckCheckInterval = 3f; 
+    public float stuckDistanceThreshold = 1.0f; 
+
     [Header("Panic Settings (Almost Caught)")]
     public float panicDistance = 6f;   
     public float panicSpeed = 38f;     
@@ -37,6 +41,9 @@ public class SteJewAI : MonoBehaviour
     
     private bool isCasting = false; 
 
+    private Vector3 lastCheckedPosition;
+    private float nextStuckCheckTime = 0f;
+
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -46,13 +53,11 @@ public class SteJewAI : MonoBehaviour
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null) 
-        {
-            playerTarget = p.transform;
-            Debug.Log("<color=yellow>" + gameObject.name + " is currently avoiding: " + p.name + "</color>");
-        }
+        if (p != null) playerTarget = p.transform;
 
         lastAttackTime = Time.time; 
+        lastCheckedPosition = transform.position;
+        nextStuckCheckTime = Time.time + stuckCheckInterval;
     }
 
     void Update()
@@ -63,7 +68,6 @@ public class SteJewAI : MonoBehaviour
             {
                 rb.linearVelocity = Vector3.zero; 
                 rb.isKinematic = true; 
-                
                 Collider col = GetComponent<Collider>();
                 if (col != null) col.enabled = false;
             }
@@ -73,6 +77,21 @@ public class SteJewAI : MonoBehaviour
         if (playerTarget == null) return;
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
+
+        // --- AGENT ZETA: ANTI-STUCK MONITOR ---
+        if (Time.time > nextStuckCheckTime)
+        {
+            // If she is actively trying to run away (within flee range) but stuck!
+            if (distance < fleeDistance) 
+            {
+                float movedDist = Vector3.Distance(transform.position, lastCheckedPosition);
+                if (movedDist < stuckDistanceThreshold) SafeTeleportAway(); 
+            }
+            lastCheckedPosition = transform.position;
+            nextStuckCheckTime = Time.time + stuckCheckInterval;
+        }
+        // --------------------------------------
+
         Vector3 currentMoveDir = Vector3.zero;
 
         if (distance < fleeDistance)
@@ -143,6 +162,28 @@ public class SteJewAI : MonoBehaviour
         if (Time.time >= lastAttackTime + attackCooldown) AttackPlayer();
     }
 
+    void SafeTeleportAway()
+    {
+        for (int i = 0; i < 10; i++) 
+        {
+            Vector2 randomDir = Random.insideUnitCircle.normalized;
+            float dist = Random.Range(15f, 25f); // Teleport FAR away!
+            Vector3 testPos = playerTarget.position + new Vector3(randomDir.x, 2f, randomDir.y) * dist;
+
+            if (Physics.Raycast(testPos, Vector3.down, out RaycastHit floorHit, 15f))
+            {
+                Vector3 finalPos = floorHit.point + (Vector3.up * 0.1f);
+                if (!Physics.CheckSphere(finalPos + (Vector3.up * 1f), 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                {
+                    if (rb != null) rb.position = finalPos;
+                    else transform.position = finalPos;
+                    lastCheckedPosition = finalPos;
+                    return;
+                }
+            }
+        }
+    }
+
     void AttackPlayer()
     {
         lastAttackTime = Time.time;
@@ -165,23 +206,17 @@ public class SteJewAI : MonoBehaviour
         PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
         SimpleShoot activeGun = playerTarget.GetComponentInChildren<SimpleShoot>();
 
-        // --- AGENT ZETA TACTICS: RANGE-BASED ATTACKS ---
         if (distance >= 20f && distance <= 40f)
         {
-            // Range 20 - 40: Normal Damage, NO DIZZY!
             if (stats != null) stats.TakeDamage(attackDamage, null); 
-            Debug.Log("SteJew attacked from afar (Range 20-40)!");
         }
         else if (distance >= 0f && distance < 20f)
         {
-            // Range 0 - 20: Steal exactly 2 bullets!
             if (activeGun != null)
             {
                 activeGun.StealReserveAmmo(2); 
                 if (stealReserveSound != null) AudioSource.PlayClipAtPoint(stealReserveSound, playerTarget.position);
-                Debug.Log("SteJew used Close-Range Magic to steal 2 Reserve Ammo!");
             }
         }
-        // Gak usah ada else! (If distance > 40f, attack misses entirely!)
     }
 }
