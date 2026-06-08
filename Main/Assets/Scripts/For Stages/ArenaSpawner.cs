@@ -56,12 +56,8 @@ public class ArenaSpawner : MonoBehaviour
     public float timeBetweenBursts = 3f; 
 
     [Header("Spawn Area (Around Player)")]
-    public float minSpawnDistance = 12f;   
-    public float maxSpawnDistance = 30f;   
-    
-    [Header("Level 5 Override (Tight Spaces)")]
-    [Tooltip("Tick this to ignore walls and just force spawn enemies around the player! Perfect for tight maps.")]
-    public bool forceSimpleRadialSpawn = false; 
+    public float minSpawnDistance = 5f;    // <-- ZETA TACTIC: Reduced to 5 so they can spawn closer in tight rooms!
+    public float maxSpawnDistance = 15f;   // <-- ZETA TACTIC: Reduced to 15 so they don't spawn out of bounds!
 
     [Header("Level Transition")]
     public string nextLevelName = "Level_2"; 
@@ -170,86 +166,42 @@ public class ArenaSpawner : MonoBehaviour
         LevelEnemy chosenEnemyData = PickRandomEnemyBasedOnWeight();
         if (chosenEnemyData == null || chosenEnemyData.enemyPrefab == null) return; 
 
+        // Try 30 times to find a valid spot
         for (int attempts = 0; attempts < 30; attempts++)
         {
             Vector2 randomDir = Random.insideUnitCircle.normalized;
             float distance = Random.Range(minSpawnDistance, maxSpawnDistance);
             Vector3 spawnOffset = new Vector3(randomDir.x, 0, randomDir.y) * distance;
 
-            // --- AGENT ZETA OVERRIDE: BRUTE FORCE SPAWN ---
-            if (forceSimpleRadialSpawn)
+            // --- AGENT ZETA PURE BRUTE FORCE ---
+            Vector3 simpleSpawnPos = player.position + spawnOffset;
+            simpleSpawnPos.y += 2f; 
+
+            // Check 1: Is there a floor below?
+            if (Physics.Raycast(simpleSpawnPos, Vector3.down, out RaycastHit hitFloor, 15f, floorLayer))
             {
-                Vector3 simpleSpawnPos = player.position + spawnOffset;
-                simpleSpawnPos.y += 2f; 
+                Vector3 finalSpawnPoint = hitFloor.point + (Vector3.up * 0.1f);
 
-                if (Physics.Raycast(simpleSpawnPos, Vector3.down, out RaycastHit hitFloor, 15f, floorLayer))
-                {
-                    Vector3 finalSpawnPoint = hitFloor.point + (Vector3.up * 0.1f);
-
-                    // 1. Anti-Wall Clipping Check
-                    if (Physics.CheckSphere(finalSpawnPoint + (Vector3.up * 1f), 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                    {
-                        continue; 
-                    }
-
-                    // 2. LINE-OF-SIGHT CHECK (The Outside Map Fix)
-                    Vector3 playerChest = player.position + (Vector3.up * 1f);
-                    Vector3 enemyChest = finalSpawnPoint + (Vector3.up * 1f);
-                    if (Physics.Linecast(playerChest, enemyChest, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                    {
-                        continue; // The laser hit a wall! The spawn point is outside the room! Abort!
-                    }
-
-                    GameObject simpleEnemy = Instantiate(chosenEnemyData.enemyPrefab, finalSpawnPoint, Quaternion.identity);
-                    chosenEnemyData.activeInstances.Add(simpleEnemy);
-
-                    BasicChaserAI simpleAI = simpleEnemy.GetComponent<BasicChaserAI>();
-                    if (simpleAI != null) simpleAI.SetTarget(player);
-                    enemiesSpawned++;
-                    enemiesAlive++;
-                    return; 
-                }
-                continue; 
-            }
-            // ----------------------------------------------
-
-            // NORMAL COMPLEX RADAR (For Levels 1-4)
-            Vector3 rayStart = player.position + Vector3.up * 0.2f; 
-            Vector3 rayDir = spawnOffset.normalized;
-
-            if (Physics.Raycast(rayStart, rayDir, out RaycastHit wallHit, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-            {
-                distance = wallHit.distance - 1.5f;
-                if (distance < 4f) continue; 
-                spawnOffset = rayDir * distance;
-            }
-
-            Vector3 spawnPos = player.position + spawnOffset;
-            spawnPos.y += 2f; 
-
-            if (Physics.Raycast(spawnPos, Vector3.down, out RaycastHit hit, 10f, floorLayer))
-            {
-                Vector3 finalSpawnPoint = hit.point + (Vector3.up * 0.1f);
-
-                // 1. Anti-Wall Clipping Check
+                // Check 2: Anti-Wall Clipping (Are we inside a Default layer wall?)
                 if (Physics.CheckSphere(finalSpawnPoint + (Vector3.up * 1f), 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                 {
-                    continue; 
+                    continue; // We hit a wall! Try another spot.
                 }
 
-                // 2. LINE-OF-SIGHT CHECK (The Outside Map Fix)
+                // Check 3: Line of Sight (Are we spawning outside the map or behind a closed door?)
                 Vector3 playerChest = player.position + (Vector3.up * 1f);
                 Vector3 enemyChest = finalSpawnPoint + (Vector3.up * 1f);
                 if (Physics.Linecast(playerChest, enemyChest, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                 {
-                    continue; // They tried to spawn outside or in another room! Abort!
+                    continue; // Wall blocks the view! Try another spot.
                 }
 
-                GameObject newEnemy = Instantiate(chosenEnemyData.enemyPrefab, finalSpawnPoint, Quaternion.identity);
-                chosenEnemyData.activeInstances.Add(newEnemy);
+                // IT PASSED ALL CHECKS! SPAWN THEM!
+                GameObject simpleEnemy = Instantiate(chosenEnemyData.enemyPrefab, finalSpawnPoint, Quaternion.identity);
+                chosenEnemyData.activeInstances.Add(simpleEnemy);
 
-                BasicChaserAI ai = newEnemy.GetComponent<BasicChaserAI>();
-                if (ai != null) ai.SetTarget(player);
+                BasicChaserAI simpleAI = simpleEnemy.GetComponent<BasicChaserAI>();
+                if (simpleAI != null) simpleAI.SetTarget(player);
                 enemiesSpawned++;
                 enemiesAlive++;
                 return; 
