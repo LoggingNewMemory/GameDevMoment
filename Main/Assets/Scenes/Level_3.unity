@@ -1514,10 +1514,10 @@ MonoBehaviour:
   minSpawnAtOnce: 2
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1
-  nextLevelName: CUTSCENE Rizwan Intro
-  timeBeforeNextLevel: 3
   minSpawnDistance: 12
   maxSpawnDistance: 30
+  nextLevelName: CUTSCENE Rizwan Intro
+  timeBeforeNextLevel: 3
   floorLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -1601,7 +1601,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: f4535ae2434e5c3b58a3847eaacfee66, type: 3}
+  m_Resource: {fileID: 8300000, guid: d91eaeb112ea8212b90d4aa95a4c37a7, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.3
   m_Pitch: 1

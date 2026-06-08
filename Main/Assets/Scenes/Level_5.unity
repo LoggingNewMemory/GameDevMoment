@@ -1512,7 +1512,6 @@ MonoBehaviour:
   timeBetweenBursts: 1
   minSpawnDistance: 13
   maxSpawnDistance: 30
-  forceSimpleRadialSpawn: 1
   nextLevelName: CUTSCENE Level 6
   timeBeforeNextLevel: 3
   floorLayer:
@@ -1598,7 +1597,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: f4535ae2434e5c3b58a3847eaacfee66, type: 3}
+  m_Resource: {fileID: 8300000, guid: 7364e911d69acf1b0af3024947d269fd, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.3
   m_Pitch: 1

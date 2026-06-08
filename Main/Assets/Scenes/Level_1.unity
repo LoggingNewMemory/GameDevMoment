@@ -838,10 +838,10 @@ MonoBehaviour:
   minSpawnAtOnce: 1
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1
-  nextLevelName: CUTSCENE Shanna Intro
-  timeBeforeNextLevel: 3
   minSpawnDistance: 12
   maxSpawnDistance: 25
+  nextLevelName: CUTSCENE Shanna Intro
+  timeBeforeNextLevel: 3
   floorLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -925,7 +925,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: f4535ae2434e5c3b58a3847eaacfee66, type: 3}
+  m_Resource: {fileID: 8300000, guid: d841146379325d808a9ae62f9ea4d81f, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.3
   m_Pitch: 1
@@ -1636,6 +1636,7 @@ MonoBehaviour:
   saveButton: {fileID: 1534815282}
   defaultMainMenuName: main_menu
   specialMainMenuName: Special_Main_Menu
+  isBadEndingLevel: 0
   playerRoot: {fileID: 1684611648}
 --- !u!4 &1513904084
 Transform:
