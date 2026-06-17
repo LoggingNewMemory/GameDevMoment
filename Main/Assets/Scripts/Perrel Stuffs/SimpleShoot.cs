@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections; 
+using System.Collections.Generic; 
 using TMPro; 
 using UnityEngine.UI;
 
@@ -19,6 +20,12 @@ public class SimpleShoot : MonoBehaviour
     public bool isBoltAction = false; 
     public float fireRate = 10f; 
     private float nextTimeToFire = 0f; 
+
+    [Header("Projectile Settings (Agent Zeta Hook)")]
+    [Tooltip("Tick this if you want the weapon to spawn real bullet objects instead of instant hitscan raycasts!")]
+    public bool useProjectile = false;
+    [Tooltip("Drag your Laser Bullet prefab here!")]
+    public GameObject projectilePrefab;
 
     [Header("Shotgun Settings")]
     public bool isShotgun = false;
@@ -231,7 +238,6 @@ public class SimpleShoot : MonoBehaviour
                 {
                     leftGunMuzzle = child;
                     
-                    // --- NEW FIX: Destroy any stuck flashes that accidentally got cloned! ---
                     foreach (Transform stuckFlash in leftGunMuzzle)
                     {
                         Destroy(stuckFlash.gameObject);
@@ -341,7 +347,6 @@ public class SimpleShoot : MonoBehaviour
             int reloadAmount = wasHaluActive ? 2 : 1;
             if (reserveAmmo < reloadAmount) reloadAmount = reserveAmmo;
             
-            // --- NEW FIX: Hardcoded 0.25s fast shell insert! Audio will overlap! ---
             if (weaponAudio != null && insertShellSound != null) 
             { 
                 weaponAudio.PlayOneShot(insertShellSound); 
@@ -351,7 +356,6 @@ public class SimpleShoot : MonoBehaviour
             {
                 yield return new WaitForSecondsRealtime(0.25f / speedMod); 
             }
-            // ---------------------------------------------------------------------
             
             currentAmmo += reloadAmount; 
             reserveAmmo -= reloadAmount; 
@@ -415,6 +419,10 @@ public class SimpleShoot : MonoBehaviour
 
         for (int g = 0; g < gunsToFire; g++)
         {
+            // Track which muzzle is actively shooting (Right vs Left Gun)
+            Transform activeMuzzle = (g == 0) ? muzzlePoint : leftGunMuzzle;
+            if (activeMuzzle == null) activeMuzzle = transform; // Security fallback
+
             Vector3 visualEndPoint = rayOrigin + (fpsCamera.transform.forward * range);
             int shotsToFire = isShotgun ? pelletCount : 1;
 
@@ -432,6 +440,22 @@ public class SimpleShoot : MonoBehaviour
                 float finalDamage = damage;
                 PlayerStats stats = GetComponentInParent<PlayerStats>();
                 if (stats != null && stats.isDrunk) finalDamage *= 1.2f;
+
+                // --- AGENT ZETA HOOK: PROJECTILE INTERCEPTION ---
+                if (useProjectile && projectilePrefab != null)
+                {
+                    // Spawn bullet at the active muzzle pointing exactly along the calculated ray direction (supports spread!)
+                    GameObject proj = Instantiate(projectilePrefab, activeMuzzle.position, Quaternion.LookRotation(rayDirection));
+                    
+                    // Push the final computed damage directly into your LaserProjectile script
+                    LaserProjectile projScript = proj.GetComponent<LaserProjectile>();
+                    if (projScript != null)
+                    {
+                        projScript.damage = finalDamage;
+                    }
+                    continue; // Skip the standard raycasting mechanics completely for this bullet!
+                }
+                // -----------------------------------------------
 
                 if (isRailgun)
                 {
@@ -455,7 +479,8 @@ public class SimpleShoot : MonoBehaviour
                 }
             }
 
-            if (!isShotgun && beamEffectPrefab != null) 
+            // Only generate raycast laser beams if we are NOT using actual physical bullets
+            if (!useProjectile && !isShotgun && beamEffectPrefab != null) 
             {
                 if (g == 0 && muzzlePoint != null) HandleBeamVisuals(visualEndPoint, ref spawnedBeamFader, muzzlePoint);
                 if (g == 1 && leftGunMuzzle != null) HandleBeamVisuals(visualEndPoint, ref leftSpawnedBeamFader, leftGunMuzzle);
@@ -563,7 +588,6 @@ public class SimpleShoot : MonoBehaviour
         UpdateAmmoUI();
     }
 
-    // --- THE NEW DUAL WIELD AUDIO & VISUAL DELAY ---
     IEnumerator PlayDelayedFireSound(float delay)
     {
         yield return new WaitForSecondsRealtime(delay);
@@ -576,7 +600,6 @@ public class SimpleShoot : MonoBehaviour
             weaponAudio.pitch = originalPitch; 
         }
 
-        // --- NEW FIX: Pop the left flash here so it perfectly matches the delayed sound! ---
         if (muzzleFlashPrefab != null && leftGunMuzzle != null)
         {
             GameObject flashL = Instantiate(muzzleFlashPrefab, leftGunMuzzle.position, leftGunMuzzle.rotation);

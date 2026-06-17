@@ -1758,6 +1758,30 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasLMG
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasSMG
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasSniper
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasRailgun
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasShotgun
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: hasAssaultRifle
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7595795726222052823, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: hasHaluOfCS
       value: 1
@@ -1775,6 +1799,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
       objectReference: {fileID: 122824187}
@@ -1782,6 +1810,10 @@ PrefabInstance:
       propertyPath: crosshairDisplay
       value: 
       objectReference: {fileID: 455410650}
+    - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 5914571967650746460, guid: 35b340f610bc9a87e8bf48ad528c8dde, type: 3}
     - target: {fileID: 7870470160750590261, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -1952,12 +1984,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAmmoStore
   hasPistol: 1
-  hasShotgun: 0
-  hasSMG: 0
-  hasAssaultRifle: 0
-  hasSniper: 0
-  hasLMG: 0
-  hasRailgun: 0
+  hasShotgun: 1
+  hasSMG: 1
+  hasAssaultRifle: 1
+  hasSniper: 1
+  hasLMG: 1
+  hasRailgun: 1
   pistolAmmo: 30
   shotgunAmmo: 8
   smgAmmo: 60

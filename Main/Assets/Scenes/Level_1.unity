@@ -513,6 +513,30 @@ PrefabInstance:
       propertyPath: notificationText
       value: 
       objectReference: {fileID: 1099083081}
+    - target: {fileID: 454758429910345799, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454758429910345799, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 5914571967650746460, guid: 35b340f610bc9a87e8bf48ad528c8dde, type: 3}
+    - target: {fileID: 2669124890678278977, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2669124890678278977, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 5914571967650746460, guid: 35b340f610bc9a87e8bf48ad528c8dde, type: 3}
+    - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 5914571967650746460, guid: 35b340f610bc9a87e8bf48ad528c8dde, type: 3}
     - target: {fileID: 5193352100363711992, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: bloodScreen
       value: 
@@ -533,6 +557,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pria Sigma 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6161236861588191660, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6161236861588191660, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 5914571967650746460, guid: 35b340f610bc9a87e8bf48ad528c8dde, type: 3}
     - target: {fileID: 7228406177975556466, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: notificationText
       value: 
@@ -541,6 +573,30 @@ PrefabInstance:
       propertyPath: powerStatusText
       value: 
       objectReference: {fileID: 433649491}
+    - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 5914571967650746460, guid: 35b340f610bc9a87e8bf48ad528c8dde, type: 3}
+    - target: {fileID: 8093123419379736228, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8093123419379736228, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 5914571967650746460, guid: 35b340f610bc9a87e8bf48ad528c8dde, type: 3}
+    - target: {fileID: 8114743893565785527, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8114743893565785527, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 5914571967650746460, guid: 35b340f610bc9a87e8bf48ad528c8dde, type: 3}
     - target: {fileID: 8650894406798222243, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
