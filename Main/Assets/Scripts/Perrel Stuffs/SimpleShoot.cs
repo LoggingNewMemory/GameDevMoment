@@ -84,6 +84,9 @@ public class SimpleShoot : MonoBehaviour
     public Color flashColor = new Color(1f, 1f, 1f, 1f); 
     public float flashFadeDuration = 0.5f; 
 
+    public Sprite anangThugSprite;
+    public Sprite railgunScreenSprite;
+
     private Vector3 baseStartPos;    
     private Vector3 originalPosition; 
     private bool hasStarted = false;
@@ -121,6 +124,24 @@ public class SimpleShoot : MonoBehaviour
             if (projectilePrefab == null)
             {
                 Debug.LogError("<color=red>[Agent Zeta] CRITICAL: Cannot find 'Bullet' in the Resources folder!</color>");
+            }
+        }
+
+        if (isRailgun)
+        {
+            if (anangThugSprite == null)
+            {
+                anangThugSprite = Resources.Load<Sprite>("Anang Thug"); 
+            }
+            
+            if (railgunScreenSprite == null)
+            {
+                railgunScreenSprite = Resources.Load<Sprite>("Railgun Screen"); 
+            }
+
+            if (anangThugSprite == null || railgunScreenSprite == null)
+            {
+                Debug.LogError("<color=red>[Agent Zeta] CRITICAL: Cannot find Anang Thug or Railgun Screen in Resources!</color>");
             }
         }
     }
@@ -511,6 +532,20 @@ public class SimpleShoot : MonoBehaviour
 
     IEnumerator ScreenFlashRoutine()
     {
+        if (anangThugSprite != null && railgunScreenSprite != null)
+        {
+            // Random.value generates a decimal between 0.0 and 1.0
+            if (Random.value <= 0.30f) 
+            {
+                screenFlashImage.sprite = anangThugSprite;
+                Debug.Log("<color=magenta>[Agent Zeta] 30% RNG HIT! ANANG THUG JUMPSCARE!</color>");
+            }
+            else 
+            {
+                screenFlashImage.sprite = railgunScreenSprite;
+            }
+        }
+
         screenFlashImage.gameObject.SetActive(true); 
         screenFlashImage.color = flashColor;
         float elapsed = 0f;
