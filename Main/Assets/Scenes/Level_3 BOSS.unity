@@ -543,6 +543,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 454758429910345799, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454758429910345799, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
       value: 4
       objectReference: {fileID: 0}
@@ -695,6 +699,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2669124890678278977, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2669124890678278977, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
       value: 2
       objectReference: {fileID: 0}
@@ -706,6 +714,10 @@ PrefabInstance:
       propertyPath: crosshairDisplay
       value: 
       objectReference: {fileID: 945729140}
+    - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2671868331009796846, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
       value: 1
@@ -967,6 +979,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6161236861588191660, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6161236861588191660, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
       value: 4
       objectReference: {fileID: 0}
@@ -1079,6 +1095,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: ammoTextDisplay
       value: 
       objectReference: {fileID: 945729141}
@@ -1099,8 +1119,16 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8093123419379736228, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8093123419379736228, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8114743893565785527, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: useProjectile
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8114743893565785527, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
@@ -1529,10 +1557,10 @@ MonoBehaviour:
   minSpawnAtOnce: 2
   maxSpawnAtOnce: 4
   timeBetweenBursts: 1
-  nextLevelName: CUTSCENE Rizwan Outro
-  timeBeforeNextLevel: 3
   minSpawnDistance: 12
   maxSpawnDistance: 30
+  nextLevelName: CUTSCENE Rizwan Outro
+  timeBeforeNextLevel: 3
   floorLayer:
     serializedVersion: 2
     m_Bits: 128

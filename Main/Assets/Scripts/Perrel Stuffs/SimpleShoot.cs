@@ -114,6 +114,15 @@ public class SimpleShoot : MonoBehaviour
         
         playerMovement = GetComponentInParent<DoomMovement>();
         playerSkills = GetComponentInParent<PlayerSkills>(); 
+
+        if (useProjectile && projectilePrefab == null)
+        {
+            projectilePrefab = Resources.Load<GameObject>("Bullet");
+            if (projectilePrefab == null)
+            {
+                Debug.LogError("<color=red>[Agent Zeta] CRITICAL: Cannot find 'Bullet' in the Resources folder!</color>");
+            }
+        }
     }
 
     void Start()
