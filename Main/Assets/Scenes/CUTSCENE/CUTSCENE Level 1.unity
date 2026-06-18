@@ -367,6 +367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CutsceneLoader
   nextSceneName: Level_1
+  useFadeTransition: 1
   videoPlayer: {fileID: 44124214}
   skipPromptText: {fileID: 73299108}
 --- !u!4 &794170621

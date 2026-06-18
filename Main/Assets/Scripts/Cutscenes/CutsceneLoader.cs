@@ -11,6 +11,9 @@ public class CutsceneLoader : MonoBehaviour
     [Tooltip("The EXACT name of the next scene (e.g., 'Level 0' or 'special_main_menu')")]
     public string nextSceneName;
 
+    [Tooltip("Check this box to use ScreenFader. Uncheck to instantly snap to the next scene.")]
+    public bool useFadeTransition = true;
+
     [Header("UI & Video Links")]
     public VideoPlayer videoPlayer;
     public TextMeshProUGUI skipPromptText;
@@ -123,7 +126,16 @@ public class CutsceneLoader : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        // Kick down the door and instantly transition to the pre-loaded scene!
-        asyncLoad.allowSceneActivation = true;
+        // --- THE NEW FADE INJECTION ---
+        if (useFadeTransition && ScreenFader.Instance != null)
+        {
+            // Use the graceful cinematic fade!
+            ScreenFader.Instance.FadeOutToScene(nextSceneName);
+        }
+        else
+        {
+            // Kick down the door and instantly transition to the pre-loaded scene!
+            asyncLoad.allowSceneActivation = true;
+        }
     }
 }
