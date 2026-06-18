@@ -19,6 +19,11 @@ public class LevelEnemy
     [Tooltip("Maximum amount of THIS specific enemy alive at once. Set to 0 for unlimited!")]
     public int maxActiveAtOnce = 5; 
 
+    // --- AGENT ZETA TIME-LOCK PROTOCOL ---
+    [Tooltip("How many seconds must pass from the start of the level before this enemy is allowed to spawn?")]
+    public float spawnDelaySeconds = 0f; 
+    // -------------------------------------
+
     [HideInInspector] 
     public List<GameObject> activeInstances = new List<GameObject>();
 }
@@ -56,8 +61,8 @@ public class ArenaSpawner : MonoBehaviour
     public float timeBetweenBursts = 3f; 
 
     [Header("Spawn Area (Around Player)")]
-    public float minSpawnDistance = 5f;    // <-- ZETA TACTIC: Reduced to 5 so they can spawn closer in tight rooms!
-    public float maxSpawnDistance = 15f;   // <-- ZETA TACTIC: Reduced to 15 so they don't spawn out of bounds!
+    public float minSpawnDistance = 5f;    
+    public float maxSpawnDistance = 15f;   
 
     [Header("Level Transition")]
     public string nextLevelName = "Level_2"; 
@@ -76,8 +81,16 @@ public class ArenaSpawner : MonoBehaviour
     private int enemiesKilled = 0;
     private bool stageCleared = false;
 
+    // --- AGENT ZETA STOPWATCH ---
+    private float levelStartTime;
+    // ----------------------------
+
     void Start()
     {   
+        // --- START THE STOPWATCH ---
+        levelStartTime = Time.time;
+        // ---------------------------
+
         string currentScene = SceneManager.GetActiveScene().name;
         PlayerPrefs.SetString("SavedLevel", currentScene);
         PlayerPrefs.Save();
@@ -218,7 +231,12 @@ public class ArenaSpawner : MonoBehaviour
         {
             enemy.activeInstances.RemoveAll(item => item == null || !item.activeInHierarchy);
 
-            if (enemy.maxActiveAtOnce <= 0 || enemy.activeInstances.Count < enemy.maxActiveAtOnce)
+            // --- AGENT ZETA TIME CHECK ---
+            // Has enough time passed for this specific enemy to be unlocked?
+            bool isTimeValid = Time.time >= (levelStartTime + enemy.spawnDelaySeconds);
+
+            // If the time is valid AND we haven't hit the max active limit, add them to the pool!
+            if (isTimeValid && (enemy.maxActiveAtOnce <= 0 || enemy.activeInstances.Count < enemy.maxActiveAtOnce))
             {
                 validEnemies.Add(enemy);
                 totalWeight += enemy.spawnWeight;
