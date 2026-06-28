@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic; 
 using TMPro; 
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
+using UnityEngine.AI;
 
 public enum BossSkillReward { None, RageOfCS, HaluOfCS, TimeForCoding }
 
@@ -30,6 +31,10 @@ public class LevelEnemy
 
 public class ArenaSpawner : MonoBehaviour
 {
+    [Header("Agent Zeta: Tactical Spawn Nodes")]
+    [Tooltip("Drag your invisible spawn point GameObjects here!")]
+    public Transform[] spawnNodes;
+
     [Header("Boss Fight Mode")]
     public GameObject bossTargetToDefeat; 
     public BossSkillReward skillToUnlock = BossSkillReward.None; 
@@ -179,37 +184,85 @@ public class ArenaSpawner : MonoBehaviour
         LevelEnemy chosenEnemyData = PickRandomEnemyBasedOnWeight();
         if (chosenEnemyData == null || chosenEnemyData.enemyPrefab == null) return; 
 
-        // Try 30 times to find a valid spot
+        // =========================================================
+        // AGENT ZETA: FOOLPROOF NODE SPAWNING PROTOCOL
+        // =========================================================
+        if (spawnNodes != null && spawnNodes.Length > 0)
+        {
+            List<Transform> safeNodes = new List<Transform>();
+
+            // Filter out nodes that are too close or too far from Pria Sigma 1
+            foreach (Transform node in spawnNodes)
+            {
+                float dist = Vector3.Distance(player.position, node.position);
+                if (dist >= minSpawnDistance && dist <= maxSpawnDistance)
+                {
+                    safeNodes.Add(node);
+                }
+            }
+
+            Transform selectedNode = null;
+
+            // If we found perfect nodes, pick a random one!
+            if (safeNodes.Count > 0)
+            {
+                selectedNode = safeNodes[Random.Range(0, safeNodes.Count)];
+            }
+            else 
+            {
+                // Fallback: If player is running wild and no nodes are at the perfect distance, 
+                // just pick any node so the wave doesn't get soft-locked!
+                selectedNode = spawnNodes[Random.Range(0, spawnNodes.Length)];
+            }
+
+            // Spawn directly at the exact coordinates of the invisible node!
+            GameObject nodeEnemy = Instantiate(chosenEnemyData.enemyPrefab, selectedNode.position, Quaternion.identity);
+            chosenEnemyData.activeInstances.Add(nodeEnemy);
+
+            BasicChaserAI nodeAI = nodeEnemy.GetComponent<BasicChaserAI>();
+            if (nodeAI != null) nodeAI.SetTarget(player);
+            
+            enemiesSpawned++;
+            enemiesAlive++;
+            return;
+        }
+
+        // =========================================================
+        // FALLBACK: OLD RANDOM MATH (Only runs if you forget to add nodes!)
+        // =========================================================
         for (int attempts = 0; attempts < 30; attempts++)
         {
             Vector2 randomDir = Random.insideUnitCircle.normalized;
             float distance = Random.Range(minSpawnDistance, maxSpawnDistance);
             Vector3 spawnOffset = new Vector3(randomDir.x, 0, randomDir.y) * distance;
 
-            // --- AGENT ZETA PURE BRUTE FORCE ---
             Vector3 simpleSpawnPos = player.position + spawnOffset;
             simpleSpawnPos.y += 2f; 
 
-            // Check 1: Is there a floor below?
             if (Physics.Raycast(simpleSpawnPos, Vector3.down, out RaycastHit hitFloor, 15f, floorLayer))
             {
                 Vector3 finalSpawnPoint = hitFloor.point + (Vector3.up * 0.1f);
 
-                // Check 2: Anti-Wall Clipping (Are we inside a Default layer wall?)
+                // Check 1.5: Is this spot actually inside the baked playable area?
+                if (!NavMesh.SamplePosition(finalSpawnPoint, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+                {
+                    continue; 
+                }
+                
+                finalSpawnPoint = navHit.position;
+
                 if (Physics.CheckSphere(finalSpawnPoint + (Vector3.up * 1f), 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                 {
-                    continue; // We hit a wall! Try another spot.
+                    continue; 
                 }
 
-                // Check 3: Line of Sight (Are we spawning outside the map or behind a closed door?)
                 Vector3 playerChest = player.position + (Vector3.up * 1f);
                 Vector3 enemyChest = finalSpawnPoint + (Vector3.up * 1f);
                 if (Physics.Linecast(playerChest, enemyChest, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                 {
-                    continue; // Wall blocks the view! Try another spot.
+                    continue; 
                 }
 
-                // IT PASSED ALL CHECKS! SPAWN THEM!
                 GameObject simpleEnemy = Instantiate(chosenEnemyData.enemyPrefab, finalSpawnPoint, Quaternion.identity);
                 chosenEnemyData.activeInstances.Add(simpleEnemy);
 
@@ -232,10 +285,8 @@ public class ArenaSpawner : MonoBehaviour
             enemy.activeInstances.RemoveAll(item => item == null || !item.activeInHierarchy);
 
             // --- AGENT ZETA TIME CHECK ---
-            // Has enough time passed for this specific enemy to be unlocked?
             bool isTimeValid = Time.time >= (levelStartTime + enemy.spawnDelaySeconds);
 
-            // If the time is valid AND we haven't hit the max active limit, add them to the pool!
             if (isTimeValid && (enemy.maxActiveAtOnce <= 0 || enemy.activeInstances.Count < enemy.maxActiveAtOnce))
             {
                 validEnemies.Add(enemy);
@@ -351,7 +402,7 @@ public class ArenaSpawner : MonoBehaviour
                 Debug.Log("<color=cyan>[Agent Zeta] Arsenal is full! No new weapons to drop.</color>");
             }
         }
-        else if (!isBossLevel) // If it's just a normal tutorial level with no boss and no gacha
+        else if (!isBossLevel) 
         {
             weaponMessage = "<color=yellow>AREA SECURED</color>";
         }
@@ -360,7 +411,6 @@ public class ArenaSpawner : MonoBehaviour
         if (isBossLevel)
         {
             gachaMessage = bossMessage;
-            // If they also get a weapon, add a new line and slap the weapon text below the boss text!
             if (!disableGachaReward && weaponMessage != "")
             {
                 gachaMessage += "\n" + weaponMessage;
