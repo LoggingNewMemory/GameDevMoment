@@ -166,11 +166,11 @@ public class SpecialMainMenu : MonoBehaviour
     
     public void ClickStartGame()
     {
-        // --- AGENT ZETA: NEW GAME PROTOCOL ---
+        // --- AGENT ZETA: NEW GAME+ PROTOCOL ---
         // 1. Reset the level location
         PlayerPrefs.DeleteKey("SavedLevel");
         
-        // 2. Confiscate all standard weapons and power-ups!
+        // 2. Confiscate the normal weapons AND standard boss skills!
         PlayerPrefs.DeleteKey("Unlocked_Shotgun");
         PlayerPrefs.DeleteKey("Unlocked_SMG");
         PlayerPrefs.DeleteKey("Unlocked_AssaultRifle");
@@ -179,14 +179,22 @@ public class SpecialMainMenu : MonoBehaviour
         PlayerPrefs.DeleteKey("Unlocked_RageOfCS");
         PlayerPrefs.DeleteKey("Unlocked_HaluOfCS");
         
-        // Note: We avoid using DeleteAll() here so we don't accidentally delete 
-        // their Graphics Settings or their VIP Menu Unlock flag!
+        // BUT WE DO NOT DELETE "Unlocked_TimeForCoding" or "Unlocked_Railgun"!
+        // Pria Sigma 1 gets to keep the Final Boss gear for the next playthrough!
         
         PlayerPrefs.Save();
         
-        // Boot up the prologue!
-        SceneManager.LoadScene(firstLevelName);
+        // Because we already loaded the scene in the background, this makes it pop up instantly!
+        if (pendingLoad != null)
+        {
+            pendingLoad.allowSceneActivation = true;
+        }
+        else
+        {
+            SceneManager.LoadScene(firstGameScene);
+        }
     }
+
     public void ClickResumeGame()
     {
         // Check the hard drive for the saved level name, and load it
