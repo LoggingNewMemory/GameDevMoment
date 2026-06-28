@@ -290,33 +290,33 @@ public class ArenaSpawner : MonoBehaviour
     {
         stageCleared = true;
         string gachaMessage = "";
+        string bossMessage = "";
+        string weaponMessage = "";
 
+        // --- 1. BOSS REWARD LOGIC ---
         if (isBossLevel)
         {
             if (skillToUnlock == BossSkillReward.RageOfCS)
             {
                 PlayerPrefs.SetInt("Unlocked_RageOfCS", 1);
-                gachaMessage = "BOSS DEFEATED!\n<color=yellow>UNLOCKED: RAGE OF CS</color>";
+                bossMessage = "BOSS DEFEATED!\n<color=yellow>UNLOCKED: RAGE OF CS</color>";
             }
             else if (skillToUnlock == BossSkillReward.HaluOfCS)
             {
                 PlayerPrefs.SetInt("Unlocked_HaluOfCS", 1);
-                gachaMessage = "BOSS DEFEATED!\n<color=yellow>UNLOCKED: HALU OF CS</color>";
+                bossMessage = "BOSS DEFEATED!\n<color=yellow>UNLOCKED: HALU OF CS</color>";
             }
             else if (skillToUnlock == BossSkillReward.TimeForCoding)
             {
                 PlayerPrefs.SetInt("Unlocked_TimeForCoding", 1);
                 PlayerPrefs.SetInt("Unlocked_Railgun", 1); 
-                gachaMessage = "FINAL BOSS DEFEATED!\n<color=yellow>UNLOCKED: TIME FOR CODING & ANANG RAILGUN</color>";
+                bossMessage = "FINAL BOSS DEFEATED!\n<color=yellow>UNLOCKED: TIME FOR CODING & ANANG RAILGUN</color>";
             }
-            else gachaMessage = "BOSS DEFEATED!\n<color=yellow>AREA CLEARED</color>";
+            else bossMessage = "BOSS DEFEATED!\n<color=yellow>AREA CLEARED</color>";
         }
-        else if (disableGachaReward)
-        {
-            gachaMessage = "WAVE CLEARED!\n<color=yellow>AREA SECURED</color>";
-            Debug.Log("<color=cyan>[Agent Zeta] Tutorial level cleared! No gacha reward issued.</color>");
-        }
-        else
+
+        // --- 2. WEAPON GACHA LOGIC (Runs independently!) ---
+        if (!disableGachaReward)
         {
             System.Collections.Generic.List<string> availablePool = new System.Collections.Generic.List<string>();
             
@@ -342,14 +342,33 @@ public class ArenaSpawner : MonoBehaviour
                     default: displayWeaponName = "MYSTERY WEAPON"; break;
                 }
 
-                gachaMessage = $"WAVE CLEARED!\n<color=yellow>UNLOCKED: {displayWeaponName}</color>";
+                weaponMessage = $"<color=yellow>WEAPON ACQUIRED: {displayWeaponName}</color>";
                 Debug.Log($"<color=magenta>[Agent Zeta] Gacha Pull: {pulledWeapon} ({displayWeaponName})!</color>");
             }
             else
             {
-                gachaMessage = "WAVE CLEARED!\n<color=yellow>ARSENAL MAXED OUT</color>";
+                weaponMessage = "<color=yellow>ARSENAL MAXED OUT</color>";
                 Debug.Log("<color=cyan>[Agent Zeta] Arsenal is full! No new weapons to drop.</color>");
             }
+        }
+        else if (!isBossLevel) // If it's just a normal tutorial level with no boss and no gacha
+        {
+            weaponMessage = "<color=yellow>AREA SECURED</color>";
+        }
+
+        // --- 3. MERGE THE MESSAGES ---
+        if (isBossLevel)
+        {
+            gachaMessage = bossMessage;
+            // If they also get a weapon, add a new line and slap the weapon text below the boss text!
+            if (!disableGachaReward && weaponMessage != "")
+            {
+                gachaMessage += "\n" + weaponMessage;
+            }
+        }
+        else
+        {
+            gachaMessage = "WAVE CLEARED!\n" + weaponMessage;
         }
         
         PlayerPrefs.Save(); 
