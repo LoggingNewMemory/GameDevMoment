@@ -130,8 +130,22 @@ public class MainMenuController : MonoBehaviour
     
     public void ClickStartGame()
     {
-        // Wipe the old save so they start fresh!
+        // --- AGENT ZETA: NEW GAME PROTOCOL ---
+        // 1. Reset the level location
         PlayerPrefs.DeleteKey("SavedLevel");
+        
+        // 2. Confiscate all standard weapons and power-ups!
+        PlayerPrefs.DeleteKey("Unlocked_Shotgun");
+        PlayerPrefs.DeleteKey("Unlocked_SMG");
+        PlayerPrefs.DeleteKey("Unlocked_AssaultRifle");
+        PlayerPrefs.DeleteKey("Unlocked_Sniper");
+        PlayerPrefs.DeleteKey("Unlocked_LMG");
+        PlayerPrefs.DeleteKey("Unlocked_RageOfCS");
+        PlayerPrefs.DeleteKey("Unlocked_HaluOfCS");
+        
+        // Note: We avoid using DeleteAll() here so we don't accidentally delete 
+        // their Graphics Settings or their VIP Menu Unlock flag!
+        
         PlayerPrefs.Save();
         
         // Boot up the prologue!
