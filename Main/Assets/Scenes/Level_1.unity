@@ -890,7 +890,7 @@ MonoBehaviour:
     maxActiveAtOnce: 20
     spawnDelaySeconds: 0
     activeInstances: []
-  totalEnemiesToSpawn: 150
+  totalEnemiesToSpawn: 70
   maxAliveAtOnce: 40
   minSpawnAtOnce: 1
   maxSpawnAtOnce: 4
