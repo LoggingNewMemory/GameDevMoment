@@ -28,6 +28,12 @@ public class SpecialMainMenu : MonoBehaviour
     
     public TextMeshProUGUI graphicsText; // <-- Drag your Graphics Text here!
 
+    // --- AGENT ZETA RESET SYSTEM ---
+    [Header("Reset System")]
+    public TextMeshProUGUI resetButtonText; 
+    private bool isConfirmingReset = false;
+    // -------------------------------
+
     // We store the background load here so the "Start" button can trigger it instantly!
     private AsyncOperation pendingLoad; 
 
@@ -193,6 +199,35 @@ public class SpecialMainMenu : MonoBehaviour
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #endif
+    }
+
+    // --- NEW: NUCLEAR RESET FUNCTION ---
+    public void ClickResetGame()
+    {
+        if (!isConfirmingReset)
+        {
+            // First click: Warn the player!
+            isConfirmingReset = true;
+            if (resetButtonText != null)
+            {
+                resetButtonText.text = "Press Again";
+            }
+            Debug.Log("<color=red>[Agent Zeta] RESET PENDING: Player is holding the detonator...</color>");
+        }
+        else
+        {
+            // Second click: Wipe everything and exit!
+            Debug.Log("<color=red>[Agent Zeta] WIPING DATA: All PlayerPrefs deleted!</color>");
+            
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            
+            Application.Quit();
+            
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+            #endif
+        }
     }
 
     // --- NEW: GRAPHICS SETTINGS CYCLER ---
