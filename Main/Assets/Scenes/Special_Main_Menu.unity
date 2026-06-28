@@ -2883,7 +2883,7 @@ MonoBehaviour:
   uiFadeDuration: 1.5
   resumeButton: {fileID: 1138521249}
   graphicsText: {fileID: 1707110623}
-  resetButtonText: {fileID: 0}
+  resetButtonText: {fileID: 1018658496}
 --- !u!1 &1784671173
 GameObject:
   m_ObjectHideFlags: 0
