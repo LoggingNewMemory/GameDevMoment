@@ -487,8 +487,10 @@ public class SimpleShoot : MonoBehaviour
                 }
                 // -----------------------------------------------
 
-                if (isRailgun)
+                // We now check if the weapon is a Railgun OR if the AmmoType is Sniper
+                if (isRailgun || weaponAmmoType == AmmoType.Sniper) 
                 {
+                    // RaycastAll fires completely through all colliders in its path up to the maximum range
                     RaycastHit[] hits = Physics.RaycastAll(rayOrigin, rayDirection, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
                     foreach (RaycastHit hit in hits)
                     {
@@ -499,6 +501,7 @@ public class SimpleShoot : MonoBehaviour
                 }
                 else 
                 {
+                    // Standard Raycast stops at the very first object it hits
                     if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
                     {
                         IDamageable target = hit.collider.GetComponentInParent<IDamageable>();
