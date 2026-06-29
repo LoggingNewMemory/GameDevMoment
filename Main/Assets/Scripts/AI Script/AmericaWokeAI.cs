@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI; // <-- AGENT ZETA REQUIRED!
 using System.Collections;
 
 public class AmericaWokeAI : MonoBehaviour
@@ -6,10 +7,6 @@ public class AmericaWokeAI : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 9f; 
     public float stoppingDistance = 1.5f; 
-
-    [Header("Agent Zeta's Wall Slider")]
-    public float obstacleCheckDistance = 1.5f; 
-    public float bodyRadius = 0.4f; 
 
     [Header("Combat Settings")]
     public float attackRange = 3f;
@@ -30,7 +27,8 @@ public class AmericaWokeAI : MonoBehaviour
     private Transform playerTarget;
     private Animator anim;
     private UniversalHealth healthScript;
-    private Rigidbody rb; 
+    
+    private NavMeshAgent agent; // <-- THE GPS
     
     private float lastAttackTime = 0f;
     private bool isDashing = false;
@@ -39,67 +37,50 @@ public class AmericaWokeAI : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         healthScript = GetComponent<UniversalHealth>();
-        rb = GetComponent<Rigidbody>(); 
+        agent = GetComponent<NavMeshAgent>();
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
+
+        if (agent != null)
+        {
+            agent.speed = moveSpeed;
+            agent.stoppingDistance = stoppingDistance;
+        }
     }
 
     void Update()
     {
         if (healthScript != null && healthScript.isDead) 
         {
-            if (rb != null && !rb.isKinematic)
-            {
-                rb.linearVelocity = Vector3.zero; 
-                rb.isKinematic = true; 
-                Collider col = GetComponent<Collider>();
-                if (col != null) col.enabled = false;
-            }
+            if (agent != null && agent.isActiveAndEnabled) agent.isStopped = true;
             return;
         }
 
-        if (playerTarget == null) return;
-        if (isDashing) return; 
+        if (playerTarget == null || agent == null || isDashing) return; 
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
 
-        if (distance > stoppingDistance)
+        if (distance > attackRange)
         {
-            Vector3 targetPos = playerTarget.position;
-            targetPos.y = transform.position.y;
-            Vector3 moveDir = (targetPos - transform.position).normalized;
-            
-            Vector3 chestPos = transform.position + Vector3.up * 1f;
-            if (Physics.SphereCast(chestPos, bodyRadius, moveDir, out RaycastHit hit, obstacleCheckDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-            {
-                if (!hit.collider.CompareTag("Player"))
-                {
-                    moveDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
-                }
-            }
-
-            if (rb != null)
-            {
-                rb.linearVelocity = new Vector3(moveDir.x * moveSpeed, rb.linearVelocity.y, moveDir.z * moveSpeed);
-            }
-
-            if (moveDir != Vector3.zero)
-            {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), Time.deltaTime * 10f);
-            }
-
+            agent.isStopped = false;
+            agent.SetDestination(playerTarget.position);
             if (anim != null) anim.SetBool("isChasing", true);
         }
         else
         {
-            if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            agent.isStopped = true;
             if (anim != null) anim.SetBool("isChasing", false);
-        }
+            
+            // Look at player
+            Vector3 lookDir = (playerTarget.position - transform.position).normalized;
+            lookDir.y = 0;
+            if (lookDir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
 
-        if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
-        {
-            AttackPlayer();
+            if (Time.time >= lastAttackTime + attackCooldown)
+            {
+                AttackPlayer();
+            }
         }
     }
 
@@ -136,31 +117,21 @@ public class AmericaWokeAI : MonoBehaviour
     IEnumerator DashKnockdownRoutine()
     {
         isDashing = true; 
-        Vector3 startPos = transform.position;
-        Vector3 targetPos = playerTarget.position;
-        targetPos.y = transform.position.y; 
         
-        Vector3 dashDir = (targetPos - startPos).normalized;
-        float dashDuration = 0.2f; 
-        float elapsed = 0f;
+        // Temporarily turn him into a rocket!
+        float originalSpeed = agent.speed;
+        float originalAccel = agent.acceleration;
+        agent.speed = dashSpeed;
+        agent.acceleration = 500f; // INSTANT SPEED
+        agent.isStopped = false;
+        agent.SetDestination(playerTarget.position);
 
-        while (elapsed < dashDuration)
-        {
-            if (healthScript != null && healthScript.isDead) yield break;
-            elapsed += Time.deltaTime;
-            
-            if (Vector3.Distance(transform.position, playerTarget.position) > stoppingDistance)
-            {
-                if (rb != null) rb.linearVelocity = new Vector3(dashDir.x * dashSpeed, rb.linearVelocity.y, dashDir.z * dashSpeed);
-            }
-            else
-            {
-                if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
-            }
-            yield return null;
-        }
+        yield return new WaitForSeconds(0.3f); // Dash duration
         
-        if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        // Hit the brakes
+        agent.isStopped = true;
+        agent.speed = originalSpeed;
+        agent.acceleration = originalAccel;
 
         if (Vector3.Distance(transform.position, playerTarget.position) <= hitTrackingRange)
         {
@@ -171,7 +142,7 @@ public class AmericaWokeAI : MonoBehaviour
             if (movement != null) movement.TriggerKnockdown();
 
             if (anim != null) anim.SetBool("isChasing", false);
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1.5f); // Rest after missing/hitting
         }
         isDashing = false; 
     }

@@ -1,20 +1,11 @@
 using UnityEngine;
+using UnityEngine.AI; // <-- AGENT ZETA REQUIRED!
 using System.Collections;
 
 public class KayaAI : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 6f; 
-    public float stoppingDistance = 2f; 
-
-    [Header("Agent Zeta's Whiskers")]
-    public float obstacleCheckDistance = 2f; 
-    private int dodgeDirection = 1; 
-    private float nextDodgeChangeTime = 0f;
-
-    [Header("Phantom Protocol (Anti-Stuck)")]
-    public float stuckCheckInterval = 3f; 
-    public float stuckDistanceThreshold = 1.0f; 
 
     [Header("Teleport Settings")]
     public float teleportCooldown = 7f; 
@@ -31,58 +22,40 @@ public class KayaAI : MonoBehaviour
     private Transform playerTarget;
     private Animator anim;
     private UniversalHealth healthScript;
-    private Rigidbody rb; 
+    private NavMeshAgent agent; 
     
     private float nextTeleportTime = 0f;
     private float lastAttackTime = 0f;
-
-    private Vector3 lastCheckedPosition;
-    private float nextStuckCheckTime = 0f;
 
     void Start()
     {
         anim = GetComponent<Animator>();
         healthScript = GetComponent<UniversalHealth>();
-        rb = GetComponent<Rigidbody>(); 
+        agent = GetComponent<NavMeshAgent>();
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
         
         nextTeleportTime = Time.time + Random.Range(2f, 5f); 
-        lastCheckedPosition = transform.position;
-        nextStuckCheckTime = Time.time + stuckCheckInterval;
+        
+        if (agent != null)
+        {
+            agent.speed = moveSpeed;
+            agent.stoppingDistance = attackRange - 0.5f;
+        }
     }
 
     void Update()
     {
         if (healthScript != null && healthScript.isDead) 
         {
-            if (rb != null && !rb.isKinematic)
-            {
-                rb.linearVelocity = Vector3.zero; 
-                rb.isKinematic = true; 
-                Collider col = GetComponent<Collider>();
-                if (col != null) col.enabled = false;
-            }
+            if (agent != null && agent.isActiveAndEnabled) agent.isStopped = true;
             return;
         }
 
-        if (playerTarget == null) return;
+        if (playerTarget == null || agent == null) return;
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
-
-        // --- AGENT ZETA: ANTI-STUCK MONITOR ---
-        if (Time.time > nextStuckCheckTime)
-        {
-            if (distance > attackRange * 2f) 
-            {
-                float movedDist = Vector3.Distance(transform.position, lastCheckedPosition);
-                if (movedDist < stuckDistanceThreshold) TeleportBehindPlayer(); // Just use her normal combat teleport if stuck!
-            }
-            lastCheckedPosition = transform.position;
-            nextStuckCheckTime = Time.time + stuckCheckInterval;
-        }
-        // --------------------------------------
 
         if (Time.time >= nextTeleportTime && distance > attackRange)
         {
@@ -90,43 +63,25 @@ public class KayaAI : MonoBehaviour
             return; 
         }
 
-        if (distance > stoppingDistance)
+        if (distance > attackRange)
         {
-            Vector3 targetPos = playerTarget.position;
-            targetPos.y = transform.position.y;
-            Vector3 moveDir = (targetPos - transform.position).normalized;
-            
-            Vector3 chestPos = transform.position + Vector3.up * 1f;
-            if (Physics.Raycast(chestPos, transform.forward, out RaycastHit hit, obstacleCheckDistance))
-            {
-                if (!hit.collider.CompareTag("Player"))
-                {
-                    if (Time.time > nextDodgeChangeTime)
-                    {
-                        dodgeDirection = Random.Range(0, 2) == 0 ? 1 : -1;
-                        nextDodgeChangeTime = Time.time + 1.5f; 
-                    }
-                    moveDir = transform.right * dodgeDirection;
-                }
-            }
-            
-            if (rb != null) rb.linearVelocity = new Vector3(moveDir.x * moveSpeed, rb.linearVelocity.y, moveDir.z * moveSpeed);
-            if (moveDir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), Time.deltaTime * 10f);
+            agent.isStopped = false;
+            agent.SetDestination(playerTarget.position);
             if (anim != null) anim.SetBool("isChasing", true);
         }
         else
         {
-            if (rb != null) rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+            agent.isStopped = true;
             if (anim != null) anim.SetBool("isChasing", false);
             
             Vector3 lookDir = (playerTarget.position - transform.position).normalized;
             lookDir.y = 0;
             if (lookDir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
-        }
 
-        if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
-        {
-            AttackPlayer();
+            if (Time.time >= lastAttackTime + attackCooldown)
+            {
+                AttackPlayer();
+            }
         }
     }
 
@@ -134,6 +89,8 @@ public class KayaAI : MonoBehaviour
     {
         nextTeleportTime = Time.time + teleportCooldown;
         if (teleportSound != null) AudioSource.PlayClipAtPoint(teleportSound, transform.position);
+        
+        if (agent != null && agent.isActiveAndEnabled) agent.isStopped = true;
 
         Vector3 bestPos = transform.position;
         
@@ -147,8 +104,7 @@ public class KayaAI : MonoBehaviour
             {
                 Vector3 finalPos = floorHit.point + (Vector3.up * 0.1f);
                 
-                // --- AGENT ZETA: NAVMESH SECURITY SCAN ---
-                if (UnityEngine.AI.NavMesh.SamplePosition(finalPos, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(finalPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
                 {
                     finalPos = navHit.position;
 
@@ -161,9 +117,9 @@ public class KayaAI : MonoBehaviour
             }
         }
         
-        if (rb != null) rb.position = bestPos;
+        // --- SECURE AGENT WARP ---
+        if (agent != null) agent.Warp(bestPos);
         else transform.position = bestPos;
-        lastCheckedPosition = bestPos;
 
         Vector3 lookDir = (playerTarget.position - transform.position).normalized;
         lookDir.y = 0;

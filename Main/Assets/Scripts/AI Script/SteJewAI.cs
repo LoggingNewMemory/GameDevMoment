@@ -1,21 +1,16 @@
 using UnityEngine;
+using UnityEngine.AI; // <-- AGENT ZETA REQUIRED!
 using System.Collections; 
 
 public class SteJewAI : MonoBehaviour
 {
     [Header("Flee Settings")]
-    public float moveSpeed = 22f; 
+    public float moveSpeed = 12f; 
     public float fleeDistance = 15f; 
 
     [Header("Panic Settings (Almost Caught)")]
     public float panicDistance = 6f;   
-    public float panicSpeed = 38f;     
-
-    [Header("Wall Bounce Settings")]
-    public float wallCheckDistance = 3f; 
-    public float bounceDuration = 0.5f;  
-    private Vector3 bounceDir;
-    private float bounceTimer = 0f;
+    public float panicSpeed = 20f;     
 
     [Header("Global Combat Settings")]
     public float attackDamage = 5f;
@@ -25,7 +20,6 @@ public class SteJewAI : MonoBehaviour
     [Header("Audio Settings")]
     public AudioSource audioSource;
     public AudioClip attackCastSound;    
-    public AudioClip emptyMagSound;      
     public AudioClip stealReserveSound;  
 
     private Transform playerTarget;
@@ -33,7 +27,7 @@ public class SteJewAI : MonoBehaviour
 
     private Animator anim;
     private UniversalHealth healthScript;
-    private Rigidbody rb; 
+    private NavMeshAgent agent; 
     
     private bool isCasting = false; 
 
@@ -41,7 +35,7 @@ public class SteJewAI : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         healthScript = GetComponent<UniversalHealth>();
-        rb = GetComponent<Rigidbody>(); 
+        agent = GetComponent<NavMeshAgent>();
         
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
 
@@ -49,90 +43,52 @@ public class SteJewAI : MonoBehaviour
         if (p != null) playerTarget = p.transform;
 
         lastAttackTime = Time.time; 
+        
+        if (agent != null) agent.speed = moveSpeed;
     }
 
     void Update()
     {
         if (healthScript != null && healthScript.isDead) 
         {
-            if (rb != null && !rb.isKinematic)
-            {
-                rb.linearVelocity = Vector3.zero; 
-                rb.isKinematic = true; 
-                Collider col = GetComponent<Collider>();
-                if (col != null) col.enabled = false;
-            }
+            if (agent != null && agent.isActiveAndEnabled) agent.isStopped = true;
             return;
         }
 
-        if (playerTarget == null) return;
+        if (playerTarget == null || agent == null) return;
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
-        Vector3 currentMoveDir = Vector3.zero;
 
-        if (distance < fleeDistance)
+        // FLEE LOGIC
+        if (distance < fleeDistance && !isCasting)
         {
-            float currentSpeed = moveSpeed;
-            if (distance < panicDistance) currentSpeed = panicSpeed;
+            agent.isStopped = false;
+            agent.speed = (distance < panicDistance) ? panicSpeed : moveSpeed;
 
-            if (bounceTimer > 0)
+            // Calculate a point AWAY from the player!
+            Vector3 fleeDirection = (transform.position - playerTarget.position).normalized;
+            Vector3 targetFleePos = transform.position + (fleeDirection * 10f);
+            
+            // Check if that point is actually on the NavMesh
+            if (NavMesh.SamplePosition(targetFleePos, out NavMeshHit hit, 5f, NavMesh.AllAreas))
             {
-                bounceTimer -= Time.deltaTime;
-                currentMoveDir = bounceDir;
+                agent.SetDestination(hit.position);
             }
-            else
-            {
-                currentMoveDir = (transform.position - playerTarget.position).normalized;
-                currentMoveDir.y = 0; 
-            }
-
-            if (Physics.Raycast(transform.position + Vector3.up * 0.5f, currentMoveDir, out RaycastHit hit, wallCheckDistance))
-            {
-                if (!hit.transform.CompareTag("Player") && Mathf.Abs(hit.normal.y) < 0.2f)
-                {
-                    bounceDir = Vector3.Reflect(currentMoveDir, hit.normal).normalized;
-                    bounceDir.y = 0;
-                    bounceTimer = bounceDuration;
-                    currentMoveDir = bounceDir;
-                }
-            }
-
-            if (rb != null)
-            {
-                float safeY = rb.linearVelocity.y;
-                if (safeY > 2f) safeY = -2f; 
-                rb.linearVelocity = new Vector3(currentMoveDir.x * currentSpeed, safeY, currentMoveDir.z * currentSpeed);
-            }
-            else transform.position += currentMoveDir * currentSpeed * Time.deltaTime;
-
+            
             if (anim != null) anim.SetBool("isChasing", true); 
         }
         else
         {
+            agent.isStopped = true; // Safe distance reached, or currently casting!
             if (anim != null) anim.SetBool("isChasing", false);
-            if (rb != null) 
-            {
-                float safeY = rb.linearVelocity.y;
-                if (safeY > 2f) safeY = -2f;
-                rb.linearVelocity = new Vector3(0, safeY, 0);
-            }
         }
 
-        if (isCasting)
+        // LOOK LOGIC
+        if (isCasting || agent.isStopped)
         {
             Vector3 lookDir = (playerTarget.position - transform.position).normalized;
             lookDir.y = 0;
             if (lookDir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 15f);
-        }
-        else if (currentMoveDir != Vector3.zero)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(currentMoveDir), Time.deltaTime * 10f);
-        }
-        else 
-        {
-            Vector3 lookDir = (playerTarget.position - transform.position).normalized;
-            lookDir.y = 0;
-            if (lookDir != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
         }
 
         if (Time.time >= lastAttackTime + attackCooldown) AttackPlayer();
@@ -142,6 +98,8 @@ public class SteJewAI : MonoBehaviour
     {
         lastAttackTime = Time.time;
         isCasting = true; 
+        
+        if (agent != null) agent.isStopped = true; // Stand still to cast!
 
         if (anim != null) anim.SetTrigger("Attack");
         if (audioSource != null && attackCastSound != null) audioSource.PlayOneShot(attackCastSound);
