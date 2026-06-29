@@ -118,29 +118,29 @@ public class BasicChaserAI : MonoBehaviour
 
     void SafeTeleportToPlayer()
     {
-        // Try up to 10 times to find a safe spot around Pria Sigma 1
         for (int i = 0; i < 10; i++) 
         {
             Vector2 randomDir = Random.insideUnitCircle.normalized;
-            float dist = Random.Range(6f, 15f); // Teleport 6 to 15 meters away
+            float dist = Random.Range(6f, 15f); 
             Vector3 testPos = playerTarget.position + new Vector3(randomDir.x, 2f, randomDir.y) * dist;
 
-            // 1. Shoot a laser down to find solid floor
             if (Physics.Raycast(testPos, Vector3.down, out RaycastHit floorHit, 15f))
             {
                 Vector3 finalPos = floorHit.point + (Vector3.up * 0.1f);
 
-                // 2. Anti-Wall Clipping Check (If the bubble hits Default layer, it's unsafe!)
-                if (!Physics.CheckSphere(finalPos + (Vector3.up * 1f), bodyRadius * 1.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                // --- AGENT ZETA: NAVMESH SECURITY SCAN ---
+                if (UnityEngine.AI.NavMesh.SamplePosition(finalPos, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
                 {
-                    // It is 100% safe! Warp them!
-                    if (rb != null) rb.position = finalPos;
-                    else transform.position = finalPos;
-                    
-                    // Reset the tracker so they don't immediately teleport again
-                    lastCheckedPosition = finalPos;
-                    Debug.Log("<color=cyan>[Agent Zeta] Enemy was stuck! Safely relocated to new coordinates!</color>");
-                    return;
+                    finalPos = navHit.position; // Snap to the blue grid!
+
+                    if (!Physics.CheckSphere(finalPos + (Vector3.up * 1f), bodyRadius * 1.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                    {
+                        if (rb != null) rb.position = finalPos;
+                        else transform.position = finalPos;
+                        
+                        lastCheckedPosition = finalPos;
+                        return;
+                    }
                 }
             }
         }

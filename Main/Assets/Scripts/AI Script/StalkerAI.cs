@@ -117,7 +117,6 @@ public class StalkerAI : MonoBehaviour
         lastTeleportTime = Time.time;
         Vector3 bestPos = transform.position;
 
-        // --- SAFE TELEPORT: Try up to 5 safe spots behind the player ---
         for (int i = 0; i < 5; i++)
         {
             Vector3 offsetDir = Quaternion.Euler(0, Random.Range(-30f, 30f), 0) * (-playerTarget.forward);
@@ -127,10 +126,17 @@ public class StalkerAI : MonoBehaviour
             if (Physics.Raycast(testPos, Vector3.down, out RaycastHit floorHit, 10f))
             {
                 Vector3 finalPos = floorHit.point + (Vector3.up * 0.1f);
-                if (!Physics.CheckSphere(finalPos + (Vector3.up * 1f), 0.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                
+                // --- AGENT ZETA: NAVMESH SECURITY SCAN ---
+                if (UnityEngine.AI.NavMesh.SamplePosition(finalPos, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
                 {
-                    bestPos = finalPos;
-                    break;
+                    finalPos = navHit.position;
+
+                    if (!Physics.CheckSphere(finalPos + (Vector3.up * 1f), 0.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                    {
+                        bestPos = finalPos;
+                        break;
+                    }
                 }
             }
         }
