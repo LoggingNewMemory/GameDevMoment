@@ -759,7 +759,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 454758429910345799, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: weaponAmmoType
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 471821202832009668, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: m_Layer
