@@ -1135,6 +1135,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
+      propertyPath: magSize
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786753531411200131, guid: 45e949ce6761052c1bf7e8b5207a78b5, type: 3}
       propertyPath: useProjectile
       value: 1
       objectReference: {fileID: 0}
@@ -1728,6 +1732,7 @@ MonoBehaviour:
   - {fileID: 1508921389}
   - {fileID: 947112888}
   - {fileID: 957986488}
+  requireNavMesh: 1
   bossTargetToDefeat: {fileID: 0}
   skillToUnlock: 0
   disableGachaReward: 0
