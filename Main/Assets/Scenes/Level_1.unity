@@ -879,6 +879,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c47f93cd4e72fc7897ffe230a2958ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArenaSpawner
+  spawnNodes: []
+  requireNavMesh: 0
   bossTargetToDefeat: {fileID: 0}
   skillToUnlock: 0
   disableGachaReward: 1

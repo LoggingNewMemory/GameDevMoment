@@ -1518,6 +1518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArenaSpawner
   spawnNodes: []
+  requireNavMesh: 0
   bossTargetToDefeat: {fileID: 0}
   skillToUnlock: 0
   disableGachaReward: 0

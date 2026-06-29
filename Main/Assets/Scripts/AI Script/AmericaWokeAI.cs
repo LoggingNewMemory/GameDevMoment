@@ -11,10 +11,6 @@ public class AmericaWokeAI : MonoBehaviour
     public float obstacleCheckDistance = 1.5f; 
     public float bodyRadius = 0.4f; 
 
-    [Header("Phantom Protocol (Anti-Stuck)")]
-    public float stuckCheckInterval = 3f; 
-    public float stuckDistanceThreshold = 1.0f; 
-
     [Header("Combat Settings")]
     public float attackRange = 3f;
     public float attackDamage = 30f;
@@ -39,10 +35,6 @@ public class AmericaWokeAI : MonoBehaviour
     private float lastAttackTime = 0f;
     private bool isDashing = false;
 
-    // Anti-stuck trackers
-    private Vector3 lastCheckedPosition;
-    private float nextStuckCheckTime = 0f;
-
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -51,9 +43,6 @@ public class AmericaWokeAI : MonoBehaviour
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
-
-        lastCheckedPosition = transform.position;
-        nextStuckCheckTime = Time.time + stuckCheckInterval;
     }
 
     void Update()
@@ -74,19 +63,6 @@ public class AmericaWokeAI : MonoBehaviour
         if (isDashing) return; 
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
-
-        // --- AGENT ZETA: ANTI-STUCK MONITOR ---
-        if (Time.time > nextStuckCheckTime)
-        {
-            if (distance > attackRange * 2f) 
-            {
-                float movedDist = Vector3.Distance(transform.position, lastCheckedPosition);
-                if (movedDist < stuckDistanceThreshold) SafeTeleportToPlayer();
-            }
-            lastCheckedPosition = transform.position;
-            nextStuckCheckTime = Time.time + stuckCheckInterval;
-        }
-        // --------------------------------------
 
         if (distance > stoppingDistance)
         {
@@ -124,36 +100,6 @@ public class AmericaWokeAI : MonoBehaviour
         if (distance <= attackRange && Time.time >= lastAttackTime + attackCooldown)
         {
             AttackPlayer();
-        }
-    }
-
-    void SafeTeleportToPlayer()
-    {
-        for (int i = 0; i < 10; i++) 
-        {
-            Vector2 randomDir = Random.insideUnitCircle.normalized;
-            float dist = Random.Range(6f, 15f); 
-            Vector3 testPos = playerTarget.position + new Vector3(randomDir.x, 2f, randomDir.y) * dist;
-
-            if (Physics.Raycast(testPos, Vector3.down, out RaycastHit floorHit, 15f))
-            {
-                Vector3 finalPos = floorHit.point + (Vector3.up * 0.1f);
-
-                // --- AGENT ZETA: NAVMESH SECURITY SCAN ---
-                if (UnityEngine.AI.NavMesh.SamplePosition(finalPos, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
-                {
-                    finalPos = navHit.position; // Snap to the blue grid!
-
-                    if (!Physics.CheckSphere(finalPos + (Vector3.up * 1f), bodyRadius * 1.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                    {
-                        if (rb != null) rb.position = finalPos;
-                        else transform.position = finalPos;
-                        
-                        lastCheckedPosition = finalPos;
-                        return;
-                    }
-                }
-            }
         }
     }
 

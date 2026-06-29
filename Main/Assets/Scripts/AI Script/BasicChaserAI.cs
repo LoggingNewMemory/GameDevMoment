@@ -14,10 +14,6 @@ public class BasicChaserAI : MonoBehaviour
     [Tooltip("How thick the enemy is (prevents shoulder clipping).")]
     public float bodyRadius = 0.4f; 
 
-    [Header("Phantom Protocol (Anti-Stuck)")]
-    public float stuckCheckInterval = 3f; 
-    public float stuckDistanceThreshold = 1.0f; 
-
     private Transform playerTarget;
     private float lastAttackTime = 0f;
 
@@ -26,19 +22,12 @@ public class BasicChaserAI : MonoBehaviour
     private UniversalHealth healthScript; 
     private Rigidbody rb; 
 
-    // Anti-stuck trackers
-    private Vector3 lastCheckedPosition;
-    private float nextStuckCheckTime = 0f;
-
     void Start()
     {
         anim = GetComponent<Animator>();
         meleeScript = GetComponent<UniversalMeleeAttack>();
         healthScript = GetComponent<UniversalHealth>();
         rb = GetComponent<Rigidbody>(); 
-
-        lastCheckedPosition = transform.position;
-        nextStuckCheckTime = Time.time + stuckCheckInterval;
     }
 
     public void SetTarget(Transform target)
@@ -55,27 +44,6 @@ public class BasicChaserAI : MonoBehaviour
         transform.LookAt(lookPos);
 
         float sqrDistance = (transform.position - playerTarget.position).sqrMagnitude;
-
-        // --- AGENT ZETA: ANTI-STUCK MONITOR ---
-        if (Time.time > nextStuckCheckTime)
-        {
-            // Only check if they are safely outside of their attack range!
-            if (sqrDistance > (attackRange * attackRange * 4f)) 
-            {
-                float movedDist = Vector3.Distance(transform.position, lastCheckedPosition);
-                
-                if (movedDist < stuckDistanceThreshold)
-                {
-                    // THEY ARE STUCK! INITIATE SAFE TELEPORT!
-                    SafeTeleportToPlayer();
-                }
-            }
-            
-            // Reset trackers for the next 3 seconds
-            lastCheckedPosition = transform.position;
-            nextStuckCheckTime = Time.time + stuckCheckInterval;
-        }
-        // --------------------------------------
 
         if (sqrDistance > (attackRange * attackRange))
         {
@@ -112,36 +80,6 @@ public class BasicChaserAI : MonoBehaviour
             {
                 lastAttackTime = Time.time;
                 if (meleeScript != null) meleeScript.TriggerAttack(attackDamage);
-            }
-        }
-    }
-
-    void SafeTeleportToPlayer()
-    {
-        for (int i = 0; i < 10; i++) 
-        {
-            Vector2 randomDir = Random.insideUnitCircle.normalized;
-            float dist = Random.Range(6f, 15f); 
-            Vector3 testPos = playerTarget.position + new Vector3(randomDir.x, 2f, randomDir.y) * dist;
-
-            if (Physics.Raycast(testPos, Vector3.down, out RaycastHit floorHit, 15f))
-            {
-                Vector3 finalPos = floorHit.point + (Vector3.up * 0.1f);
-
-                // --- AGENT ZETA: NAVMESH SECURITY SCAN ---
-                if (UnityEngine.AI.NavMesh.SamplePosition(finalPos, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
-                {
-                    finalPos = navHit.position; // Snap to the blue grid!
-
-                    if (!Physics.CheckSphere(finalPos + (Vector3.up * 1f), bodyRadius * 1.5f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                    {
-                        if (rb != null) rb.position = finalPos;
-                        else transform.position = finalPos;
-                        
-                        lastCheckedPosition = finalPos;
-                        return;
-                    }
-                }
             }
         }
     }

@@ -17,13 +17,8 @@ public class LevelEnemy
     public int spawnWeight = 50;             
 
     [Header("Difficulty Balance")]
-    [Tooltip("Maximum amount of THIS specific enemy alive at once. Set to 0 for unlimited!")]
     public int maxActiveAtOnce = 5; 
-
-    // --- AGENT ZETA TIME-LOCK PROTOCOL ---
-    [Tooltip("How many seconds must pass from the start of the level before this enemy is allowed to spawn?")]
     public float spawnDelaySeconds = 0f; 
-    // -------------------------------------
 
     [HideInInspector] 
     public List<GameObject> activeInstances = new List<GameObject>();
@@ -35,21 +30,22 @@ public class ArenaSpawner : MonoBehaviour
     [Tooltip("Drag your invisible spawn point GameObjects here!")]
     public Transform[] spawnNodes;
 
+    [Header("Agent Zeta: Security Settings")]
+    [Tooltip("UNCHECK this on wide-open levels where you haven't baked a NavMesh!")]
+    public bool requireNavMesh = true;
+
     [Header("Boss Fight Mode")]
     public GameObject bossTargetToDefeat; 
     public BossSkillReward skillToUnlock = BossSkillReward.None; 
 
     [Header("Gacha Settings")]
-    [Tooltip("Check this box for Tutorial/Intro levels where you don't want to give a random weapon!")]
     public bool disableGachaReward = false;
 
-    [Header("Defeat Transition (For Bad Endings)")]
-    [Tooltip("If the player dies in this boss room, load this scene! Leave empty for normal levels.")]
+    [Header("Defeat Transition")]
     public string badEndingSceneName = ""; 
     private bool playerDefeated = false;
     
     private PlayerStats playerStatsScript;
-
     private bool isBossLevel = false;
     private UniversalHealth bossHealthScript; 
 
@@ -86,20 +82,15 @@ public class ArenaSpawner : MonoBehaviour
     private int enemiesKilled = 0;
     private bool stageCleared = false;
 
-    // --- AGENT ZETA STOPWATCH ---
     private float levelStartTime;
-    // ----------------------------
 
     void Start()
     {   
-        // --- START THE STOPWATCH ---
         levelStartTime = Time.time;
-        // ---------------------------
 
         string currentScene = SceneManager.GetActiveScene().name;
         PlayerPrefs.SetString("SavedLevel", currentScene);
         PlayerPrefs.Save();
-        Debug.Log($"<color=green>[Agent Zeta] Progress auto-saved to: {currentScene}!</color>");
         
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) 
@@ -191,7 +182,6 @@ public class ArenaSpawner : MonoBehaviour
         {
             List<Transform> safeNodes = new List<Transform>();
 
-            // Filter out nodes that are too close or too far from Pria Sigma 1
             foreach (Transform node in spawnNodes)
             {
                 float dist = Vector3.Distance(player.position, node.position);
@@ -202,21 +192,25 @@ public class ArenaSpawner : MonoBehaviour
             }
 
             Transform selectedNode = null;
+            if (safeNodes.Count > 0) selectedNode = safeNodes[Random.Range(0, safeNodes.Count)];
+            else selectedNode = spawnNodes[Random.Range(0, spawnNodes.Length)];
 
-            // If we found perfect nodes, pick a random one!
-            if (safeNodes.Count > 0)
+            Vector3 finalSpawnPos = selectedNode.position;
+
+            // --- AGENT ZETA AUTO-SNAP HACK ---
+            // Shoot a laser from high above the node to find the actual floor!
+            if (Physics.Raycast(finalSpawnPos + Vector3.up * 10f, Vector3.down, out RaycastHit nodeFloorHit, 50f, floorLayer))
             {
-                selectedNode = safeNodes[Random.Range(0, safeNodes.Count)];
-            }
-            else 
-            {
-                // Fallback: If player is running wild and no nodes are at the perfect distance, 
-                // just pick any node so the wave doesn't get soft-locked!
-                selectedNode = spawnNodes[Random.Range(0, spawnNodes.Length)];
+                finalSpawnPos = nodeFloorHit.point + (Vector3.up * 0.1f);
             }
 
-            // Spawn directly at the exact coordinates of the invisible node!
-            GameObject nodeEnemy = Instantiate(chosenEnemyData.enemyPrefab, selectedNode.position, Quaternion.identity);
+            if (requireNavMesh && NavMesh.SamplePosition(finalSpawnPos, out NavMeshHit nodeNav, 4.0f, NavMesh.AllAreas))
+            {
+                finalSpawnPos = nodeNav.position;
+            }
+            // ---------------------------------
+
+            GameObject nodeEnemy = Instantiate(chosenEnemyData.enemyPrefab, finalSpawnPos, Quaternion.identity);
             chosenEnemyData.activeInstances.Add(nodeEnemy);
 
             BasicChaserAI nodeAI = nodeEnemy.GetComponent<BasicChaserAI>();
@@ -228,7 +222,7 @@ public class ArenaSpawner : MonoBehaviour
         }
 
         // =========================================================
-        // FALLBACK: OLD RANDOM MATH (Only runs if you forget to add nodes!)
+        // FALLBACK: OLD RANDOM MATH (For wide-open levels without nodes)
         // =========================================================
         for (int attempts = 0; attempts < 30; attempts++)
         {
@@ -243,25 +237,22 @@ public class ArenaSpawner : MonoBehaviour
             {
                 Vector3 finalSpawnPoint = hitFloor.point + (Vector3.up * 0.1f);
 
-                // Check 1.5: Is this spot actually inside the baked playable area?
-                if (!NavMesh.SamplePosition(finalSpawnPoint, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+                // --- AGENT ZETA NAVMESH OVERRIDE ---
+                if (requireNavMesh)
                 {
-                    continue; 
+                    if (!NavMesh.SamplePosition(finalSpawnPoint, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+                    {
+                        continue; 
+                    }
+                    finalSpawnPoint = navHit.position;
                 }
-                
-                finalSpawnPoint = navHit.position;
+                // -----------------------------------
 
-                if (Physics.CheckSphere(finalSpawnPoint + (Vector3.up * 1f), 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                {
-                    continue; 
-                }
+                if (Physics.CheckSphere(finalSpawnPoint + (Vector3.up * 1f), 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) continue; 
 
                 Vector3 playerChest = player.position + (Vector3.up * 1f);
                 Vector3 enemyChest = finalSpawnPoint + (Vector3.up * 1f);
-                if (Physics.Linecast(playerChest, enemyChest, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                {
-                    continue; 
-                }
+                if (Physics.Linecast(playerChest, enemyChest, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) continue; 
 
                 GameObject simpleEnemy = Instantiate(chosenEnemyData.enemyPrefab, finalSpawnPoint, Quaternion.identity);
                 chosenEnemyData.activeInstances.Add(simpleEnemy);
@@ -284,7 +275,6 @@ public class ArenaSpawner : MonoBehaviour
         {
             enemy.activeInstances.RemoveAll(item => item == null || !item.activeInHierarchy);
 
-            // --- AGENT ZETA TIME CHECK ---
             bool isTimeValid = Time.time >= (levelStartTime + enemy.spawnDelaySeconds);
 
             if (isTimeValid && (enemy.maxActiveAtOnce <= 0 || enemy.activeInstances.Count < enemy.maxActiveAtOnce))
@@ -321,7 +311,6 @@ public class ArenaSpawner : MonoBehaviour
     void TriggerDefeat()
     {
         playerDefeated = true;
-        Debug.Log("<color=red>[Agent Zeta] AGENT DOWN! EXTRACTING TO BAD ENDING...</color>");
         
         if (!string.IsNullOrEmpty(badEndingSceneName))
         {
@@ -344,7 +333,6 @@ public class ArenaSpawner : MonoBehaviour
         string bossMessage = "";
         string weaponMessage = "";
 
-        // --- 1. BOSS REWARD LOGIC ---
         if (isBossLevel)
         {
             if (skillToUnlock == BossSkillReward.RageOfCS)
@@ -366,7 +354,6 @@ public class ArenaSpawner : MonoBehaviour
             else bossMessage = "BOSS DEFEATED!\n<color=yellow>AREA CLEARED</color>";
         }
 
-        // --- 2. WEAPON GACHA LOGIC (Runs independently!) ---
         if (!disableGachaReward)
         {
             System.Collections.Generic.List<string> availablePool = new System.Collections.Generic.List<string>();
@@ -394,12 +381,10 @@ public class ArenaSpawner : MonoBehaviour
                 }
 
                 weaponMessage = $"<color=yellow>WEAPON ACQUIRED: {displayWeaponName}</color>";
-                Debug.Log($"<color=magenta>[Agent Zeta] Gacha Pull: {pulledWeapon} ({displayWeaponName})!</color>");
             }
             else
             {
                 weaponMessage = "<color=yellow>ARSENAL MAXED OUT</color>";
-                Debug.Log("<color=cyan>[Agent Zeta] Arsenal is full! No new weapons to drop.</color>");
             }
         }
         else if (!isBossLevel) 
@@ -407,7 +392,6 @@ public class ArenaSpawner : MonoBehaviour
             weaponMessage = "<color=yellow>AREA SECURED</color>";
         }
 
-        // --- 3. MERGE THE MESSAGES ---
         if (isBossLevel)
         {
             gachaMessage = bossMessage;
