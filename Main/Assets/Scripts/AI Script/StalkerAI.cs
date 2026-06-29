@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI; // <-- AGENT ZETA REQUIRED: GPS Library!
 using System.Collections;
 
 public class StalkerAI : MonoBehaviour
@@ -11,15 +12,6 @@ public class StalkerAI : MonoBehaviour
     public float attackCooldown = 1.2f;
     public float teleportCooldown = 10f;
 
-    [Header("Agent Zeta's Whiskers")]
-    public float obstacleCheckDistance = 2f; 
-    private int dodgeDirection = 1; 
-    private float nextDodgeChangeTime = 0f;
-
-    [Header("Phantom Protocol (Anti-Stuck)")]
-    public float stuckCheckInterval = 3f; 
-    public float stuckDistanceThreshold = 1.0f; 
-
     private Transform playerTarget;
     private float lastAttackTime;
     private float lastTeleportTime;
@@ -27,83 +19,63 @@ public class StalkerAI : MonoBehaviour
     private Animator anim;
     private UniversalMeleeAttack meleeScript; 
     private UniversalHealth healthScript; 
-    private Rigidbody rb; 
-
-    private Vector3 lastCheckedPosition;
-    private float nextStuckCheckTime = 0f;
+    
+    // --- AGENT ZETA: THE GPS DEVICE ---
+    private NavMeshAgent agent; 
 
     void Start()
     {
         anim = GetComponent<Animator>();
         meleeScript = GetComponent<UniversalMeleeAttack>(); 
         healthScript = GetComponent<UniversalHealth>();
-        rb = GetComponent<Rigidbody>(); 
+        
+        agent = GetComponent<NavMeshAgent>();
 
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
         
         lastTeleportTime = Time.time; 
-        lastCheckedPosition = transform.position;
-        nextStuckCheckTime = Time.time + stuckCheckInterval;
+        
+        if (agent != null)
+        {
+            agent.speed = moveSpeed;
+            agent.stoppingDistance = attackRange - 0.2f;
+        }
     }
 
-    void FixedUpdate() 
+    void Update() 
     {
-        if (healthScript != null && healthScript.isDead) return;
-        if (playerTarget == null) return;
+        if (healthScript != null && healthScript.isDead)
+        {
+            if (agent != null && agent.isActiveAndEnabled) agent.isStopped = true;
+            return;
+        }
+        if (playerTarget == null || agent == null) return;
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
 
-        // --- AGENT ZETA: ANTI-STUCK MONITOR ---
-        if (Time.time > nextStuckCheckTime)
-        {
-            if (distance > attackRange * 2f) 
-            {
-                float movedDist = Vector3.Distance(transform.position, lastCheckedPosition);
-                if (movedDist < stuckDistanceThreshold) StartCoroutine(TeleportRoutine()); 
-            }
-            lastCheckedPosition = transform.position;
-            nextStuckCheckTime = Time.time + stuckCheckInterval;
-        }
-        // --------------------------------------
-
+        // Check for teleport BEFORE regular movement
         if (Time.time >= lastTeleportTime + teleportCooldown && distance > 5f)
         {
             StartCoroutine(TeleportRoutine());
+            return; 
         }
-
-        Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
-        transform.LookAt(lookPos);
 
         if (distance > attackRange)
         {
             if (anim != null) anim.SetBool("isChasing", true);
-            
-            if (rb != null)
-            {
-                Vector3 moveDir = (lookPos - transform.position).normalized;
-
-                Vector3 chestPos = transform.position + Vector3.up * 1f;
-                if (Physics.Raycast(chestPos, transform.forward, out RaycastHit hit, obstacleCheckDistance))
-                {
-                    if (!hit.collider.CompareTag("Player"))
-                    {
-                        if (Time.time > nextDodgeChangeTime)
-                        {
-                            dodgeDirection = Random.Range(0, 2) == 0 ? 1 : -1;
-                            nextDodgeChangeTime = Time.time + 1.5f;
-                        }
-                        moveDir = transform.right * dodgeDirection;
-                    }
-                }
-
-                Vector3 targetPos = transform.position + moveDir * moveSpeed * Time.fixedDeltaTime;
-                rb.MovePosition(targetPos);
-            }
+            agent.isStopped = false;
+            // Tell the GPS where to go!
+            agent.SetDestination(playerTarget.position);
         }
         else
         {
             if (anim != null) anim.SetBool("isChasing", false);
+            agent.isStopped = true; // Hit the brakes!
+
+            Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
+            transform.LookAt(lookPos);
+
             if (Time.time >= lastAttackTime + attackCooldown)
             {
                 lastAttackTime = Time.time;
@@ -115,8 +87,13 @@ public class StalkerAI : MonoBehaviour
     IEnumerator TeleportRoutine()
     {
         lastTeleportTime = Time.time;
+        
+        // Pause the GPS so he doesn't slide while warping!
+        if (agent != null && agent.isActiveAndEnabled) agent.isStopped = true;
+
         Vector3 bestPos = transform.position;
 
+        // --- SAFE TELEPORT: Try up to 5 safe spots behind the player ---
         for (int i = 0; i < 5; i++)
         {
             Vector3 offsetDir = Quaternion.Euler(0, Random.Range(-30f, 30f), 0) * (-playerTarget.forward);
@@ -127,8 +104,8 @@ public class StalkerAI : MonoBehaviour
             {
                 Vector3 finalPos = floorHit.point + (Vector3.up * 0.1f);
                 
-                // --- AGENT ZETA: NAVMESH SECURITY SCAN ---
-                if (UnityEngine.AI.NavMesh.SamplePosition(finalPos, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
+                // NAVMESH SECURITY SCAN
+                if (NavMesh.SamplePosition(finalPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
                 {
                     finalPos = navHit.position;
 
@@ -141,9 +118,10 @@ public class StalkerAI : MonoBehaviour
             }
         }
         
-        if (rb != null) rb.position = bestPos;
+        // --- AGENT ZETA WARP COMMAND ---
+        if (agent != null) agent.Warp(bestPos);
         else transform.position = bestPos;
-        lastCheckedPosition = bestPos;
+        // -------------------------------
 
         lastAttackTime = Time.time;
         if (meleeScript != null) meleeScript.TriggerAttack(teleportDamage);

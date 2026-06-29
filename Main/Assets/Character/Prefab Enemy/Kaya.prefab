@@ -1435,6 +1435,7 @@ GameObject:
   - component: {fileID: 8466856663117694398}
   - component: {fileID: 5882264725802264673}
   - component: {fileID: 3980138971533628002}
+  - component: {fileID: 5656483638294829829}
   m_Layer: 0
   m_Name: Kaya
   m_TagString: Untagged
@@ -1912,7 +1913,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 1
@@ -1930,6 +1931,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KayaAI
   moveSpeed: 6
   stoppingDistance: 2
+  obstacleCheckDistance: 2
+  stuckCheckInterval: 3
+  stuckDistanceThreshold: 1
   teleportCooldown: 7
   teleportDistance: 2
   teleportSound: {fileID: 8300000, guid: 4456bca58e17561848990bead30d0a40, type: 3}
@@ -1938,6 +1942,28 @@ MonoBehaviour:
   attackCooldown: 4
   flashbangDuration: 1
   flashbangSound: {fileID: 8300000, guid: 5f6007ebd731bd268b9678e89188258e, type: 3}
+--- !u!195 &5656483638294829829
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978879434711127254}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 60
+  avoidancePriority: 50
+  m_AngularSpeed: 400
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1983129276577753353
 GameObject:
   m_ObjectHideFlags: 0

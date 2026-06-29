@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI; // <-- AGENT ZETA REQUIRED: The GPS Library!
 
 public class BasicChaserAI : MonoBehaviour
 {
@@ -8,26 +9,32 @@ public class BasicChaserAI : MonoBehaviour
     public float attackDamage = 10f;
     public float attackCooldown = 1.2f;
 
-    [Header("Agent Zeta's Wall Slider")]
-    [Tooltip("How far ahead the enemy looks for walls.")]
-    public float obstacleCheckDistance = 1.5f; 
-    [Tooltip("How thick the enemy is (prevents shoulder clipping).")]
-    public float bodyRadius = 0.4f; 
-
     private Transform playerTarget;
     private float lastAttackTime = 0f;
 
     private Animator anim;
     private UniversalMeleeAttack meleeScript;
     private UniversalHealth healthScript; 
-    private Rigidbody rb; 
+    
+    // --- AGENT ZETA: THE GPS DEVICE ---
+    private NavMeshAgent agent; 
 
     void Start()
     {
         anim = GetComponent<Animator>();
         meleeScript = GetComponent<UniversalMeleeAttack>();
         healthScript = GetComponent<UniversalHealth>();
-        rb = GetComponent<Rigidbody>(); 
+        
+        // Grab the GPS component!
+        agent = GetComponent<NavMeshAgent>(); 
+        
+        if (agent != null)
+        {
+            // Sync the agent's speed with your custom variable
+            agent.speed = moveSpeed; 
+            // Prevent the agent from stopping too early
+            agent.stoppingDistance = attackRange - 0.5f; 
+        }
     }
 
     public void SetTarget(Transform target)
@@ -35,46 +42,39 @@ public class BasicChaserAI : MonoBehaviour
         playerTarget = target;
     }
 
-    void FixedUpdate() 
+    // Agent Zeta Tip: NavMeshAgents work best in normal Update!
+    void Update() 
     {
-        if (healthScript != null && healthScript.isDead) return;
-        if (playerTarget == null) return;
+        if (healthScript != null && healthScript.isDead) 
+        {
+            if (agent != null && agent.isActiveAndEnabled) agent.isStopped = true;
+            return;
+        }
+        
+        if (playerTarget == null || agent == null) return;
 
-        Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
-        transform.LookAt(lookPos);
+        float distance = Vector3.Distance(transform.position, playerTarget.position);
 
-        float sqrDistance = (transform.position - playerTarget.position).sqrMagnitude;
-
-        if (sqrDistance > (attackRange * attackRange))
+        if (distance > attackRange)
         {
             if (anim != null) anim.SetBool("isChasing", true);
             
-            if (rb != null)
-            {
-                Vector3 direction = (lookPos - transform.position).normalized;
-
-                // Wall Slider Math
-                Vector3 chestPos = transform.position + Vector3.up * 1f;
-                
-                if (Physics.SphereCast(chestPos, bodyRadius, direction, out RaycastHit hit, obstacleCheckDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                {
-                    if (!hit.collider.CompareTag("Player"))
-                    {
-                        direction = Vector3.ProjectOnPlane(direction, hit.normal).normalized;
-                    }
-                }
-
-                rb.linearVelocity = new Vector3(direction.x * moveSpeed, rb.linearVelocity.y, direction.z * moveSpeed);
-            }
+            // --- AGENT ZETA PATHFINDING ---
+            agent.isStopped = false;
+            // Tell the GPS where Pria Sigma 1 is, and it will automatically steer around walls!
+            agent.SetDestination(playerTarget.position); 
+            // ------------------------------
         }
         else
         {
             if (anim != null) anim.SetBool("isChasing", false);
             
-            if (rb != null)
-            {
-                rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-            }
+            // Stop moving so we can swing!
+            agent.isStopped = true;
+
+            // Look directly at the player's face
+            Vector3 lookPos = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
+            transform.LookAt(lookPos);
 
             if (Time.time >= lastAttackTime + attackCooldown)
             {

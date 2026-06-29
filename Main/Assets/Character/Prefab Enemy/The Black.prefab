@@ -5528,6 +5528,7 @@ GameObject:
   - component: {fileID: 5091088674175920141}
   - component: {fileID: 3078228940128709277}
   - component: {fileID: 1052572141983049815}
+  - component: {fileID: 5729924682939267567}
   m_Layer: 0
   m_Name: The Black
   m_TagString: Untagged
@@ -5833,6 +5834,9 @@ MonoBehaviour:
   teleportDamage: 5
   attackCooldown: 1
   teleportCooldown: 8
+  obstacleCheckDistance: 2
+  stuckCheckInterval: 3
+  stuckDistanceThreshold: 1
 --- !u!136 &7565754759173110771
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5912,7 +5916,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 1
@@ -6042,6 +6046,28 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: 6f0bcbfad4d544729b36c8f24886e335, type: 3}
   deathSound: {fileID: 8300000, guid: 6f54dccf4c8a63d36aac1968cc0a8c93, type: 3}
   pitchVariation: 0.15
+--- !u!195 &5729924682939267567
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8862466790325390476}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 60
+  avoidancePriority: 50
+  m_AngularSpeed: 400
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &9032086217365247217
 GameObject:
   m_ObjectHideFlags: 0

@@ -1970,6 +1970,7 @@ GameObject:
   - component: {fileID: 8236498270581869929}
   - component: {fileID: 1576057449545671896}
   - component: {fileID: 8379962823706103215}
+  - component: {fileID: -995188443942924586}
   m_Layer: 0
   m_Name: Jambret 1
   m_TagString: Untagged
@@ -2336,7 +2337,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 1
@@ -2482,6 +2483,28 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: 3ce6b637587c0c6abb64eaddb6846128, type: 3}
   deathSound: {fileID: 8300000, guid: 012fad142f9413f56a0b29ee71a47b5e, type: 3}
   pitchVariation: 0.15
+--- !u!195 &-995188443942924586
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3619185253028174861}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 60
+  avoidancePriority: 50
+  m_AngularSpeed: 400
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &3669972031026107717
 GameObject:
   m_ObjectHideFlags: 0

@@ -2546,6 +2546,7 @@ GameObject:
   - component: {fileID: 7493141941169379326}
   - component: {fileID: 7250684815808492873}
   - component: {fileID: 1769537978016094498}
+  - component: {fileID: 3918877971883647095}
   m_Layer: 0
   m_Name: AmericaWoke
   m_TagString: Untagged
@@ -3014,6 +3015,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AmericaWokeAI
   moveSpeed: 4
   stoppingDistance: 1.5
+  obstacleCheckDistance: 1.5
+  bodyRadius: 0.4
   attackRange: 3
   attackDamage: 40
   attackCooldown: 2
@@ -3046,10 +3049,32 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 1
+--- !u!195 &3918877971883647095
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3125103903867278189}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 60
+  avoidancePriority: 50
+  m_AngularSpeed: 400
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &3334159981253953538
 GameObject:
   m_ObjectHideFlags: 0
