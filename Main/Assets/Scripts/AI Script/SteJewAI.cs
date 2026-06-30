@@ -10,8 +10,14 @@ public class SteJewAI : MonoBehaviour
     public ThiefState currentState = ThiefState.Hunting;
     public float huntSpeed = 12f; 
     public float fleeSpeed = 22f; 
-    public float fleeDuration = 6f; // How many seconds he runs away after an attempt
+    
+    // --- AGENT ZETA TETHER UPGRADE ---
+    [Tooltip("Maximum seconds she will try to flee before giving up.")]
+    public float maxFleeDuration = 6f; 
+    [Tooltip("If she gets THIS far away from Pria Sigma 1, she feels safe and starts hunting again!")]
+    public float safeFleeDistance = 15f; 
     private float fleeTimer = 0f;
+    // ---------------------------------
 
     [Header("Teleport Settings")]
     [Range(0f, 100f)]
@@ -45,7 +51,6 @@ public class SteJewAI : MonoBehaviour
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) playerTarget = p.transform;
 
-        // Roll the dice for a jump scare on the very first encounter!
         currentState = ThiefState.Hunting;
         RollForTeleport();
     }
@@ -60,7 +65,6 @@ public class SteJewAI : MonoBehaviour
 
         if (playerTarget == null || agent == null) return;
 
-        // If he is currently doing the steal animation, freeze him in place and look at player!
         if (isCasting)
         {
             agent.isStopped = true;
@@ -97,29 +101,31 @@ public class SteJewAI : MonoBehaviour
         {
             fleeTimer -= Time.deltaTime;
 
-            if (fleeTimer <= 0)
+            // --- AGENT ZETA TETHER CHECK ---
+            // If the timer runs out OR she successfully got 15 meters away from you!
+            if (fleeTimer <= 0 || distance >= safeFleeDistance)
             {
-                // Cooldown finished! Time to hunt again!
                 currentState = ThiefState.Hunting;
                 RollForTeleport();
             }
+            // -------------------------------
             else
             {
                 agent.isStopped = false;
                 agent.speed = fleeSpeed; 
 
-                // Calculate a point AWAY from the player!
+                // Plot a point 5 meters away in the opposite direction
                 Vector3 fleeDirection = (transform.position - playerTarget.position).normalized;
-                Vector3 targetFleePos = transform.position + (fleeDirection * 10f);
+                Vector3 targetFleePos = transform.position + (fleeDirection * 5f);
                 
-                if (NavMesh.SamplePosition(targetFleePos, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+                // Only plot safe points so she doesn't try to run to the moon!
+                if (NavMesh.SamplePosition(targetFleePos, out NavMeshHit hit, 3f, NavMesh.AllAreas))
                 {
                     agent.SetDestination(hit.position);
                 }
                 
                 if (anim != null) anim.SetBool("isChasing", true); 
 
-                // Look where he is running
                 if (agent.velocity != Vector3.zero)
                 {
                     transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(agent.velocity.normalized), Time.deltaTime * 10f);
@@ -132,7 +138,6 @@ public class SteJewAI : MonoBehaviour
     {
         if (Random.Range(0f, 100f) <= teleportChance)
         {
-            // Teleport directly behind the player!
             Vector3 offsetDir = Quaternion.Euler(0, Random.Range(-180f, 180f), 0) * playerTarget.forward;
             Vector3 testPos = playerTarget.position + (offsetDir * 2f);
             testPos.y += 2f; 
@@ -168,7 +173,6 @@ public class SteJewAI : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, playerTarget.position);
 
-        // Check if the player dodged the pickpocket attempt!
         if (distance <= attackRange + 1f) 
         {
             PlayerStats stats = playerTarget.GetComponent<PlayerStats>();
@@ -188,8 +192,7 @@ public class SteJewAI : MonoBehaviour
             Debug.Log("<color=green>[Agent Zeta] Player dodged SteJew's steal attempt!</color>");
         }
 
-        // Win or lose, he immediately runs away!
         currentState = ThiefState.Fleeing;
-        fleeTimer = fleeDuration;
+        fleeTimer = maxFleeDuration;
     }
 }
