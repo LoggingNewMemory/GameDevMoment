@@ -42,7 +42,6 @@ public class PlayerAmmoStore : MonoBehaviour
 
     void Start()
     {
-        // --- AGENT ZETA WEAPON RETRIEVAL ---
         hasPistol = true; 
         if (PlayerPrefs.GetInt("Unlocked_Shotgun", 0) == 1) hasShotgun = true;
         if (PlayerPrefs.GetInt("Unlocked_SMG", 0) == 1) hasSMG = true; 
@@ -50,10 +49,7 @@ public class PlayerAmmoStore : MonoBehaviour
         if (PlayerPrefs.GetInt("Unlocked_Sniper", 0) == 1) hasSniper = true;
         if (PlayerPrefs.GetInt("Unlocked_LMG", 0) == 1) hasLMG = true;
         if (PlayerPrefs.GetInt("Unlocked_Railgun", 0) == 1) hasRailgun = true;
-        // -----------------------------------
 
-        // --- AGENT ZETA AMMO RETRIEVAL ---
-        // Load the saved ammo! If no save exists (like a new game), it defaults to the starting numbers!
         pistolAmmo = PlayerPrefs.GetInt("Ammo_Pistol", 30);
         shotgunAmmo = PlayerPrefs.GetInt("Ammo_Shotgun", 8);
         smgAmmo = PlayerPrefs.GetInt("Ammo_SMG", 60);
@@ -61,7 +57,6 @@ public class PlayerAmmoStore : MonoBehaviour
         sniperAmmo = PlayerPrefs.GetInt("Ammo_Sniper", 15);
         lmgAmmo = PlayerPrefs.GetInt("Ammo_LMG", 150);
         railgunAmmo = PlayerPrefs.GetInt("Ammo_Railgun", 2);
-        // ---------------------------------
 
         if (notificationText == null || !notificationText.gameObject.scene.IsValid())
         {
@@ -147,6 +142,8 @@ public class PlayerAmmoStore : MonoBehaviour
             activeGun.UpdateAmmoUI();
         }
 
+        // --- GURA INSTA-SAVE! ---
+        SaveAllAmmo();
         return true; 
     }
 
@@ -177,6 +174,21 @@ public class PlayerAmmoStore : MonoBehaviour
             case AmmoType.LMG: lmgAmmo = amount; break;
             case AmmoType.Railgun: railgunAmmo = amount; break;
         }
+        
+        // --- GURA INSTA-SAVE! ---
+        SaveAllAmmo();
+    }
+
+    private void SaveAllAmmo()
+    {
+        PlayerPrefs.SetInt("Ammo_Pistol", pistolAmmo);
+        PlayerPrefs.SetInt("Ammo_Shotgun", shotgunAmmo);
+        PlayerPrefs.SetInt("Ammo_SMG", smgAmmo);
+        PlayerPrefs.SetInt("Ammo_AssaultRifle", arAmmo);
+        PlayerPrefs.SetInt("Ammo_Sniper", sniperAmmo);
+        PlayerPrefs.SetInt("Ammo_LMG", lmgAmmo);
+        PlayerPrefs.SetInt("Ammo_Railgun", railgunAmmo);
+        PlayerPrefs.Save();
     }
 
     private void TriggerNotification(string message)
@@ -208,20 +220,5 @@ public class PlayerAmmoStore : MonoBehaviour
         c.a = 0f;
         notificationText.color = c;
         notificationText.gameObject.SetActive(false); 
-    }
-
-    // --- AGENT ZETA AUTOSAVE FEATURE ---
-    private void OnDestroy()
-    {
-        // When the level unloads (Scene change), automatically save the exact ammo counts!
-        PlayerPrefs.SetInt("Ammo_Pistol", pistolAmmo);
-        PlayerPrefs.SetInt("Ammo_Shotgun", shotgunAmmo);
-        PlayerPrefs.SetInt("Ammo_SMG", smgAmmo);
-        PlayerPrefs.SetInt("Ammo_AssaultRifle", arAmmo);
-        PlayerPrefs.SetInt("Ammo_Sniper", sniperAmmo);
-        PlayerPrefs.SetInt("Ammo_LMG", lmgAmmo);
-        PlayerPrefs.SetInt("Ammo_Railgun", railgunAmmo);
-        
-        PlayerPrefs.Save();
     }
 }
