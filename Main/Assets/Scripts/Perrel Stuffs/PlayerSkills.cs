@@ -32,13 +32,13 @@ public class PlayerSkills : MonoBehaviour
     private float haluCDTimer = 0f;
     private float haluTimer = 0f;
 
-    [Header("Time for Coding (F)")]
-    public float timeForCodingDuration = 17f;
+    [Header("Time for Coding / Sandevistan Mode (F)")]
+    public float timeForCodingDuration = 17f; // Max capacity of your Sandevistan bar
     public float slowMotionScale = 0.2f;     
-    public float timeCodingCooldownMax = 20f;
+    public float timeCodingCooldownMax = 40f; // Time it takes to fully recharge from 0 to max
     [HideInInspector] public bool isTimeCodingActive = false;
-    private float timeCodingCDTimer = 0f;
-    private float timeCodingActiveTimer = 0f;
+    private float timeCodingActiveTimer = 0f; // Current remaining charge pool
+    public float minChargeToActivate = 2f;    // Minimum charge required to flip it back on
 
     void Start()
     {
@@ -50,6 +50,9 @@ public class PlayerSkills : MonoBehaviour
         if (PlayerPrefs.GetInt("Unlocked_HaluOfCS", 0) == 1) hasHaluOfCS = true; 
         if (PlayerPrefs.GetInt("Unlocked_TimeForCoding", 0) == 1) hasTimeForCoding = true; 
         // ----------------------------------
+
+        // Initialize Sandevistan charge pool to maximum capacity
+        timeCodingActiveTimer = timeForCodingDuration;
     }
 
     void Update()
@@ -64,7 +67,6 @@ public class PlayerSkills : MonoBehaviour
     {
         if (rageCDTimer > 0) rageCDTimer -= Time.unscaledDeltaTime;
         if (haluCDTimer > 0) haluCDTimer -= Time.unscaledDeltaTime;
-        if (timeCodingCDTimer > 0) timeCodingCDTimer -= Time.unscaledDeltaTime;
 
         if (isRageActive)
         {
@@ -78,10 +80,27 @@ public class PlayerSkills : MonoBehaviour
             if (haluTimer <= 0) CancelHaluOfCS();
         }
 
+        // --- SANDEVISTAN RESOURCE POOL TICKER ---
         if (isTimeCodingActive)
         {
+            // Drain the pool while executing code in slow-mo!
             timeCodingActiveTimer -= Time.unscaledDeltaTime;
-            if (timeCodingActiveTimer <= 0) EndTimeForCoding();
+            if (timeCodingActiveTimer <= 0)
+            {
+                timeCodingActiveTimer = 0;
+                EndTimeForCoding();
+            }
+        }
+        else
+        {
+            // Recharge the pool naturally when deactivated
+            if (timeCodingActiveTimer < timeForCodingDuration)
+            {
+                float rechargeRate = timeForCodingDuration / timeCodingCooldownMax;
+                timeCodingActiveTimer += Time.unscaledDeltaTime * rechargeRate;
+                if (timeCodingActiveTimer > timeForCodingDuration) 
+                    timeCodingActiveTimer = timeForCodingDuration;
+            }
         }
     }
 
@@ -100,9 +119,19 @@ public class PlayerSkills : MonoBehaviour
             StartHaluOfCS();
         }
         
-        if (hasTimeForCoding && Keyboard.current.fKey.wasPressedThisFrame && !isTimeCodingActive && timeCodingCDTimer <= 0)
+        // --- TOGGLEABLE SANDEVISTAN TRIGGER ---
+        if (hasTimeForCoding && Keyboard.current.fKey.wasPressedThisFrame)
         {
-            StartTimeForCoding();
+            if (isTimeCodingActive)
+            {
+                // Active? Shut it down early to preserve the remaining pool!
+                EndTimeForCoding();
+            }
+            else if (timeCodingActiveTimer >= minChargeToActivate)
+            {
+                // Inactive? Turn it back on as long as you have met the minimum charge requirement!
+                StartTimeForCoding();
+            }
         }
     }
 
@@ -152,17 +181,14 @@ public class PlayerSkills : MonoBehaviour
     }
 
     // ==========================================
-    // SKILL 3: TIME FOR CODING
+    // SKILL 3: TIME FOR CODING (SANDEVISTAN OVERCLOCK)
     // ==========================================
     void StartTimeForCoding()
     {
         isTimeCodingActive = true;
-        timeCodingActiveTimer = timeForCodingDuration;
-        timeCodingCDTimer = timeCodingCooldownMax;
-
         Time.timeScale = slowMotionScale;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        Debug.Log("TIME FOR CODING ACTIVATED!");
+        Debug.Log("SANDEVISTAN ACTIVATED: TIME FOR CODING!");
     }
 
     void EndTimeForCoding()
@@ -170,20 +196,26 @@ public class PlayerSkills : MonoBehaviour
         isTimeCodingActive = false;
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
-        Debug.Log("TIME FOR CODING ENDED!");
+        Debug.Log("SANDEVISTAN DEACTIVATED: RETURN TO NORMAL TIME!");
     }
 
     // ==========================================
-    // SUI-CHAN'S KILL REWARD PROTOCOL
+    // SUI-CHAN'S KILL REWARD PROTOCOL (RELOADED)
     // ==========================================
     public void ApplyKillCooldownReduction()
     {
         float cdReduction = 0.2f;
+        float sandevistanBatteryRefill = 1.5f; // Getting kills gives you instant Sandevistan charge! 🪓
 
-        // Slash those cooldowns! 🪓
+        // Slash those standard cooldowns!
         if (rageCDTimer > 0) rageCDTimer = Mathf.Max(0, rageCDTimer - cdReduction);
         if (haluCDTimer > 0) haluCDTimer = Mathf.Max(0, haluCDTimer - cdReduction);
-        if (timeCodingCDTimer > 0) timeCodingCDTimer = Mathf.Max(0, timeCodingCDTimer - cdReduction);
+        
+        // Refill your coding energy pool for being a clean executioner!
+        if (!isTimeCodingActive)
+        {
+            timeCodingActiveTimer = Mathf.Min(timeForCodingDuration, timeCodingActiveTimer + sandevistanBatteryRefill);
+        }
         
         // Keep your original duration bonus for Halu active too!
         AddHaluKillBonus();
@@ -217,9 +249,23 @@ public class PlayerSkills : MonoBehaviour
         if (hasTimeForCoding)
         {
             uiOutput += "[F] TIME FOR CODING: ";
-            if (isTimeCodingActive) uiOutput += $"<color=yellow>SLOW-MO ({timeCodingActiveTimer:F1}s)</color>\n";
-            else if (timeCodingCDTimer > 0) uiOutput += $"<color=red>CD ({timeCodingCDTimer:F1}s)</color>\n";
-            else uiOutput += "<color=green>READY</color>\n";
+            float chargePercent = (timeCodingActiveTimer / timeForCodingDuration) * 100f;
+
+            if (isTimeCodingActive)
+            {
+                uiOutput += $"<color=yellow>BURNING ({timeCodingActiveTimer:F1}s / {chargePercent:F0}%)</color>\n";
+            }
+            else
+            {
+                if (timeCodingActiveTimer >= minChargeToActivate)
+                {
+                    uiOutput += $"<color=green>READY ({timeCodingActiveTimer:F1}s / {chargePercent:F0}%)</color>\n";
+                }
+                else
+                {
+                    uiOutput += $"<color=red>CHARGING ({timeCodingActiveTimer:F1}s / {chargePercent:F0}%)</color>\n";
+                }
+            }
         }
 
         powerStatusText.text = uiOutput;

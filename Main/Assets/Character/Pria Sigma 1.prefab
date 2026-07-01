@@ -4652,7 +4652,7 @@ MonoBehaviour:
   isHaluActive: 0
   timeForCodingDuration: 17
   slowMotionScale: 0.2
-  timeCodingCooldownMax: 20
+  timeCodingCooldownMax: 40
   isTimeCodingActive: 0
 --- !u!114 &7228406177975556466
 MonoBehaviour:
