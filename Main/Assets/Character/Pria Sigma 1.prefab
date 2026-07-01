@@ -4582,6 +4582,7 @@ MonoBehaviour:
   maxOverheal: 150
   currentHealth: 0
   healthTextDisplay: {fileID: 0}
+  isBadEndingLevel: 0
   sfxSource: {fileID: 2463887187246242070}
   overhealGainSound: {fileID: 8300000, guid: a7db2e6862f091baca2208cb80222189, type: 3}
   overhealBreakSound: {fileID: 8300000, guid: 0b04f6804f4d173af9e4cf5f5990af4f, type: 3}
@@ -4641,15 +4642,15 @@ MonoBehaviour:
   hasRageOfCS: 0
   hasHaluOfCS: 0
   hasTimeForCoding: 0
-  rageDuration: 7
+  rageDuration: 8
   rageSpeedMultiplier: 1.5
   rageCooldownMax: 30
   isRageActive: 0
-  haluBaseDuration: 5
+  haluBaseDuration: 12
   haluKillBonus: 0.2
   haluCooldownMax: 25
   isHaluActive: 0
-  timeForCodingDuration: 3
+  timeForCodingDuration: 17
   slowMotionScale: 0.2
   timeCodingCooldownMax: 20
   isTimeCodingActive: 0
@@ -7768,6 +7769,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 10
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
   isShotgun: 0
   pelletCount: 8
   spreadAngle: 3
@@ -7801,6 +7804,8 @@ MonoBehaviour:
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashFadeDuration: 0.5
+  anangThugSprite: {fileID: 0}
+  railgunScreenSprite: {fileID: 0}
 --- !u!82 &50979851414692131
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8114,6 +8119,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 14.5
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
   isShotgun: 0
   pelletCount: 8
   spreadAngle: 3
@@ -8147,6 +8154,8 @@ MonoBehaviour:
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashFadeDuration: 0.5
+  anangThugSprite: {fileID: 0}
+  railgunScreenSprite: {fileID: 0}
 --- !u!82 &7678183055288900354
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8720,6 +8729,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 5
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
   isShotgun: 0
   pelletCount: 8
   spreadAngle: 3
@@ -8753,6 +8764,8 @@ MonoBehaviour:
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashFadeDuration: 0.3
+  anangThugSprite: {fileID: 0}
+  railgunScreenSprite: {fileID: 0}
 --- !u!82 &7431423175250417385
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8997,6 +9010,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 1.2
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
   isShotgun: 0
   pelletCount: 8
   spreadAngle: 3
@@ -9030,6 +9045,8 @@ MonoBehaviour:
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashFadeDuration: 0.5
+  anangThugSprite: {fileID: 0}
+  railgunScreenSprite: {fileID: 0}
 --- !u!82 &3762315762989219764
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9337,6 +9354,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 13.5
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
   isShotgun: 0
   pelletCount: 8
   spreadAngle: 3
@@ -9370,6 +9389,8 @@ MonoBehaviour:
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashFadeDuration: 0.5
+  anangThugSprite: {fileID: 0}
+  railgunScreenSprite: {fileID: 0}
 --- !u!82 &601686550857614835
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9662,6 +9683,8 @@ MonoBehaviour:
   isAutomatic: 1
   isBoltAction: 0
   fireRate: 20
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
   isShotgun: 0
   pelletCount: 8
   spreadAngle: 3
@@ -9695,6 +9718,8 @@ MonoBehaviour:
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashFadeDuration: 0.5
+  anangThugSprite: {fileID: 0}
+  railgunScreenSprite: {fileID: 0}
 --- !u!82 &6789434134864191509
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9944,6 +9969,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 0
   fireRate: 8
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
   isShotgun: 0
   pelletCount: 8
   spreadAngle: 3
@@ -9977,6 +10004,8 @@ MonoBehaviour:
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashFadeDuration: 0.5
+  anangThugSprite: {fileID: 0}
+  railgunScreenSprite: {fileID: 0}
 --- !u!82 &1794963580562457125
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10258,6 +10287,8 @@ MonoBehaviour:
   isAutomatic: 0
   isBoltAction: 1
   fireRate: 1.5
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
   isShotgun: 1
   pelletCount: 4
   spreadAngle: 4
@@ -10291,6 +10322,8 @@ MonoBehaviour:
   screenFlashImage: {fileID: 0}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashFadeDuration: 0.5
+  anangThugSprite: {fileID: 0}
+  railgunScreenSprite: {fileID: 0}
 --- !u!82 &1918986279577958467
 AudioSource:
   m_ObjectHideFlags: 0

@@ -17,7 +17,7 @@ public class PlayerSkills : MonoBehaviour
     public bool hasTimeForCoding = false;
 
     [Header("Rage of CS (Q)")]
-    public float rageDuration = 15f;
+    public float rageDuration = 8f;
     public float rageSpeedMultiplier = 1.5f;
     public float rageCooldownMax = 30f;
     [HideInInspector] public bool isRageActive = false;
@@ -25,7 +25,7 @@ public class PlayerSkills : MonoBehaviour
     private float rageActiveTimer = 0f;
 
     [Header("Halu of CS (E)")]
-    public float haluBaseDuration = 10f;
+    public float haluBaseDuration = 12f;
     public float haluKillBonus = 0.2f;
     public float haluCooldownMax = 25f;
     [HideInInspector] public bool isHaluActive = false;
@@ -33,7 +33,7 @@ public class PlayerSkills : MonoBehaviour
     private float haluTimer = 0f;
 
     [Header("Time for Coding (F)")]
-    public float timeForCodingDuration = 5f; 
+    public float timeForCodingDuration = 17f;
     public float slowMotionScale = 0.2f;     
     public float timeCodingCooldownMax = 20f;
     [HideInInspector] public bool isTimeCodingActive = false;
@@ -46,7 +46,6 @@ public class PlayerSkills : MonoBehaviour
         stats = GetComponent<PlayerStats>();
         
         // --- AGENT ZETA SKILL RETRIEVAL ---
-        // Check the save file for ALL the boss rewards!
         if (PlayerPrefs.GetInt("Unlocked_RageOfCS", 0) == 1) hasRageOfCS = true; 
         if (PlayerPrefs.GetInt("Unlocked_HaluOfCS", 0) == 1) hasHaluOfCS = true; 
         if (PlayerPrefs.GetInt("Unlocked_TimeForCoding", 0) == 1) hasTimeForCoding = true; 
@@ -63,12 +62,10 @@ public class PlayerSkills : MonoBehaviour
     // --- COOLDOWN & DURATION MANAGEMENT ---
     void HandleCooldownTimers()
     {
-        // Reductions use unscaledTime so they don't lag during slow-mo!
         if (rageCDTimer > 0) rageCDTimer -= Time.unscaledDeltaTime;
         if (haluCDTimer > 0) haluCDTimer -= Time.unscaledDeltaTime;
         if (timeCodingCDTimer > 0) timeCodingCDTimer -= Time.unscaledDeltaTime;
 
-        // Active countdowns
         if (isRageActive)
         {
             rageActiveTimer -= Time.unscaledDeltaTime;
@@ -174,6 +171,22 @@ public class PlayerSkills : MonoBehaviour
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
         Debug.Log("TIME FOR CODING ENDED!");
+    }
+
+    // ==========================================
+    // SUI-CHAN'S KILL REWARD PROTOCOL
+    // ==========================================
+    public void ApplyKillCooldownReduction()
+    {
+        float cdReduction = 0.2f;
+
+        // Slash those cooldowns! 🪓
+        if (rageCDTimer > 0) rageCDTimer = Mathf.Max(0, rageCDTimer - cdReduction);
+        if (haluCDTimer > 0) haluCDTimer = Mathf.Max(0, haluCDTimer - cdReduction);
+        if (timeCodingCDTimer > 0) timeCodingCDTimer = Mathf.Max(0, timeCodingCDTimer - cdReduction);
+        
+        // Keep your original duration bonus for Halu active too!
+        AddHaluKillBonus();
     }
 
     // ==========================================

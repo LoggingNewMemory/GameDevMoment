@@ -46,6 +46,7 @@ public class ArenaSpawner : MonoBehaviour
     private bool playerDefeated = false;
     
     private PlayerStats playerStatsScript;
+    private PlayerSkills playerSkillsScript;
     private bool isBossLevel = false;
     private UniversalHealth bossHealthScript; 
 
@@ -97,6 +98,7 @@ public class ArenaSpawner : MonoBehaviour
         {
             player = p.transform;
             playerStatsScript = player.GetComponent<PlayerStats>();
+            playerSkillsScript = player.GetComponent<PlayerSkills>(); // Grabbing the script right here!
         }
 
         if (bossTargetToDefeat != null) 
@@ -198,7 +200,6 @@ public class ArenaSpawner : MonoBehaviour
             Vector3 finalSpawnPos = selectedNode.position;
 
             // --- AGENT ZETA AUTO-SNAP HACK ---
-            // Shoot a laser from high above the node to find the actual floor!
             if (Physics.Raycast(finalSpawnPos + Vector3.up * 10f, Vector3.down, out RaycastHit nodeFloorHit, 50f, floorLayer))
             {
                 finalSpawnPos = nodeFloorHit.point + (Vector3.up * 0.1f);
@@ -303,6 +304,12 @@ public class ArenaSpawner : MonoBehaviour
 
         enemiesAlive--;
         enemiesKilled++;
+        
+        if (playerSkillsScript != null)
+        {
+            playerSkillsScript.ApplyKillCooldownReduction();
+        }
+
         UpdateUI();
 
         if (!isBossLevel && enemiesKilled >= totalEnemiesToSpawn) TriggerVictory();
