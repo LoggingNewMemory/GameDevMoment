@@ -4642,18 +4642,19 @@ MonoBehaviour:
   hasRageOfCS: 0
   hasHaluOfCS: 0
   hasTimeForCoding: 0
-  rageDuration: 8
+  rageDuration: 5
   rageSpeedMultiplier: 1.5
-  rageCooldownMax: 30
+  rageCooldownMax: 40
   isRageActive: 0
-  haluBaseDuration: 12
+  haluBaseDuration: 8
   haluKillBonus: 0.2
-  haluCooldownMax: 25
+  haluCooldownMax: 35
   isHaluActive: 0
-  timeForCodingDuration: 17
+  timeForCodingDuration: 10
   slowMotionScale: 0.2
-  timeCodingCooldownMax: 40
+  timeCodingCooldownMax: 55
   isTimeCodingActive: 0
+  minChargeToActivate: 2
 --- !u!114 &7228406177975556466
 MonoBehaviour:
   m_ObjectHideFlags: 0

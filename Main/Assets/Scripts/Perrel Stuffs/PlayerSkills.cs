@@ -17,25 +17,25 @@ public class PlayerSkills : MonoBehaviour
     public bool hasTimeForCoding = false;
 
     [Header("Rage of CS (Q)")]
-    public float rageDuration = 8f;
+    public float rageDuration = 5f;          // Sui-chan nerfed this from 8f!
     public float rageSpeedMultiplier = 1.5f;
-    public float rageCooldownMax = 30f;
+    public float rageCooldownMax = 40f;      // Sui-chan extended this from 30f!
     [HideInInspector] public bool isRageActive = false;
     private float rageCDTimer = 0f;
     private float rageActiveTimer = 0f;
 
     [Header("Halu of CS (E)")]
-    public float haluBaseDuration = 12f;
+    public float haluBaseDuration = 8f;      // Sui-chan nerfed this from 12f!
     public float haluKillBonus = 0.2f;
-    public float haluCooldownMax = 25f;
+    public float haluCooldownMax = 35f;      // Sui-chan extended this from 25f!
     [HideInInspector] public bool isHaluActive = false;
     private float haluCDTimer = 0f;
     private float haluTimer = 0f;
 
     [Header("Time for Coding / Sandevistan Mode (F)")]
-    public float timeForCodingDuration = 17f; // Max capacity of your Sandevistan bar
+    public float timeForCodingDuration = 10f; // Max capacity reduced from 17f!
     public float slowMotionScale = 0.2f;     
-    public float timeCodingCooldownMax = 40f; // Time it takes to fully recharge from 0 to max
+    public float timeCodingCooldownMax = 55f; // Time to fully recharge extended from 40f!
     [HideInInspector] public bool isTimeCodingActive = false;
     private float timeCodingActiveTimer = 0f; // Current remaining charge pool
     public float minChargeToActivate = 2f;    // Minimum charge required to flip it back on
@@ -204,10 +204,10 @@ public class PlayerSkills : MonoBehaviour
     // ==========================================
     public void ApplyKillCooldownReduction()
     {
-        float cdReduction = 0.2f;
-        float sandevistanBatteryRefill = 1.5f; // Getting kills gives you instant Sandevistan charge! 🪓
+        float cdReduction = 0.01f; // Brutally nerfed from 0.2f to 0.01f! 🪓
+        float sandevistanBatteryRefill = 1.5f; // Getting kills gives you instant Sandevistan charge! 
 
-        // Slash those standard cooldowns!
+        // Slash those standard cooldowns (just a tiny scratch now!)
         if (rageCDTimer > 0) rageCDTimer = Mathf.Max(0, rageCDTimer - cdReduction);
         if (haluCDTimer > 0) haluCDTimer = Mathf.Max(0, haluCDTimer - cdReduction);
         
